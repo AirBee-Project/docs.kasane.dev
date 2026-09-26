@@ -6,8 +6,8 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: 'My Docs',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			title: 'Kasane-docs',
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/AirBee-Project/kasane-docs.airbee.jp' }],
 			sidebar: [
 				{
 					label: 'Guides',
