@@ -9,7 +9,7 @@ export default defineConfig({
 			title: 'Kasane-docs',
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/AirBee-Project/kasane-docs.airbee.jp' }],
 			editLink: {
-				baseUrl: 'https://github.com/AirBee-Project/kasane-docs.airbee.jp/edit/master/',
+				baseUrl: 'https://github.com/AirBee-Project/kasane-docs.airbee.jp/edit/main/',
 			},
 			lastUpdated: true,
 			sidebar: [
