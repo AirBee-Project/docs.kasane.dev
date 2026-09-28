@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "kasane-docs.airbee.jp",
+      "name": "docs.kasane.dev",
       "dependencies": {
         "@astrojs/starlight": "^0.42.4",
         "astro": "^7.2.10",
