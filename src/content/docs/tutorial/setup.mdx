@@ -1,45 +1,54 @@
 ---
 title: 準備
-description: チュートリアルを実行する環境を用意します。
+description: チュートリアルの進め方です。インストールは要りません。
 sidebar:
   order: 0
 ---
 
-import { Code } from '@astrojs/starlight/components';
-import kasaneTs from '../../../../examples/tester-project/kasane.ts?raw';
+チュートリアルは、このドキュメントのページ上で実行できます。インストールやアカウントの設定は要りません。
 
-チュートリアルでは、手元の PC でTypeScript のプログラムを動かし、運営のサーバーで動いている Kasane に接続します。
+各ステップのコードの下にある「実行する」ボタンを押すと、ブラウザから Kasane に実際にリクエストが送られ、結果がその場に表示されます。コードは Kasane の TypeScript クライアント（`@airbee-project/kasane-client`）を使って、Kasane の API を呼び出しています。期待どおりなら `OK`、違えば `NG` と表示されます。`NG` が出たら Kasane の不具合かもしれないので、表示された内容をそのまま [Issue](/tutorial/next/) で送ってください。
 
-プログラム一式は、このドキュメントのリポジトリの `examples/tester-project` にあります。Node.js 20.6 以上と Git が必要です。
+## このチュートリアルの目的
+
+あとで使っていただく負荷試験ツールは、書き込み・検索・クエリを大量に行い、速さと結果の正しさを測ります。チュートリアルでは、同じ操作を小さく手で行い、結果を読むのに必要な Kasane の仕様を確かめます。
+
+| ステップ | 分かること | 負荷試験ツールとのつながり |
+| --- | --- | --- |
+| 1〜4 | 接続、Insert は上書き・Upsert は空きだけ・Remove は部分削除 | 大量に書いた結果の「正しさ」の基準になる |
+| 5〜6 | ID の 3 つの表現、ズームレベルの上限 | 範囲でまとめて書く・検索する条件の意味が分かる |
+| 7〜8 | 値の型と制約、時空間ID | 書き込めるデータの種類と、エラーの意味が分かる |
+| 9 | ID をまとめて書く方法、`count` の意味 | 投入件数や `count` の数字を正しく読める |
+| 10 | クエリの各演算 | クエリの速さを測るとき、何を測っているかが分かる |
+| 11 | テーブルの管理と権限 | 自分のデータベースの中で自由に試せる範囲が分かる |
+
+## 進め方
+
+- ステップ 1 から順に実行してください。ステップ 3・4 は、ステップ 2 で作ったテーブルを使います。
+- チュートリアルは、みんなで使う体験用のアカウントとデータベースで動きます。書き込んだデータは、ほかの人にも見える可能性があり、定期的に消されます。個人情報や公開できないデータは書き込まないでください。
+- 同時に試している人とぶつからないよう、テーブル名には自動で固有の文字が付きます（コードの `t("hello")` の部分）。ページを開き直すと別の名前になるので、そのときはステップ 2 からやり直してください。
+
+## コードで使っている道具
+
+各ステップのコードは、次の道具を受け取って動きます。Kasane の操作そのもの（`db.createTable`、`table.insert`、`table.search`、`client.query` など）は、クライアントのメソッドをそのまま使っています（[クライアント API](/docs/api/)）。
+
+| 名前 | 内容 |
+| --- | --- |
+| `client` | ログイン済みのクライアント |
+| `db` / `DB` | 体験用のデータベースと、その名前 |
+| `t("名前")` | テーブル名に固有の文字を付ける |
+| `check(説明, 条件)` | 条件が正しければ `OK`、違えば `NG` を表示する |
+| `log(...)` | 結果欄に表示する（`console.log` の代わり） |
+| `resetTable(名前)` | 同じ名前のテーブルが残っていれば消す |
+| `WHOLE` | 地球全体・全時間を表す範囲（テーブルの中身をすべて検索するときに使う） |
+
+## 自分の PC で動かしたいとき
+
+同じクライアントを、自分のプロジェクトに入れて使うこともできます。
 
 ```sh
-git clone https://github.com/AirBee-Project/docs.kasane.dev.git
-cd docs.kasane.dev/examples/tester-project
-npm install
-cp .env.example .env
+npm install https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz
 ```
 
-`.env` を開いて、お送りしたアカウント情報を書き込みます。
-
-```ini
-KASANE_URL=https://検証環境のURL
-KASANE_USER=ユーザー名
-KASANE_PASSWORD=パスワード
-KASANE_DB=自分用のデータベース名
-```
-
-次のコマンドで `OK` が 3 行出れば準備完了です。
-
-```sh
-npm run step step01-connect.ts
-```
-
-以降のステップも `npm run step <ファイル名>` で実行します。どのステップも、共通処理（ログイン、`OK` / `NG` の表示など）を下の `kasane.ts` から読み込んでいます。
-
-<Code code={kasaneTs} lang="ts" title="kasane.ts" />
-
-## 補足
-
-- クライアント（`@airbee-project/kasane-client`）は npm には公開しておらず、`package.json` で GitHub Releases の URL を指定しています。
-- 自分のプロジェクトで TypeScript の型チェックをするときは、`tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。v0.0.3 の型定義は `"NodeNext"` だと読み込めません。
-- `.env` にはパスワードが入るので、Issue などに貼らないでください。
+- クライアントは npm には公開しておらず、GitHub Releases の URL を指定してインストールします。
+- TypeScript で型チェックをするときは、`tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。v0.0.3 の型定義は `"NodeNext"` だと読み込めません。

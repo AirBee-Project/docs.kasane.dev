@@ -1,0 +1,87 @@
+---
+title: 9〜11 まとめ書き・クエリ・管理
+description: 複数の ID をまとめて書く方法、クエリ、テーブルの管理を試します。
+sidebar:
+  label: 9〜11 応用
+  order: 3
+---
+
+import { Code } from '@astrojs/starlight/components';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import s9 from '../../../tutorial/steps/09-bulk-write.ts?raw';
+import s10 from '../../../tutorial/steps/10-query.ts?raw';
+import s11 from '../../../tutorial/steps/11-manage.ts?raw';
+
+## ステップ 9：まとめて書き込む
+
+たくさんのボクセルに書くときは、ID を配列で渡すか、隣り合うボクセルを RangeId 1 つにまとめます。
+
+<Code code={s9} lang="ts" title="09-bulk-write.ts" />
+
+<TutorialRunner step="09-bulk-write" />
+
+実行結果の例：
+
+```text
+値 2: 100 ボクセル
+値 1: 100 ボクセル
+OK  値 1 のボクセルが 100 個
+OK  値 2 のボクセルが 100 個
+TableInfo.count = 10n
+```
+
+1 回の Insert で書ける値は 1 つなので、値が違うデータは値ごとに ID をまとめて送ります。`TableInfo.count` は書き込んだ ID の数ではなく、Kasane が内部で保存している単位（FlexId）の数です。隣り合うボクセルはまとめて保存されるので、200 ボクセルが 10 になっています。
+
+## ステップ 10：クエリ
+
+クエリは、テーブルに対する演算を組み立ててサーバー側で実行する機能です。結果を目で確かめられるよう、小さなテーブルを 2 つ作って全種類の演算を試します。
+
+```text
+          x →   X   X+1  X+2  X+3  X+4  X+5  X+6  X+7
+risk   Y+1:    80   80   80   80   30   30
+       Y  :    80   80   80   80   30   30
+wind   Y  :              5    5    5    5    5    5
+```
+
+<Code code={s10} lang="ts" title="10-query.ts" />
+
+<TutorialRunner step="10-query" />
+
+実行結果の例：
+
+```text
+OK  filter: 80 のボクセル 8 個だけが残る
+OK  intersection: 重なる 4 ボクセル
+OK  difference: 12 - 4 = 8 ボクセル
+OK  merge: 和集合 14 ボクセル、重なりは 85 と 35
+OK  zoomOut: 2 ボクセル（80 と 30）
+OK  add: 80 → 81、30 → 31
+OK  divide: 80 → 26、30 → 10
+OK  mapValues: 80 → 高、それ以外 → 低
+OK  shiftX: 6 ボクセルが 10 ボクセル右に移動
+OK  extrudeF: 6 ボクセル × 高さ 4 = 24 ボクセル
+OK  falloffX: 1 ボクセル隣は 40、2 ボクセル隣は 0
+```
+
+`zoomOut` や `merge` などの `policy` は省略できるように見えますが、省略するとサーバーがエラーを返します。`merge` の `defaultValue` も指定が必要です。各演算の意味は[クエリの一覧](/docs/query/)にまとめています。
+
+## ステップ 11：テーブルの管理
+
+テーブルのコピー・改名・削除を試します。権限の無い場所（ほかのデータベース）への操作が断られることも確かめます。
+
+<Code code={s11} lang="ts" title="11-manage.ts" />
+
+<TutorialRunner step="11-manage" />
+
+実行結果の例：
+
+```text
+OK  コピー先の count がコピー元と一致
+OK  改名後の名前で一覧に出る
+OK  削除したテーブルは読めない（not_found）
+OK  ほかのデータベースにはテーブルを作れない（permission_denied）
+```
+
+テーブルの改名は v0.0.3 のクライアントに専用メソッドが無いので、`client.tableClient.update` を直接呼んでいます。
+
+これでチュートリアルは終わりです。[終わったら](/tutorial/next/)に進んでください。

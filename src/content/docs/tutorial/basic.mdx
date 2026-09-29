@@ -1,0 +1,93 @@
+---
+title: 1〜4 基本の読み書き
+sidebar:
+  order: 1
+---
+
+import { Code } from '@astrojs/starlight/components';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import TablerIcon from '../../../components/TablerIcon.astro';
+import s1 from '../../../tutorial/steps/01-connect.ts?raw';
+import s2 from '../../../tutorial/steps/02-hello.ts?raw';
+import s3 from '../../../tutorial/steps/03-overwrite.ts?raw';
+import s4 from '../../../tutorial/steps/04-upsert-remove.ts?raw';
+
+## Step 1：接続
+
+ログインして、見えるデータベースを確かめます。権限の無い操作（データベースの作成）が断られることも確かめます。
+
+<Code code={s1} lang="ts" title="01-connect.ts" />
+
+<TutorialRunner step="01-connect" />
+
+実行結果の例：
+
+```text
+見えるデータベース: [ 'tutorial' ]
+OK  チュートリアル用のデータベースが見える
+データベースの情報: {"name":"tutorial"}
+OK  データベースの作成は拒否される
+```
+
+## ステップ 2：1 件書いて読む
+
+テーブルを作り、東京駅付近のボクセルに値 `42` を書いて読み戻します。
+
+<Code code={s2} lang="ts" title="02-hello.ts" />
+
+<TutorialRunner step="02-hello" />
+
+実行結果の例：
+
+```text
+20/0/931389/412900 => 42
+OK  1 件だけ返る
+OK  書いた値 42 が返る
+```
+
+書き込んだ場所を地図で見てみましょう。下の地図の左上にある <TablerIcon name="cube" /> 空間ID を押し、<TablerIcon name="plus" /> IDを追加 でできた入力欄に `20/0/931389/412900` を貼り付けます。見つからないときは、入力欄の右の <TablerIcon name="target" /> を押すとその場所へ移動します。ほかの機能は[地図で見る](/docs/spatial-id/#空間idを地図で見る)にまとめています。
+
+<iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+
+INT のテーブルから読んだ値は `42n` のような `bigint` で返ります。
+
+## ステップ 3：同じ場所にもう一度書く
+
+値 `42` が入っているボクセルに、`7` を Insert します。
+
+<Code code={s3} lang="ts" title="03-overwrite.ts" />
+
+<TutorialRunner step="03-overwrite" />
+
+実行結果の例：
+
+```text
+[ '20/0/931389/412900 => 7' ]
+OK  エラーにならず、値が 7 に上書きされる
+```
+
+v0.7 の Insert は既存の値を上書きします。API 定義のコメントには「重複するとエラー」と書かれていますが、実際の動きは上書きです（開発チームで確認中）。この動きが使い方に合うかどうか、感想をいただけると助かります。
+
+## ステップ 4：Upsert と Remove
+
+`a`（値 `7`）と、その東隣の空いているボクセル `b` をまとめて Upsert し、そのあと `a` だけを Remove します。
+
+<Code code={s4} lang="ts" title="04-upsert-remove.ts" />
+
+<TutorialRunner step="04-upsert-remove" />
+
+実行結果の例：
+
+```text
+Upsert 後: [ '20/0/931389/412900 => 7', '20/0/931390/412900 => 100' ]
+OK  a は元の値 7 のまま
+OK  b には 100 が入る
+Remove 後: [ '20/0/931390/412900 => 100' ]
+OK  a が消え、b だけが残る
+```
+
+3 つの書き込み操作の違いをまとめると次のようになります。
+
+- Insert：空いていれば書く、値があれば上書きする
+- Upsert：空いている部分にだけ書く（既存の値はそのまま）
+- Remove：指定した部分を消す
