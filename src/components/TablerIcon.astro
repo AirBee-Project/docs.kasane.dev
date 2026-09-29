@@ -1,0 +1,44 @@
+---
+// Senri の画面で使われている Tabler Icons（https://tabler.io/icons, MIT License）を本文中に表示する
+import cube from '@tabler/icons/outline/cube.svg?raw';
+import plus from '@tabler/icons/outline/plus.svg?raw';
+import target from '@tabler/icons/outline/target.svg?raw';
+import trash from '@tabler/icons/outline/trash.svg?raw';
+import refresh from '@tabler/icons/outline/refresh.svg?raw';
+import borderOuter from '@tabler/icons/outline/border-outer.svg?raw';
+import pointer from '@tabler/icons/outline/pointer.svg?raw';
+import view360Number from '@tabler/icons/outline/view-360-number.svg?raw';
+import fileDescription from '@tabler/icons/outline/file-description.svg?raw';
+
+const icons = {
+	cube,
+	plus,
+	target,
+	trash,
+	refresh,
+	'border-outer': borderOuter,
+	pointer,
+	'view-360-number': view360Number,
+	'file-description': fileDescription,
+} as const;
+
+interface Props {
+	name: keyof typeof icons;
+	label?: string;
+}
+
+const { name, label } = Astro.props;
+const svg = icons[name]
+	.replace(/\swidth="24"/, ' width="1.15em"')
+	.replace(/\sheight="24"/, ' height="1.15em"')
+	.replace('<svg', `<svg role="img" aria-label="${label ?? name}"`);
+---
+
+<span class="tabler-icon" set:html={svg} />
+
+<style>
+	.tabler-icon {
+		display: inline-flex;
+		vertical-align: -0.2em;
+	}
+</style>

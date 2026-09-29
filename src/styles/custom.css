@@ -29,3 +29,10 @@
 		margin-left: 2rem;
 	}
 }
+
+/* 図のキャプション（出典） */
+.figure-caption {
+	margin-top: 0.25rem;
+	font-size: 0.8rem;
+	color: var(--muted-foreground);
+}
