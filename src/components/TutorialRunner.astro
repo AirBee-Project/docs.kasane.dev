@@ -1,0 +1,91 @@
+---
+// チュートリアルのステップを、このページ上で実行するボタンと結果欄
+interface Props {
+	/** src/tutorial/steps/ のファイル名（拡張子なし）。例: "02-hello" */
+	step: string;
+}
+const { step } = Astro.props;
+---
+
+<div class="tutorial-runner not-content" data-step={step}>
+	<button type="button" class="tutorial-run">実行する</button>
+	<pre class="tutorial-output" hidden></pre>
+</div>
+
+<script>
+	import { isConfigured, runStep, type Line, type Step } from '../tutorial/runner';
+
+	const steps = import.meta.glob<{ default: Step }>('../tutorial/steps/*.ts');
+
+	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner')) {
+		const button = root.querySelector<HTMLButtonElement>('.tutorial-run')!;
+		const output = root.querySelector<HTMLPreElement>('.tutorial-output')!;
+		const loader = steps[`../tutorial/steps/${root.dataset.step}.ts`];
+
+		button.addEventListener('click', async () => {
+			output.hidden = false;
+			output.replaceChildren();
+			const write = (line: Line) => {
+				const span = document.createElement('span');
+				span.className = `line-${line.kind}`;
+				span.textContent = `${line.text}\n`;
+				output.append(span);
+			};
+			if (!isConfigured()) {
+				write({ kind: 'error', text: 'チュートリアル用の接続先が設定されていません。' });
+				return;
+			}
+			if (!loader) {
+				write({ kind: 'error', text: `ステップ ${root.dataset.step} が見つかりません。` });
+				return;
+			}
+			button.disabled = true;
+			button.textContent = '実行中…';
+			try {
+				const module = await loader();
+				await runStep(module.default, write);
+			} finally {
+				button.disabled = false;
+				button.textContent = 'もう一度実行する';
+			}
+		});
+	}
+</script>
+
+<style>
+	.tutorial-runner {
+		margin-top: 1rem;
+	}
+	.tutorial-run {
+		padding: 0.4rem 1rem;
+		border: 1px solid var(--border);
+		border-radius: calc(var(--radius) - 2px);
+		background: var(--heading-accent);
+		color: var(--background);
+		font: inherit;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.tutorial-run:disabled {
+		opacity: 0.6;
+		cursor: progress;
+	}
+	.tutorial-output {
+		margin-top: 0.75rem;
+		padding: 1rem;
+		border-radius: calc(var(--radius) - 2px);
+		background: var(--secondary);
+		font-family: var(--__sl-font-mono);
+		font-size: 0.85rem;
+		line-height: 1.6;
+		white-space: pre-wrap;
+		overflow-x: auto;
+	}
+	.tutorial-output :global(.line-ok) {
+		color: #3fb950;
+	}
+	.tutorial-output :global(.line-ng),
+	.tutorial-output :global(.line-error) {
+		color: #f85149;
+	}
+</style>
