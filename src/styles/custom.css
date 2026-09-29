@@ -1,3 +1,9 @@
+/* 大きな画面で本文を少し広く使う（Lucode テーマの既定は本文 40rem・全体 1600px） */
+:root {
+	--content-max-width: 54rem;
+	--container-max-width: 1800px;
+}
+
 /* 本文のフォントを Noto Sans JP にそろえる（コードは等幅フォントのまま） */
 :root {
 	--sl-font: 'Noto Sans JP Variable', sans-serif;
