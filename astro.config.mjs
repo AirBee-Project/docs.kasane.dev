@@ -1,7 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightImageZoom from 'starlight-image-zoom';
+import lucode from 'lucode-starlight';
 
 export default defineConfig({
 	site: 'https://docs.kasane.dev',
@@ -27,7 +27,7 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
-			plugins: [starlightImageZoom()],
+			plugins: [lucode()],
 		}),
 	],
 });

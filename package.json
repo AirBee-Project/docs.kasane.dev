@@ -13,9 +13,9 @@
     "@astrojs/starlight": "^0.42.4",
     "astro": "^7.2.10",
     "astro-mermaid": "^2.1.0",
+    "lucode-starlight": "^1.0.0",
     "mermaid": "^12.0.0",
-    "sharp": "^0.35.3",
-    "starlight-image-zoom": "^0.16.0"
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "wrangler": "^4.141.0"
