@@ -16,17 +16,17 @@ const results = await client.query(q, area, { format: "singleId" }).toArray();
 | 演算 | 内容 |
 | --- | --- |
 | `filter({ min, max })` | 値の範囲で絞り込む。`{ equals: 値 }`、`{ notInRange: { min, max } }` も使える |
-| `intersection(q)` | 両方にあるマスだけ残す（値は左側） |
-| `difference(q)` | 右側にあるマスを除く |
-| `merge(q, { policy, defaultValue })` | 重ね合わせる。片方にしか無いマスは、無い側を `defaultValue` として計算する |
+| `intersection(q)` | 両方にあるボクセルだけ残す（値は左側） |
+| `difference(q)` | 右側にあるボクセルを除く |
+| `merge(q, { policy, defaultValue })` | 重ね合わせる。片方にしか無いボクセルは、無い側を `defaultValue` として計算する |
 | `zoomOut(z, policy)` | 粗いズームレベルにまとめる |
-| `shiftX(z, n)` / `shiftY` / `shiftF` | ズームレベル z で n マス移動する |
+| `shiftX(z, n)` / `shiftY` / `shiftF` | ズームレベル z で n ボクセル移動する |
 | `extrudeX(z, start, end, policy)` / `extrudeY` / `extrudeF` | 指定した範囲いっぱいに引き延ばす |
-| `falloffX(z, radius, { pattern, direction, policy })` / `falloffY` / `falloffF` | 周りに広げながら、radius マス先で 0 になるよう減らす |
+| `falloffX(z, radius, { pattern, direction, policy })` / `falloffY` / `falloffF` | 周りに広げながら、radius ボクセル先で 0 になるよう減らす |
 | `mapValues({ outputType, mapping, defaultValue })` | 対応表で値を置き換える。型が変わるときは `client.query` に `valueType` も渡す |
 | `add(n)` / `subtract(n)` / `multiply(n)` / `divide(n)` | 四則演算。整数の割り算は切り捨て |
 
-`policy` は、同じマスに値が重なったときの決め方です。左 80、右 30 の場合の結果を例に書いています。
+`policy` は、同じボクセルに値が重なったときの決め方です。左 80、右 30 の場合の結果を例に書いています。
 
 | policy | 結果 |
 | --- | --- |

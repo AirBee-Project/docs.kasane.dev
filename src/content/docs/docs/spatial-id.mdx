@@ -40,7 +40,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ## ズームレベルと親子関係
 
-ズームレベルを 1 つ上げると、ボクセルは縦・横・高さが半分になり、8 つに分かれます。また、`f`・`x`・`y` をそれぞれ 2 で割って切り捨てると、1 つ粗いズームレベルの「親」のマスになります。
+ズームレベルを 1 つ上げると、ボクセルは縦・横・高さが半分になり、8 つに分かれます。また、`f`・`x`・`y` をそれぞれ 2 で割って切り捨てると、1 つ粗いズームレベルの「親」のボクセルになります。
 
 ```text
 3/0/7/2 の親 → 2/0/3/1
@@ -78,7 +78,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 </div>
 <div class="side-figure-column">
 
-<img src={horizontalIndexFigure.src} alt="ズームレベル 0・1・2 で世界地図を 1・4・16 マスに分け、各マスに (x, y) のインデックスを振った図" class="side-figure is-short" />
+<img src={horizontalIndexFigure.src} alt="ズームレベル 0・1・2 で世界地図を 1・4・16 ボクセルに分け、各ボクセルに (x, y) のインデックスを振った図" class="side-figure is-short" />
 
 <p class="figure-caption">図 2-6 水平方向の分割とインデックスの割り当て（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
@@ -151,10 +151,10 @@ const t = Math.floor(Date.UTC(2025, 10, 15, 0, 0, 0) / 1000 / 3600); // 489768
 
 Kasane では同じ空間を 3 つの形で書けます。書き込み・検索にはどれを渡してもよく、検索結果の形も `format` で選べます。
 
-SingleId は 1 マスを表す、ガイドラインどおりの形です。
+SingleId は 1 ボクセルを表す、ガイドラインどおりの形です。
 
 ```ts
-// 東西 6 × 南北 2 × 高さ 8 = 96 マスを、1 マスずつ書く
+// 東西 6 × 南北 2 × 高さ 8 = 96 ボクセルを、1 ボクセルずつ書く
 SingleId.create(20, 0, 931389, 412900);
 SingleId.create(20, 0, 931389, 412901);
 SingleId.create(20, 0, 931390, 412900);
@@ -165,21 +165,21 @@ SingleId.create(20, 7, 931394, 412901);
 // 全部で 96 個
 ```
 
-![Senri で、東西 6 × 南北 2 × 高さ 8 の 96 マスを SingleId 96 個で表示し、マスの区切りが見えている様子](../../../assets/senri/single-id.png)
+![Senri で、東西 6 × 南北 2 × 高さ 8 の 96 ボクセルを SingleId 96 個で表示し、ボクセルの区切りが見えている様子](../../../assets/senri/single-id.png)
 
 <p class="figure-caption">SingleId 96 個で表示</p>
 
-RangeId は、軸ごとの範囲（両端を含む）で直方体を表します。上の 96 マスを 1 つの ID で書けます。
+RangeId は、軸ごとの範囲（両端を含む）で直方体を表します。上の 96 ボクセルを 1 つの ID で書けます。
 
 ```ts
 RangeId.create(20, [0, 7], [931389, 931394], [412900, 412901]); // "20/0:7/931389:931394/412900:412901"
 ```
 
-![Senri で、同じ 96 マスを RangeId 1 個で表示し、1 つの直方体になっている様子](../../../assets/senri/range-id.png)
+![Senri で、同じ 96 ボクセルを RangeId 1 個で表示し、1 つの直方体になっている様子](../../../assets/senri/range-id.png)
 
 <p class="figure-caption">RangeId 1 個で表示</p>
 
-FlexId は、軸ごとに違うズームレベルを持てる形で、Kasane の内部の保存単位です。`20/0|20/931389|19/206450` は、y 方向だけズームレベル 19（= ズームレベル 20 の 2 マス分）のマスを表します。
+FlexId は、軸ごとに違うズームレベルを持てる形で、Kasane の内部の保存単位です。`20/0|20/931389|19/206450` は、y 方向だけズームレベル 19（= ズームレベル 20 の 2 ボクセル分）のボクセルを表します。
 
 ## 参考資料
 
