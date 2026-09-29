@@ -55,3 +55,62 @@
 .sl-markdown-content :is(h2, h3) {
 	color: var(--heading-accent);
 }
+
+/* 表と図を横に並べて中央にそろえる（狭い画面では縦に並べる） */
+.side-by-side {
+	display: grid;
+	gap: 1.5rem;
+	align-items: center;
+}
+.side-by-side > div > :first-child {
+	margin-top: 0;
+}
+.side-figure {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+@media (min-width: 768px) {
+	.side-by-side {
+		grid-template-columns: auto auto;
+		justify-content: center;
+		column-gap: 2.5rem;
+	}
+	.side-figure-column {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	/* 表（ヘッダーと 4 行）とほぼ同じ高さにする */
+	.side-figure-column .side-figure {
+		width: auto;
+		height: 12rem;
+	}
+	/* 行の少ない表（3 行）の横に置く図 */
+	.side-figure-column .side-figure.is-short {
+		height: 9.5rem;
+	}
+	.side-figure-column .figure-caption {
+		text-align: center;
+	}
+}
+
+/* キャプション内のリンクをキャプションと同じ大きさにする（テーマはリンクを大きめにしている） */
+.sl-markdown-content .figure-caption a {
+	font-size: inherit;
+}
+
+/* 画像 2 枚を同じ幅で横に並べる（狭い画面では縦に並べる） */
+.figure-pair {
+	display: grid;
+	gap: 1rem;
+	align-items: end;
+}
+@media (min-width: 768px) {
+	.figure-pair {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+.figure-pair > div > :first-child {
+	margin-top: 0;
+}

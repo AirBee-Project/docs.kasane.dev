@@ -1,47 +1,74 @@
 ---
 title: 時空間IDの基礎
-description: 空間ID と時空間ID の考え方、インデックスの数え方、Kasane での 3 つの表現を説明します。
+description: 空間ID・時空間IDの基礎知識と、Kasane での使い方をまとめたページです。
 sidebar:
   order: 1
 ---
 
 import TablerIcon from '../../../components/TablerIcon.astro';
+import voxelFigure from '../../../assets/ipa/ipa-fig2-3-voxel.png';
+import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-index.png';
 
 このページの図の一部は、経済産業省・国土交通省・国土地理院・NEDO・IPA が公開している「4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）」から引用しています。詳しい仕様はガイドライン本文を参照してください。
 
-## 空間ID
+## 空間IDとは
 
-空間ID は、地球上の 3 次元の空間を直方体のマス（空間ボクセル）に区切り、1 つ 1 つのマスに付けた番号です。Kasane は、このマスごとに値を保存します。
+空間ID は、地球上の空間を格子状に区切り、1 つ 1 つのボクセルに以下のようなインデックスをつけた規格です。
 
 ```text
-{z}/{f}/{x}/{y}        例：20/0/931389/412900
+{z}/{f}/{x}/{y}        例：2/0/3/1
 ```
+
+<div class="side-by-side">
+<div>
 
 | 記号 | 意味 |
 | --- | --- |
-| `z` | ズームレベル（0〜30）。マスの細かさ |
-| `f` | 高さ方向の番号（標高 0m が境目。地下は負の数） |
-| `x` | 東西方向の番号 |
-| `y` | 南北方向の番号 |
+| `z` | ズームレベル |
+| `f` | 高さ方向のインデックス |
+| `x` | 東西方向のインデックス |
+| `y` | 南北方向のインデックス |
 
-![ズームレベル 2 の空間ID 2/0/3/1 と、その中にあるズームレベル 3 の空間ID 3/0/7/2 を、地球を区切った格子の上に示した図](../../../assets/ipa/ipa-fig2-3-voxel.png)
+</div>
+<div class="side-figure-column">
 
-<p class="figure-caption">図 2-3 空間ボクセルのイメージ（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-3）</p>
+<img src={voxelFigure.src} alt="ズームレベル 2 の空間ID 2/0/3/1 と、その中にあるズームレベル 3 の空間ID 3/0/7/2 を、地球を区切った格子の上に示した図" class="side-figure" />
+
+<p class="figure-caption">図 2-3 空間IDのイメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
+
+</div>
+</div>
 
 ## ズームレベルと親子関係
 
-ズームレベルが 1 上がるごとに、マスは縦・横・高さがそれぞれ半分になり、1 つのマスが 8 つに分かれます。上の図では、ズームレベル 2 のマス `2/0/3/1` の中に、ズームレベル 3 のマス `3/0/7/2` が入っています。
-
-ある ID の 1 つ上（粗い側）の親は、`f`・`x`・`y` をそれぞれ 2 で割って切り捨てれば求まります。逆に 1 つ下の子は、各インデックスを 2 倍した値と 2 倍 + 1 の値の組み合わせ 8 つです。
+ズームレベルを 1 つ上げると、ボクセルは縦・横・高さが半分になり、8 つに分かれます。また、`f`・`x`・`y` をそれぞれ 2 で割って切り捨てると、1 つ粗いズームレベルの「親」のマスになります。
 
 ```text
-20/0/931389/412900 の親（ズームレベル 19）: 19/0/465694/206450
-20/0/931389/412900 の子（ズームレベル 21）: 21/0:1/1862778:1862779/825800:825801 の 8 マス
+3/0/7/2 の親 → 2/0/3/1
+20/0/931389/412900 の親 → 19/0/465694/206450
 ```
 
-{/* スクリーンショット: 親と子を Senri に表示した画面 → src/assets/senri/parent-children.png */}
+<div class="figure-pair">
+<div>
 
-マスの大きさの目安は次のとおりです。高さはズームレベル 25 でちょうど 1m になるように決められています。横幅は Web メルカトル図法で区切るため、緯度が高いほど小さくなります。
+![Senri の地図上で、ピンクの親のボクセル 19/0/465694/206450 の中に、青い子のボクセル 20/0/931389/412900 が入っている様子](../../../assets/senri/parent-child.png)
+
+<p class="figure-caption">親（ピンク）の中に子（青）が入る様子</p>
+
+</div>
+<div>
+
+![Senri の地図上で、ズームレベル 20・19・18・17・16 のボクセルを、西から東へ小さい順に接するように並べた様子](../../../assets/senri/zoom-sizes.png)
+
+<p class="figure-caption">ズームレベル 20〜16 のボクセルを並べた様子</p>
+
+</div>
+</div>
+
+ボクセルの大きさの目安は次のとおりです。横幅は緯度が高いほど狭くなります。
+
+<div class="side-by-side">
+<div>
 
 | z | 高さ | 横幅（東京付近） |
 | --- | --- | --- |
@@ -49,23 +76,20 @@ import TablerIcon from '../../../components/TablerIcon.astro';
 | 20 | 32 m | 約 31 m |
 | 25 | 1 m | 約 1 m |
 
-## インデックスの数え方
+</div>
+<div class="side-figure-column">
 
-水平方向は、Web 地図と同じ Web メルカトル図法の範囲（経度 −180〜180 度、緯度 約 −85〜85 度）をズームレベル 0 の 1 マスとし、ズームレベルが上がるたびに縦横を 2 分割します。`x` は西の端（経度 −180 度）から東へ、`y` は北の端から南へ、0 から数えます。
+<img src={horizontalIndexFigure.src} alt="ズームレベル 0・1・2 で世界地図を 1・4・16 マスに分け、各マスに (x, y) のインデックスを振った図" class="side-figure is-short" />
 
-![ズームレベル 0・1・2 で世界地図を 1・4・16 マスに分け、各マスに (x, y) のインデックスを振った図](../../../assets/ipa/ipa-fig2-6-horizontal-index.png)
+<p class="figure-caption">図 2-6 水平方向の分割とインデックスの割り当て（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
-<p class="figure-caption">図 2-6 水平方向の分割とインデックスの割り当て（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-6）</p>
-
-鉛直方向は、標高 0m を境目に、上下それぞれ 33,554,432m（2<sup>25</sup> m）までをズームレベル 0 の範囲とします。`f` は標高 0m から上へ 0, 1, 2, …、下へ −1, −2, … と数えます。
-
-![ズームレベル 0・1・2 で高さ方向を分割し、各区間に f インデックスを振った図](../../../assets/ipa/ipa-fig2-7-vertical-index.png)
-
-<p class="figure-caption">図 2-7 鉛直方向の分割とインデックスの割り当て（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-7）</p>
+</div>
+</div>
 
 各インデックスが取れる範囲は、`f` が −2<sup>z</sup> 〜 2<sup>z</sup> − 1、`x` と `y` が 0 〜 2<sup>z</sup> − 1 です。
 
-## 緯度・経度・標高から計算する
+## 緯度・経度・標高から空間IDを計算する
+緯度、経度、標高から空間IDを計算するには、次の関数を使えます。`z` はズームレベル、`lng` は経度、`lat` は緯度、`h` は標高（メートル）です。
 
 ```ts
 function toSpatialId(z: number, lng: number, lat: number, h: number) {
@@ -79,35 +103,29 @@ function toSpatialId(z: number, lng: number, lat: number, h: number) {
 
 toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 ```
+## 空間IDを地図で見る
 
-隣り合うマスは、`x` や `y` が 1 ずつ違う ID になります。
-
-![ズームレベル 20 の隣り合うマスに、それぞれの空間ID を書き込んだ図](../../../assets/ipa/ipa-fig2-9-id-notation.png)
-
-<p class="figure-caption">図 2-9 各空間ボクセルの空間 ID を表記したイメージ（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-9）</p>
-
-## 地図で見る（Senri）
-
-空間ID が指す場所は、地図ツール Senri で確かめられます。下に埋め込んでいるほか、[別のタブで開く](https://map.airbee.jp/?debug)こともできます。
+空間ID が指す場所は、地図ツール Senri で確かめられます。下に埋め込んでいるほか、[こちらから](https://map.airbee.jp/?debug)使うこともできます。
 
 1. 左上の <TablerIcon name="cube" /> 空間ID ボタンを押します。
 2. <TablerIcon name="plus" /> IDを追加 を押すと入力欄ができるので、空間ID を貼り付けます。カンマで区切れば、複数の ID をまとめて表示できます。
-3. 表示された場所が見つからないときは、入力欄の右にある <TablerIcon name="target" /> を押すと、その場所へ移動します。<TablerIcon name="trash" /> で入力欄ごと消せます。
+3. 表示された場所が見つからないときは、入力欄の右にある <TablerIcon name="target" /> を押すと、その場所へ移動します。
+4. 入力欄の右にある ⬜︎ でボクセルの色を変更でき、<TablerIcon name="trash" /> で入力欄ごと消せます。
 
 <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
 
-画面右側のボタンは次のとおりです。
+画面右側のボタンの説明
 
-- <TablerIcon name="refresh" />：範囲の表示と 1 マスずつの表示を切り替えます。RangeId（`20/0/931389:931390/412900` など）を正確に表示したいときに押してください。
-- <TablerIcon name="border-outer" />：マスの枠線を表示します。
-- <TablerIcon name="pointer" />：マスにカーソルを合わせると、その空間ID が表示されます。
+- <TablerIcon name="refresh" />：範囲の表示と 1 ボクセルずつの表示を切り替えます。RangeId（`20/0/931389:931390/412900` など）を正確に表示したいときに押してください。
+- <TablerIcon name="border-outer" />：ボクセルの枠線を表示します。
+- <TablerIcon name="pointer" />：ボクセルにカーソルを合わせると、その空間ID が表示されます。
 - <TablerIcon name="view-360-number" />：地図を自動で回転させます。
 
-ほかに、<TablerIcon name="plus" /> .txtを追加 で空間ID を並べたテキストファイル（[Nazori](/explore/#実際の都市データを使う) の出力など）を、左上の <TablerIcon name="file-description" /> JSON ボタンで空間ID と値を並べた JSON を読み込めます。値がある場合は、値に応じて色分けされます。
+ほかに、<TablerIcon name="plus" /> .txtを追加 で空間ID を並べたテキストファイル（[Nazori](/explore/#実際の都市データを使う) の出力など）を読み込むこともできます。
 
 ## 時空間ID
 
-空間ID の後ろに時間を付けたものです。同じ場所でも、時間が違えば別の時空間ID になります。
+空間ID の後ろに時間インデックスを付けたものです。同じ場所でも、時間が違えば別の時空間ID になります。
 
 ```text
 {z}/{f}/{x}/{y}_{i}/{t}    例：20/0/931389/412900_3600/489768
@@ -115,20 +133,20 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 
 ![左に 3 次元の空間ID、右に同じ空間ID を時間ごとに区切った 4 次元の時空間ID を並べた図](../../../assets/ipa/ipa-fig2-21-spatial-vs-temporal.png)
 
-<p class="figure-caption">図 2-21 空間 ID と時空間 ID の比較イメージ（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-21）</p>
+<p class="figure-caption">図 2-21 空間 ID と時空間 ID の比較イメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
 時間軸は 1970-01-01 00:00（UTC、UNIX 時間の起点）から始まり、時間間隔 `i`（秒）ごとに区切られます。`t` は、UNIX 時間 `u` がその何番目の区間に入るかを表す番号で、`t = floor(u / i)` で求まります。
 
 ![時間軸の起点から時間間隔 i ごとに区切り、UNIX 時間 u が入る区間の番号を時間インデックス t とする図](../../../assets/ipa/ipa-fig2-23-time-elements.png)
 
-<p class="figure-caption">図 2-23 分割された時間軸における各要素（出典：経済産業省・国土交通省・国土地理院・NEDO・IPA「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」図 2-23）</p>
+<p class="figure-caption">図 2-23 分割された時間軸における各要素（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
 ```ts
 const t = Math.floor(Date.UTC(2025, 10, 15, 0, 0, 0) / 1000 / 3600); // 489768
 // 20/0/931389/412900_3600/489768 は、2025-11-15 00:00〜01:00（UTC）
 ```
 
-ガイドラインでは `i` に任意の秒数を使えますが、Kasane v0.7 で使えるのは 1、60、3600、86400 の 4 つだけです。時間を付けない ID は「全時間」を表し、内部では `i = 2^35` として扱われます。
+ガイドラインでは `i` に任意の秒数を使えますが、Kasane v0.7 で使えるのは 1、60、3600、86400 の 4 つです。時間を付けない ID は「全時間」を表し、内部では `i = 2^35` として扱われます。
 
 ## Kasane での 3 つの表現
 
@@ -137,23 +155,33 @@ Kasane では同じ空間を 3 つの形で書けます。書き込み・検索�
 SingleId は 1 マスを表す、ガイドラインどおりの形です。
 
 ```ts
+// 東西 6 × 南北 2 × 高さ 8 = 96 マスを、1 マスずつ書く
 SingleId.create(20, 0, 931389, 412900);
-SingleId.parse("20/0/931389/412900_3600/489768");
+SingleId.create(20, 0, 931389, 412901);
+SingleId.create(20, 0, 931390, 412900);
+SingleId.create(20, 0, 931390, 412901);
+// …（途中省略）…
+SingleId.create(20, 7, 931394, 412900);
+SingleId.create(20, 7, 931394, 412901);
+// 全部で 96 個
 ```
 
-{/* スクリーンショット: 20/0/931389/412900 を Senri に表示した画面 → src/assets/senri/single-id.png */}
+![Senri で、東西 6 × 南北 2 × 高さ 8 の 96 マスを SingleId 96 個で表示し、マスの区切りが見えている様子](../../../assets/senri/single-id.png)
 
-RangeId は、軸ごとの範囲（両端を含む）で直方体を表します。たくさんのマスを 1 つの ID で送れます。
+<p class="figure-caption">SingleId 96 個で表示</p>
+
+RangeId は、軸ごとの範囲（両端を含む）で直方体を表します。上の 96 マスを 1 つの ID で書けます。
 
 ```ts
-RangeId.create(20, 0, [931389, 931390], [412900, 412901]); // "20/0/931389:931390/412900:412901"
-RangeId.create(0, [-1, 0], 0, 0);                            // 地球全体
+RangeId.create(20, [0, 7], [931389, 931394], [412900, 412901]); // "20/0:7/931389:931394/412900:412901"
 ```
 
-{/* スクリーンショット: 20/0/931389:931390/412900:412901 を Senri に表示した画面（範囲表示を有効にした状態） → src/assets/senri/range-id.png */}
+![Senri で、同じ 96 マスを RangeId 1 個で表示し、1 つの直方体になっている様子](../../../assets/senri/range-id.png)
+
+<p class="figure-caption">RangeId 1 個で表示</p>
 
 FlexId は、軸ごとに違うズームレベルを持てる形で、Kasane の内部の保存単位です。`20/0|20/931389|19/206450` は、y 方向だけズームレベル 19（= ズームレベル 20 の 2 マス分）のマスを表します。
 
 ## 参考資料
 
-- 経済産業省・国土交通省・国土地理院・国立研究開発法人 新エネルギー・産業技術総合開発機構・独立行政法人 情報処理推進機構「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」2026 年 6 月 4 日（図 2-3、2-6、2-7、2-9、2-21、2-23 を引用）
+- 経済産業省・国土交通省・国土地理院・国立研究開発法人 新エネルギー・産業技術総合開発機構・独立行政法人 情報処理推進機構「[4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)」2026 年 6 月 4 日（図 2-3、2-6、2-21、2-23 を引用）
