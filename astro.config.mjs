@@ -27,7 +27,7 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
-			customCss: ['./src/styles/custom.css'],
+			customCss: ['@fontsource-variable/noto-sans-jp', './src/styles/custom.css'],
 			plugins: [lucode()],
 		}),
 	],

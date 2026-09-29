@@ -1,9 +1,23 @@
+/* 本文のフォントを Noto Sans JP にそろえる（コードは等幅フォントのまま） */
+:root {
+	--sl-font: 'Noto Sans JP Variable', sans-serif;
+}
+
+/* 大見出しに使う落ち着いた青（テーマは白黒のみなので、アクセントとして足す） */
+:root[data-theme='dark'] {
+	--heading-accent: #86a9d0;
+}
+:root,
+:root[data-theme='light'] {
+	--heading-accent: #2c5d8f;
+}
+
 /* サイドバーの大見出し（グループ名と、トップレベルの単独ページ）を目立たせて階層を分かりやすくする */
 .sidebar .sidebar-entries .entry-title,
 .sidebar sl-sidebar-state-persist > a.entry-link {
 	font-size: 1rem;
 	font-weight: 700;
-	color: var(--foreground);
+	color: var(--heading-accent);
 }
 
 .sidebar sl-sidebar-state-persist > a.entry-link .entry-link-inner {
@@ -35,4 +49,9 @@
 	margin-top: 0.25rem;
 	font-size: 0.8rem;
 	color: var(--muted-foreground);
+}
+
+/* 本文の見出し（h2・h3）にも大見出しと同じ青を使う。ページタイトル（h1）は白黒のまま */
+.sl-markdown-content :is(h2, h3) {
+	color: var(--heading-accent);
 }
