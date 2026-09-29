@@ -19,3 +19,9 @@ pnpm-debug.log*
 
 # macOS-specific files
 .DS_Store
+
+# internal planning notes (not published)
+plan/
+
+# reference copy of another repository
+docs.airbee.jp/
