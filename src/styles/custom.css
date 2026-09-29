@@ -1,36 +1,56 @@
-/* 大きな画面で本文を少し広く使う（Lucode テーマの既定は本文 40rem・全体 1600px） */
 :root {
 	--content-max-width: 54rem;
 	--container-max-width: 1800px;
 }
 
-/* 本文のフォントを Noto Sans JP にそろえる（コードは等幅フォントのまま） */
 :root {
 	--sl-font: 'Noto Sans JP Variable', sans-serif;
 }
 
-/* 大見出しに使う落ち着いた青（テーマは白黒のみなので、アクセントとして足す） */
 :root[data-theme='dark'] {
-	--heading-accent: #86a9d0;
+	--background: oklch(16.5% 0.012 265);
+	--gray-1: oklch(96.5% 0.004 265);
+	--gray-2: oklch(86% 0.008 265);
+	--gray-3: oklch(71% 0.012 265);
+	--gray-4: oklch(56% 0.015 265);
+	--gray-5: oklch(37% 0.018 265);
+	--gray-6: oklch(27% 0.018 265);
+	--gray-7: oklch(20.5% 0.015 265);
+	--foreground: var(--gray-1);
+	--brand: oklch(76% 0.11 258);
+	--brand-soft: oklch(30% 0.06 262);
+	--brand-contrast: oklch(18% 0.03 265);
 }
 :root,
 :root[data-theme='light'] {
-	--heading-accent: #2c5d8f;
+	--background: oklch(100% 0 0);
+	--gray-1: oklch(22% 0.02 265);
+	--gray-2: oklch(30% 0.02 265);
+	--gray-3: oklch(40% 0.02 265);
+	--gray-4: oklch(55% 0.018 265);
+	--gray-5: oklch(72% 0.014 265);
+	--gray-6: oklch(90% 0.008 265);
+	--gray-7: oklch(96.5% 0.005 265);
+	--foreground: oklch(18% 0.02 265);
+	--brand: oklch(48% 0.15 262);
+	--brand-soft: oklch(94.5% 0.03 262);
+	--brand-contrast: oklch(99% 0 0);
+}
+:root {
+	--sl-color-text-accent: var(--brand);
 }
 
-/* サイドバーの大見出し（グループ名と、トップレベルの単独ページ）を目立たせて階層を分かりやすくする */
 .sidebar .sidebar-entries .entry-title,
 .sidebar sl-sidebar-state-persist > a.entry-link {
-	font-size: 1rem;
+	font-size: 0.95rem;
 	font-weight: 700;
-	color: var(--heading-accent);
+	color: var(--foreground);
 }
 
 .sidebar sl-sidebar-state-persist > a.entry-link .entry-link-inner {
 	padding-block: calc(var(--spacing) * 1);
 }
 
-/* サイドバーのページ項目の文字を大きくする（テーマの既定は 0.8rem） */
 .sidebar .entry-link,
 .sidebar .entry-group-summary {
 	font-size: 0.9rem;
@@ -38,31 +58,75 @@
 	height: 2.125rem;
 }
 
-/* 左上のサイトタイトルを大きくする（テーマの既定はヘッダーの文字サイズのまま） */
+.sidebar .sidebar-entries .entry-link:not([aria-current='page']) {
+	color: var(--gray-3);
+}
+.sidebar sl-sidebar-state-persist > a.entry-link:not([aria-current='page']),
+.sidebar sl-sidebar-state-persist > a.entry-link:not([aria-current='page']) .entry-link-inner {
+	color: var(--foreground);
+}
+
+.sidebar .sidebar-entries .entry-link[aria-current='page'] .entry-link-inner {
+	background-color: var(--brand-soft);
+	color: var(--brand);
+	font-weight: 600;
+}
+
 .site-title .title-text {
 	font-size: 1.25rem;
 }
 
-/* 左上のサイトタイトルの左端を、サイドバーの文字の左端にそろえる（サイドバーは左に 2rem 余白がある） */
+.site-title .title-text::before {
+	content: '';
+	display: inline-block;
+	width: 0.7rem;
+	height: 0.7rem;
+	margin-right: 0.55rem;
+	border-radius: 0.2rem;
+	background: var(--brand);
+	box-shadow: 0.22rem 0.22rem 0 0 color-mix(in oklab, var(--brand) 45%, transparent);
+	vertical-align: 0.05em;
+}
+
 @media (min-width: 1024px) {
 	header .site-title {
 		margin-left: 2rem;
 	}
 }
 
-/* 図のキャプション（出典） */
+.sl-markdown-content a:not([class]) {
+	color: var(--brand);
+	text-decoration-color: color-mix(in oklab, var(--brand) 40%, transparent);
+}
+.sl-markdown-content a:not([class]):hover {
+	text-decoration-color: var(--brand);
+}
+
+.sl-markdown-content h1 {
+	font-weight: 700;
+}
+.sl-markdown-content h2 {
+	font-weight: 700;
+}
+.sl-markdown-content .sl-heading-wrapper.level-h2 {
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid var(--border);
+}
+.sl-markdown-content h3 {
+	font-weight: 600;
+}
+
+starlight-toc a[aria-current],
+mobile-starlight-toc a[aria-current] {
+	color: var(--brand);
+}
+
 .figure-caption {
 	margin-top: 0.25rem;
 	font-size: 0.8rem;
 	color: var(--muted-foreground);
 }
 
-/* 本文の見出し（h2・h3）にも大見出しと同じ青を使う。ページタイトル（h1）は白黒のまま */
-.sl-markdown-content :is(h2, h3) {
-	color: var(--heading-accent);
-}
-
-/* 表と図を横に並べて中央にそろえる（狭い画面では縦に並べる） */
 .side-by-side {
 	display: grid;
 	gap: 1.5rem;
@@ -87,12 +151,10 @@
 		flex-direction: column;
 		align-items: center;
 	}
-	/* 表（ヘッダーと 4 行）とほぼ同じ高さにする */
 	.side-figure-column .side-figure {
 		width: auto;
 		height: 12rem;
 	}
-	/* 行の少ない表（3 行）の横に置く図 */
 	.side-figure-column .side-figure.is-short {
 		height: 9.5rem;
 	}
@@ -101,12 +163,10 @@
 	}
 }
 
-/* キャプション内のリンクをキャプションと同じ大きさにする（テーマはリンクを大きめにしている） */
 .sl-markdown-content .figure-caption a {
 	font-size: inherit;
 }
 
-/* 画像 2 枚を同じ幅で横に並べる（狭い画面では縦に並べる） */
 .figure-pair {
 	display: grid;
 	gap: 1rem;
