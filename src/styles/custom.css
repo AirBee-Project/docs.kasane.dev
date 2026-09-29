@@ -1,0 +1,31 @@
+/* サイドバーの大見出し（グループ名と、トップレベルの単独ページ）を目立たせて階層を分かりやすくする */
+.sidebar .sidebar-entries .entry-title,
+.sidebar sl-sidebar-state-persist > a.entry-link {
+	font-size: 1rem;
+	font-weight: 700;
+	color: var(--foreground);
+}
+
+.sidebar sl-sidebar-state-persist > a.entry-link .entry-link-inner {
+	padding-block: calc(var(--spacing) * 1);
+}
+
+/* サイドバーのページ項目の文字を大きくする（テーマの既定は 0.8rem） */
+.sidebar .entry-link,
+.sidebar .entry-group-summary {
+	font-size: 0.9rem;
+	line-height: 1.3rem;
+	height: 2.125rem;
+}
+
+/* 左上のサイトタイトルを大きくする（テーマの既定はヘッダーの文字サイズのまま） */
+.site-title .title-text {
+	font-size: 1.25rem;
+}
+
+/* 左上のサイトタイトルの左端を、サイドバーの文字の左端にそろえる（サイドバーは左に 2rem 余白がある） */
+@media (min-width: 1024px) {
+	header .site-title {
+		margin-left: 2rem;
+	}
+}

@@ -27,6 +27,7 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: 'reference' } }],
 				},
 			],
+			customCss: ['./src/styles/custom.css'],
 			plugins: [lucode()],
 		}),
 	],
