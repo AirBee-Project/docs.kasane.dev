@@ -1,0 +1,45 @@
+---
+title: 準備
+description: チュートリアルを実行する環境を用意します。
+sidebar:
+  order: 0
+---
+
+import { Code } from '@astrojs/starlight/components';
+import kasaneTs from '../../../../examples/tester-project/kasane.ts?raw';
+
+チュートリアルでは、手元の PC でTypeScript のプログラムを動かし、運営のサーバーで動いている Kasane に接続します。
+
+プログラム一式は、このドキュメントのリポジトリの `examples/tester-project` にあります。Node.js 20.6 以上と Git が必要です。
+
+```sh
+git clone https://github.com/AirBee-Project/docs.kasane.dev.git
+cd docs.kasane.dev/examples/tester-project
+npm install
+cp .env.example .env
+```
+
+`.env` を開いて、お送りしたアカウント情報を書き込みます。
+
+```ini
+KASANE_URL=https://検証環境のURL
+KASANE_USER=ユーザー名
+KASANE_PASSWORD=パスワード
+KASANE_DB=自分用のデータベース名
+```
+
+次のコマンドで `OK` が 3 行出れば準備完了です。
+
+```sh
+npm run step step01-connect.ts
+```
+
+以降のステップも `npm run step <ファイル名>` で実行します。どのステップも、共通処理（ログイン、`OK` / `NG` の表示など）を下の `kasane.ts` から読み込んでいます。
+
+<Code code={kasaneTs} lang="ts" title="kasane.ts" />
+
+## 補足
+
+- クライアント（`@airbee-project/kasane-client`）は npm には公開しておらず、`package.json` で GitHub Releases の URL を指定しています。
+- 自分のプロジェクトで TypeScript の型チェックをするときは、`tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。v0.0.3 の型定義は `"NodeNext"` だと読み込めません。
+- `.env` にはパスワードが入るので、Issue などに貼らないでください。
