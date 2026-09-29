@@ -1,6 +1,5 @@
 ---
 title: Kasane の使い方
-description: データベースとテーブル、書き込み、検索、時空間ID、エラーの扱いをまとめています。
 sidebar:
   order: 2
 ---

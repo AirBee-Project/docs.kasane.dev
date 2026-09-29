@@ -1,6 +1,5 @@
 ---
 title: クエリの一覧
-description: クエリで使える演算の一覧です。
 sidebar:
   order: 3
 ---

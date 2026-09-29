@@ -1,6 +1,6 @@
 ---
 title: クライアント API
-description: TypeScript クライアント（@airbee-project/kasane-client v0.0.3）のメソッド一覧です。
+description: TypeScript クライアント（@airbee-project/kasane-client v0.0.3）のメソッド一覧
 sidebar:
   order: 4
 ---

@@ -1,6 +1,5 @@
 ---
 title: よくある質問
-description: 検証中によくある質問です。
 sidebar:
   order: 5
 ---
