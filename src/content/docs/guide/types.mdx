@@ -60,16 +60,25 @@ ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among 
 
 ## TypeScript での値の型
 
-`db.table<T>(名前)` の型引数 `T` は、書く値と読む値の両方に使われます。INT のテーブルでは書く値（`number`）と読む値（`bigint`）が違うので、v0.0.3 では型引数を付けずに使うのがおすすめです。
+`db.table<T>(名前)` の `<T>` で、そのテーブルの値の型を TypeScript に教えられます。`T` は、書く値と読んだ値の両方の型になります。
+
+`createTable` で決めた値の型はサーバーが守るもので、クライアントは TypeScript に自動では伝えません。`<T>` は、エディタと型チェックのための目印です。通信や実行には影響しないので、間違った型を指定しても、書き込んだ時点でサーバーに断られるだけです。
+
+`<T>` は省略できます。このドキュメントのほかの例は、値を表示するだけなので省略しています。読んだ値で計算するときは、次のように指定してください。
+
+INT のテーブルは、`<bigint>` を指定して、書くときも `80n` のように bigint で書いてください。読んだ値は必ず bigint なので、型と実際の値が一致します。
 
 ```ts
-const table = db.table("risk");       // 値の型は PrimitiveValue
-await table.insert(80, id);
-const results = await table.search(id).toArray();
-const value = results[0]?.value;       // string | number | bigint | boolean | null | undefined
+const risk = db.table<bigint>("risk");
+await risk.insert(80n, id);                       // 80 と書くと型エラー
+const results = await risk.search(id).toArray();
+const value = results[0]?.value;                  // bigint | undefined
+if (value !== undefined) console.log(value + 1n); // 81n
 ```
 
-読んだ値は `typeof value === "bigint"` などで型を確かめてから使います。
+`<number>` を指定すると、`insert(80, id)` は通りますが、読んだ値の型が `number` になってしまいます。実際の値は bigint なので、`value + 1` が型チェックを通るのに、実行すると `Cannot mix BigInt and other types` のエラーになります。
+
+TEXT と ENUM のテーブルは `<string>`、BOOLEAN のテーブルは `<boolean>` を指定できます。`<T>` を省略すると、値の型は `string | number | bigint | boolean | null | undefined` になります。
 
 ## まとめ
 
