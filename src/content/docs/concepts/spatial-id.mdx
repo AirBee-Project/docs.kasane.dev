@@ -1,5 +1,5 @@
 ---
-title: 時空間IDの基礎
+title: 時空間ID の基礎
 sidebar:
   order: 1
 ---
@@ -19,7 +19,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 このページの図の一部は、経済産業省・国土交通省・国土地理院・NEDO・IPA が公開している「4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）」から引用しています。詳しい仕様はガイドライン本文を参照してください。
 
-## 空間IDとは
+## 空間ID とは
 
 空間ID は、地球上の空間を格子状に区切り、1 つ 1 つのボクセルに以下のようなインデックスをつけた規格です。
 
@@ -42,7 +42,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 <img src={voxelFigure.src} alt="ズームレベル 2 の空間ID 2/0/3/1 と、その中にあるズームレベル 3 の空間ID 3/0/7/2 を、地球を区切った格子の上に示した図" class="side-figure" />
 
-<p class="figure-caption">図 2-3 空間IDのイメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
+<p class="figure-caption">図 2-3 空間ID のイメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
 </div>
 </div>
@@ -96,8 +96,8 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 各インデックスが取れる範囲は、`f` が −2<sup>z</sup> 〜 2<sup>z</sup> − 1、`x` と `y` が 0 〜 2<sup>z</sup> − 1 です。
 
-## 緯度・経度・標高から空間IDを計算する
-緯度、経度、標高から空間IDを計算するには、次の関数を使えます。`z` はズームレベル、`lng` は経度、`lat` は緯度、`h` は標高（メートル）です。
+## 緯度・経度・標高から空間ID を計算する
+緯度、経度、標高から空間ID を計算するには、次の関数を使えます。`z` はズームレベル、`lng` は経度、`lat` は緯度、`h` は標高（メートル）です。
 
 ```ts
 function toSpatialId(z: number, lng: number, lat: number, h: number) {
@@ -111,7 +111,7 @@ function toSpatialId(z: number, lng: number, lat: number, h: number) {
 
 toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 ```
-## 空間IDを地図で見る
+## 空間ID を地図で見る
 
 空間ID が指す場所は、地図ツール Senri で確かめられます。下に埋め込んでいるほか、[こちらから](https://map.airbee.jp/?debug)使うこともできます。
 

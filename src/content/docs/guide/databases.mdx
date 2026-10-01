@@ -66,7 +66,7 @@ await db.createTable("weather", "enum", 20, {
 データベースの作成: [permission_denied] Authentication error: Requires the global 'Manage' role or higher
 ```
 
-`info()` の `count` は、Kasane が内部で保存している単位の数です（[書き込む](/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
+`info()` の `count` は、内部の保存単位（FlexId）の数です（[書き込む](/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
 
 ## コピー・改名・削除
 

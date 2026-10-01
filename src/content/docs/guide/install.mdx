@@ -10,7 +10,7 @@ sidebar:
 - TypeScript の設定
 :::
 
-`@airbee-project/kasane-client` は、Kasane を TypeScript / JavaScript から使うためのクライアントライブラリです。Kasane のサーバーとのやり取りはすべてこのライブラリが引き受けるので、アプリからは関数を呼ぶだけで、テーブルの作成・書き込み・検索・クエリができます。
+`@airbee-project/kasane-client` は、Kasane を TypeScript から使うためのクライアントライブラリです。Kasane のサーバーとのやり取りはすべてこのライブラリが引き受けるので、アプリからは関数を呼ぶだけで、テーブルの作成・書き込み・検索・クエリができます。
 
 ## インストール
 
@@ -29,8 +29,6 @@ const client = await KasaneClient.connect("https://kasane.example.com", "alice",
 console.log(await client.listDatabases());
 ```
 
-ES Modules（`import`）と CommonJS（`require`）のどちらでも読み込めます。
-
 ## 動く環境
 
 | 環境 | 対応 |
@@ -41,7 +39,7 @@ ES Modules（`import`）と CommonJS（`require`）のどちらでも読み込�
 
 クライアントは **gRPC-Web** で Kasane と通信します。同じコードが Node.js でもブラウザでも動きます。
 
-ブラウザから Kasane に直接つなぐときは、Kasane のサーバー側で、そのサイトからのアクセス（CORS）が許可されている必要があります。また、ブラウザで動くコードに書いたパスワードは誰でも見られるので、読み取り専用のユーザーを使うなど、見られても困らないアカウントにしてください。
+ブラウザから Kasane に直接つなぐときは、Kasane のサーバー側で、そのサイトからのアクセス（CORS）が許可されている必要があります。また、ブラウザで動くコードに書いたパスワードは誰でも見られるので、読み取り専用のユーザーを使うなど、見られても困らないユーザーにしてください。
 
 ## TypeScript の設定
 

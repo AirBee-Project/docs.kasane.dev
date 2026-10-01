@@ -16,9 +16,9 @@ INT の値は `bigint` で返ります。`Number(value)` で普通の数値に�
 
 `count` は内部の保存単位の数で、書き込んだ ID の数とは違います（[書き込む](/guide/write/#まとめて書き込む)）。
 
-## 同じ場所に Insert してもエラーにならない
+## 同じ場所に `insert` してもエラーにならない
 
-v0.7 の Insert は上書きです。元の値を残したいときは Upsert を使います。
+Kasane v0.7 の `insert` は上書きです。元の値を残したいときは `upsert` を使います。
 
 ## `connect` が終わらない
 
