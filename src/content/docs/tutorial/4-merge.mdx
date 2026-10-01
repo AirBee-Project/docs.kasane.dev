@@ -1,0 +1,34 @@
+---
+title: Step 4：危険度を足し合わせる
+sidebar:
+  label: 4. 足し合わせる
+  order: 4
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import code from '../../../tutorial/steps/map/4-merge.ts?raw';
+
+建物の危険度（Step 2）と雨の強さ（Step 3）を足し合わせます。
+
+`merge` は、2 つのクエリの結果を重ね合わせます。同じボクセルに両方の値があるときの計算方法を `policy` で指定します。ここでは合計（`"sum"`）にします。雨が降っていない場所は、`defaultValue` の `0` として計算します。
+
+<StepCode code={code} title="4-merge.ts" />
+
+<TutorialRunner step="map/4-merge" />
+
+実行結果の例：
+
+```text
+0 時台  西: [ 60n ]  東: [ 80n ]
+1 時台  西: [ 110n ]  東: [ 110n ]
+```
+
+どちらの点も、ビルA から 2 ボクセル離れているので、建物の危険度は `50` です。そこに雨の強さが足されます。
+
+| | 0 時台 | 1 時台 |
+| --- | --- | --- |
+| 西 | 50 + 10 = 60 | 50 + 60 = 110 |
+| 東 | 50 + 30 = 80 | 50 + 60 = 110 |
+
+静的な建物のデータと、動的な雨のデータを、書き込んだあとで自由に組み合わせられるのがクエリの便利なところです。

@@ -1,7 +1,5 @@
 ---
-// チュートリアルのステップを、このページ上で実行するボタンと結果欄
 interface Props {
-	/** src/tutorial/steps/ のファイル名（拡張子なし）。例: "02-hello" */
 	step: string;
 }
 const { step } = Astro.props;
@@ -31,7 +29,7 @@ const ready = Boolean(
 <script>
 	import { isConfigured, runStep, type Line, type Step } from '../tutorial/runner';
 
-	const steps = import.meta.glob<{ default: Step }>('../tutorial/steps/*.ts');
+	const steps = import.meta.glob<{ default: Step }>('../tutorial/steps/**/*.ts');
 
 	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner[data-ready="true"]')) {
 		const button = root.querySelector<HTMLButtonElement>('.tutorial-run')!;
@@ -102,10 +100,6 @@ const ready = Boolean(
 		white-space: pre-wrap;
 		overflow-x: auto;
 	}
-	.tutorial-output :global(.line-ok) {
-		color: #3fb950;
-	}
-	.tutorial-output :global(.line-ng),
 	.tutorial-output :global(.line-error) {
 		color: #f85149;
 	}

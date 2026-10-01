@@ -1,14 +1,12 @@
 ---
-title: Kasane の使い方
+title: コードの早見表
 sidebar:
   order: 2
 ---
 
-## データの持ち方
+よく使う書き方を 1 ページにまとめています。それぞれの意味は「学ぶ」の各ページで説明しています。
 
-Kasane は「データベース → テーブル → 時空間ID と値」という構造です。テーブルは 1 種類の情報（建物、危険度、天気など）を入れる場所で、1 つのボクセルには 1 つの値しか入りません。
-
-テーブルを作るときに、値の型と最大ズームレベルを決めます。この 2 つはあとから変えられません。
+## テーブル
 
 ```ts
 await db.createTable("risk", "int", 25);
@@ -80,6 +78,6 @@ await weather.search(place.withTime(Interval.DAY, day)).toArray(); // その日�
 | `already_exists` | 同じ名前のテーブルがある |
 | `permission_denied` | 権限が無い |
 | `unauthenticated` | ユーザー名・パスワードの誤り |
-| `internal` | サーバー内部のエラー。不具合の可能性があるので報告をお願いします |
+| `internal` | サーバー内部のエラー。Kasane の不具合の可能性があります |
 
 `isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。

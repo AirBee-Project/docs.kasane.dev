@@ -1,0 +1,60 @@
+---
+title: インストール
+sidebar:
+  order: 1
+---
+
+:::note[このページで学ぶこと]
+- kasane-client のインストール方法
+- 動く環境と、通信のしくみ
+- TypeScript の設定
+:::
+
+`@airbee-project/kasane-client` は、Kasane を TypeScript / JavaScript から使うためのクライアントライブラリです。Kasane のサーバーとのやり取りはすべてこのライブラリが引き受けるので、アプリからは関数を呼ぶだけで、テーブルの作成・書き込み・検索・クエリができます。
+
+## インストール
+
+```sh
+npm install @airbee-project/kasane-client
+```
+
+Bun なら `bun add @airbee-project/kasane-client`、pnpm なら `pnpm add @airbee-project/kasane-client` です。
+
+```ts
+import { KasaneClient, SingleId, RangeId, query } from "@airbee-project/kasane-client";
+```
+
+ES Modules（`import`）と CommonJS（`require`）のどちらでも読み込めます。
+
+## 動く環境
+
+| 環境 | 対応 |
+| --- | --- |
+| Node.js | 対応（標準の `fetch` を使うので、18 以上。22 で動作を確認） |
+| Bun | 対応 |
+| ブラウザ | 対応（このサイトの「実行する」ボタンも、ブラウザでクライアントを動かしています） |
+
+クライアントは **gRPC-Web** で Kasane と通信します。同じコードが Node.js でもブラウザでも動きます。
+
+ブラウザから Kasane に直接つなぐときは、Kasane のサーバー側で、そのサイトからのアクセス（CORS）が許可されている必要があります。また、ブラウザで動くコードに書いたパスワードは誰でも見られるので、読み取り専用のユーザーを使うなど、見られても困らないアカウントにしてください。
+
+## TypeScript の設定
+
+型定義はパッケージに含まれています。`tsconfig.json` の `moduleResolution` は `"Bundler"` にしてください。v0.0.3 の型定義は、`"NodeNext"` だと読み込めません。
+
+```json
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "strict": true
+  }
+}
+```
+
+ほかの注意点は [TypeScript で使う](/guide/typescript/) にまとめています。
+
+## 次に読むもの
+
+- [接続と認証](/guide/connect/)：サーバーにつないでログインする

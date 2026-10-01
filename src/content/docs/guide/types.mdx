@@ -1,0 +1,66 @@
+---
+title: 値の型と制約
+sidebar:
+  order: 7
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/types.ts?raw';
+
+:::note[このページで学ぶこと]
+- 5 つの値の型と、JavaScript の値の対応
+- 制約で値の範囲や選択肢を決める方法
+:::
+
+## 値の型
+
+テーブルの値の型は、作るときに決めます（[データベースとテーブル](/guide/databases/)）。書くときと読むときの JavaScript の値は次のとおりです。
+
+| 型 | 書く値 | 読んだ値 |
+| --- | --- | --- |
+| `"text"` | `string` | `string` |
+| `"int"` | `number` または `bigint` | `bigint`（`80n` など） |
+| `"boolean"` | `boolean` | `boolean` |
+| `"enum"` | 選択肢の `string` | `string` |
+| `"presence"` | `null` | `null` |
+
+- INT の値は `bigint` で返ります。普通の数値にしたいときは `Number(value)` で変換します。
+- 小数の型はありません。INT に `3.9` を渡すと、クライアントで `3` に切り捨てられます。小数を扱うときは、10 倍や 100 倍した整数にします。
+- PRESENCE は「そこに何かがある」ことだけを記録する型です。値は `null` です。
+
+## 制約
+
+`createTable` の `constraints` で、書き込める値を制限できます。制約に違反する値や、型に合わない値を書くと、`[invalid_argument]` のエラーになります。
+
+| 型 | 書き方 |
+| --- | --- |
+| INT | `{ kind: { case: "int", value: { min: 0n, max: 100n } } }` |
+| TEXT | `{ kind: { case: "text", value: { minLength: 1n, maxLength: 20n } } }` |
+| ENUM | `{ kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } }` |
+
+数値は `bigint` で書きます。v0.0.3 では、制約の型がサーバーの API の型そのままなので、`as never` を付けないと型エラーになります（[TypeScript で使う](/guide/typescript/)）。
+
+<StepCode code={c0} title="types.ts" />
+
+<TutorialRunner step="guide/types" />
+
+実行結果の例：
+
+```text
+TEXT: 東京駅
+TEXT に数値: [invalid_argument] Value type mismatch: expected String, got Int
+BOOLEAN: true
+PRESENCE: null
+INT: 80n
+INT に 150: [invalid_argument] Constraint violation: Value 150 is greater than maximum 100
+ENUM: 晴れ
+ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among allowed choices: ["晴れ", "曇り", "雨"]
+```
+
+## まとめ
+
+- 型は text・int・boolean・enum・presence の 5 つ。INT は `bigint` で返る
+- 制約を付けると、範囲外の値や選択肢に無い値を防げる
+
+関連する API：[TableDataType](/api/type-aliases/tabledatatype/)、[PrimitiveValue](/api/type-aliases/primitivevalue/)

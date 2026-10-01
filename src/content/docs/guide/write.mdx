@@ -1,0 +1,95 @@
+---
+title: 書き込む
+sidebar:
+  order: 5
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/write-modes.ts?raw';
+import c1 from '../../../tutorial/steps/guide/bulk-write.ts?raw';
+import c2 from '../../../tutorial/steps/guide/zoom.ts?raw';
+
+:::note[このページで学ぶこと]
+- `insert`・`upsert`・`remove` の違い
+- たくさんのボクセルをまとめて書く方法
+- テーブルより細かい ID の扱い（`ZoomLevelPolicy`）
+:::
+
+## 3 つの書き込みメソッド
+
+| メソッド | 動き |
+| --- | --- |
+| `table.insert(値, ID)` | 空いていれば書く。値が入っていれば上書きする |
+| `table.upsert(値, ID)` | 空いている部分にだけ書く。入っている値はそのまま |
+| `table.remove(ID)` | 指定した部分を消す |
+
+どれも `Promise<void>` を返します。ID には `SingleId`・`RangeId`・`FlexId` か、その配列を渡せます。
+
+<StepCode code={c0} title="write-modes.ts" />
+
+<TutorialRunner step="guide/write-modes" />
+
+実行結果の例：
+
+```text
+Insert 後: [ '20/0/931389/412900 => 7' ]
+Upsert 後: [ '20/0/931389/412900 => 7', '20/0/931390/412900 => 100' ]
+Remove 後: [ '20/0/931390/412900 => 100' ]
+```
+
+Upsert に `a` と `b` の範囲を渡しても、値が入っている `a` はそのままで、空いていた `b` にだけ書かれます。
+
+:::caution
+v0.0.3 のクライアントの説明（JSDoc）には「`insert` は既存データと重複がある場合はエラー」と書かれていますが、Kasane v0.7 の実際の動きは上書きです。
+:::
+
+## まとめて書き込む
+
+1 回の呼び出しで書ける値は 1 つです。同じ値を書くボクセルは、ID の配列にするか、隣り合うボクセルを `RangeId` 1 つにまとめて、1 回で送ると速くなります。値が違うデータは、値ごとにまとめて送ります。
+
+<StepCode code={c1} title="bulk-write.ts" />
+
+<TutorialRunner step="guide/bulk-write" />
+
+実行結果の例：
+
+```text
+値 2: 100 ボクセル
+値 1: 100 ボクセル
+count: 10n
+```
+
+`info()` の `count` は、書き込んだボクセルの数ではなく、Kasane が内部で保存している単位（FlexId）の数です。隣り合うボクセルはまとめて保存されるので、200 ボクセルが 10 になっています。
+
+## テーブルより細かい ID
+
+テーブルの最大ズームレベルより細かい ID は、そのままでは書き込めません。3 つ目の引数（`ZoomLevelPolicy`）で扱いを選べます。`search` と `remove` でも同じように指定できます。
+
+| 指定 | 動き |
+| --- | --- |
+| `"error"`（省略時） | エラーにする |
+| `"ignore"` | その ID を無視する |
+| `"normalize"` | 最大ズームレベルの親のボクセルに丸める |
+
+<StepCode code={c2} title="zoom.ts" />
+
+<TutorialRunner step="guide/zoom" />
+
+実行結果の例：
+
+```text
+error: [invalid_argument] Zoom level policy violation: expected max 20, got 22
+ignore: [  ]
+normalize: [ '20/0/931389/412900 => 1' ]
+```
+
+`"normalize"` は親のボクセルに丸めるので、元の ID より広い範囲に値が入ります。
+
+## まとめ
+
+- `insert` は上書き、`upsert` は空いている部分だけ、`remove` は削除
+- 同じ値はまとめて 1 回で送る。隣り合うボクセルは `RangeId` にまとめる
+- 細かすぎる ID は `"error"`・`"ignore"`・`"normalize"` で扱いを選ぶ
+
+関連する API：[TableHandle](/api/classes/tablehandle/)、[ZoomLevelPolicy](/api/type-aliases/zoomlevelpolicy/)

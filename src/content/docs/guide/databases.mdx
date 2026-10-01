@@ -1,0 +1,100 @@
+---
+title: データベースとテーブル
+sidebar:
+  order: 3
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/databases.ts?raw';
+import c1 from '../../../tutorial/steps/guide/manage.ts?raw';
+
+:::note[このページで学ぶこと]
+- `DatabaseHandle` と `TableHandle` の使い方
+- テーブルの作成と、そのオプション
+- テーブルのコピー・改名・削除
+:::
+
+データベースとテーブルの関係は、背景知識の [Kasane のデータの持ち方](/concepts/data-model/)で説明しています。
+
+## ハンドル
+
+クライアントでは、データベースやテーブルを「ハンドル」で操作します。ハンドルは名前を覚えているだけのオブジェクトで、作るだけでは通信しません。
+
+```ts
+const db = client.database("city");       // DatabaseHandle
+const buildings = db.table("buildings");  // TableHandle
+```
+
+| ハンドル | 主なメソッド |
+| --- | --- |
+| `DatabaseHandle` | `createTable`、`listTables`、`table`、`info`、`update` |
+| `TableHandle` | `insert`、`upsert`、`remove`、`search`、`info`、`copy`、`delete` |
+
+## テーブルを作る
+
+`db.createTable(名前, 値の型, 最大ズームレベル, オプション)` で作ります。
+
+```ts
+await db.createTable("weather", "enum", 20, {
+  isTemporal: true,
+  description: "1 時間ごとの天気",
+  constraints: { kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } } as never,
+});
+```
+
+| 引数・オプション | 内容 |
+| --- | --- |
+| 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/guide/types/)） |
+| 最大ズームレベル | 書き込める ID の細かさの上限 |
+| `isTemporal` | `true` にすると時空間ID を書ける（[時空間ID を使う](/guide/temporal/)） |
+| `constraints` | 値の範囲や選択肢 |
+| `description` | テーブルの説明文 |
+
+値の型・最大ズームレベル・`isTemporal` は、あとから変えられません。同じ名前のテーブルがすでにあると、`[already_exists]` のエラーになります。
+
+<StepCode code={c0} title="databases.ts" />
+
+<TutorialRunner step="guide/databases" />
+
+実行結果の例：
+
+```text
+データベース: [ 'tutorial' ]
+テーブル: [ 'shops' ]
+最大ズームレベル: 25  時間を扱うか: false
+データベースの作成: [permission_denied] Authentication error: Requires the global 'Manage' role or higher
+```
+
+`info()` の `count` は、Kasane が内部で保存している単位の数です（[書き込む](/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
+
+## コピー・改名・削除
+
+| 操作 | 書き方 |
+| --- | --- |
+| コピー | `table.copy(新しい名前)`。別のデータベースへは `table.copy(新しい名前, データベース名)` |
+| 改名 | `client.tableClient.update({ dbName, tableName, newName })` |
+| 削除 | `table.delete()` |
+
+<StepCode code={c1} title="manage.ts" />
+
+<TutorialRunner step="guide/manage" />
+
+実行結果の例：
+
+```text
+コピー後: [ 'backup', 'original' ]
+改名後: [ 'archive', 'original' ]
+削除後: [ 'original' ]
+ほかのデータベース: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)
+```
+
+テーブルの改名や説明文の変更には、v0.0.3 のクライアントに専用のメソッドがありません。`client.tableClient.update` で、サーバーの API を直接呼びます。
+
+## まとめ
+
+- データベースは `client.database()`、テーブルは `db.table()` でハンドルを取る
+- `db.createTable()` の値の型・最大ズームレベル・`isTemporal` はあとから変えられない
+- コピーは `copy`、削除は `delete`、改名は `client.tableClient.update`
+
+関連する API：[DatabaseHandle](/api/classes/databasehandle/)、[TableHandle](/api/classes/tablehandle/)

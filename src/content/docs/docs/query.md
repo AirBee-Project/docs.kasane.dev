@@ -7,7 +7,7 @@ sidebar:
 クエリは `query.source(データベース名, テーブル名)` から始めて、演算をつないで組み立てます。`client.query(クエリ, 取り出す範囲)` で実行すると、サーバー側で計算されて結果が返ります。参照するテーブルすべてに読み取り権限が必要です。
 
 ```ts
-const q = query.source("tester_alice", "risk").filter({ min: 50 }).zoomOut(20, "max");
+const q = query.source("city", "risk").filter({ min: 50 }).zoomOut(20, "max");
 const results = await client.query(q, area, { format: "singleId" }).toArray();
 ```
 

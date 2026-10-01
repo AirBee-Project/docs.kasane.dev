@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
 import lucode from 'lucode-starlight';
+import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
 
 export default defineConfig({
 	site: 'https://docs.kasane.dev',
@@ -10,7 +11,7 @@ export default defineConfig({
 		mermaid(),
 		starlight({
 			title: 'Kasane Docs',
-			description: '時空間IDデータベース Kasane の外部検証の案内',
+			description: '時空間IDデータベース Kasane のドキュメント',
 			defaultLocale: 'root',
 			locales: {
 				root: { label: '日本語', lang: 'ja' },
@@ -22,12 +23,30 @@ export default defineConfig({
 			lastUpdated: true,
 			sidebar: [
 				{ label: 'はじめに', slug: 'index' },
+				{ label: 'クイックスタート', slug: 'quickstart' },
 				{ label: 'チュートリアル', items: [{ autogenerate: { directory: 'tutorial' } }] },
-				{ label: '自分のデータを使う', slug: 'explore' },
-				{ label: '資料', items: [{ autogenerate: { directory: 'docs' } }] },
+				{ label: 'ガイド', items: [{ autogenerate: { directory: 'guide' } }] },
+				{ label: '背景知識', items: [{ autogenerate: { directory: 'concepts' } }] },
+				{ label: 'リファレンス', items: [{ autogenerate: { directory: 'docs' } }] },
+				typeDocSidebarGroup,
 			],
 			customCss: ['@fontsource-variable/noto-sans-jp', './src/styles/custom.css'],
-			plugins: [lucode()],
+			plugins: [
+				lucode(),
+				starlightTypeDoc({
+					entryPoints: ['node_modules/@airbee-project/kasane-client/dist/index.d.ts'],
+					tsconfig: './tsconfig.typedoc.json',
+					output: 'api',
+					sidebar: { label: 'API リファレンス', collapsed: true },
+					typeDoc: {
+						excludeInternal: true,
+						excludePrivate: true,
+						disableSources: true,
+						lang: 'ja',
+						parametersFormat: 'table',
+					},
+				}),
+			],
 		}),
 	],
 });

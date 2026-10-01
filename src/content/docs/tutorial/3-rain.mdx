@@ -1,0 +1,30 @@
+---
+title: Step 3：雨を書き込む
+sidebar:
+  label: 3. 雨を書き込む
+  order: 3
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import code from '../../../tutorial/steps/map/3-rain.ts?raw';
+
+次は、時間とともに変わる雨のデータです。
+
+時間ごとに違う値を持たせるには、テーブルを作るときに `isTemporal: true` を指定します。書き込む ID には `.withTime(時間間隔, 時間インデックス)` で時間を付けます。これを**時空間ID** と呼びます（[時空間IDの基礎](/concepts/spatial-id/#時空間id)）。
+
+- 時間間隔 `3600` は「1 時間単位」という意味です。
+- 時間インデックスは、1970 年 1 月 1 日 0 時（UTC）から数えて何時間目かを表す番号です。ここでは 2025 年 1 月 1 日 0 時（UTC）の 0 時台と 1 時台を使います。
+
+<StepCode code={code} title="3-rain.ts" />
+
+<TutorialRunner step="map/3-rain" />
+
+実行結果の例：
+
+```text
+0 時台  西: [ 10n ]  東: [ 30n ]
+1 時台  西: [ 60n ]  東: [ 60n ]
+```
+
+同じ場所でも、時間を変えて検索すると違う値が返ります。0 時台は、町全体に書いた小雨（`10`）のうち、東側だけを雨（`30`）で上書きしています。Insert は、値が入っている場所に書くと上書きします（[書き込む](/guide/write/)）。

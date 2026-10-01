@@ -1,0 +1,12 @@
+---
+import { Code } from '@astrojs/starlight/components';
+
+interface Props {
+	code: string;
+	title: string;
+}
+const { code, title } = Astro.props;
+const shown = code.replace(/^import type \{ Tutorial \} from "(\.\.\/)+runner";\n/m, '').replace(/\}: Tutorial\)/, '})');
+---
+
+<Code code={shown} lang="ts" title={title} />

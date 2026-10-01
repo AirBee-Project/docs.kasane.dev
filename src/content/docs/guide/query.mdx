@@ -1,0 +1,93 @@
+---
+title: クエリを組み立てる
+sidebar:
+  order: 9
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/query.ts?raw';
+
+:::note[このページで学ぶこと]
+- `query` でクエリを組み立てる方法
+- `client.query` での実行と、そのオプション
+- `policy` の意味
+:::
+
+## クエリとは
+
+クエリは、テーブルに対する計算（絞り込み、重ね合わせ、移動など）を組み立てて、サーバー側で実行する機能です。結果を返すだけで、テーブルの中身は変わりません。
+
+```ts
+import { query } from "@airbee-project/kasane-client";
+
+const q = query
+  .source("city", "risk")            // データベース city のテーブル risk から始める
+  .filter({ min: 50 })               // 50 以上だけ残す
+  .zoomOut(20, "max");               // ズームレベル 20 にまとめる（重なったら最大値）
+
+const results = await client.query(q, area, { format: "singleId" }).toArray();
+```
+
+- `query.source(データベース名, テーブル名)` から始めて、演算をメソッドでつなぎます。演算のメソッドは、新しい `QueryBuilder` を返します。
+- `client.query(クエリ, 取り出す範囲, オプション)` で実行します。戻り値は `table.search` と同じ `ResultStream` です（[検索と結果の受け取り方](/guide/search/)）。
+- オプションの `format` は結果の ID の形、`valueType` は `mapValues` などで値の型が変わるときの結果の型です。
+- 参照するすべてのテーブルに read の権限が必要です。
+
+## 試してみる
+
+小さなテーブルを 2 つ作って、よく使う演算を試します。
+
+```text
+          x →   X   X+1  X+2  X+3  X+4  X+5  X+6  X+7
+risk   Y+1:    80   80   80   80   30   30
+       Y  :    80   80   80   80   30   30
+wind   Y  :              5    5    5    5    5    5
+```
+
+<StepCode code={c0} title="query.ts" />
+
+<TutorialRunner step="guide/query" />
+
+実行結果の例：
+
+```text
+filter（50 以上）: 80: 8
+intersection: 30: 2、80: 2
+difference: 30: 2、80: 6
+merge（合計）: 5: 2、30: 2、35: 2、80: 6、85: 2
+add（+1）: 31: 4、81: 8
+shiftX（10 右へ）: 5: 6
+```
+
+| 演算 | 結果 |
+| --- | --- |
+| `filter({ min: 50 })` | 80 のボクセル 8 個だけが残る |
+| `intersection(wind)` | 両方にある 4 ボクセル（値は risk のもの） |
+| `difference(wind)` | risk から wind と重なる 4 ボクセルを除いた 8 ボクセル |
+| `merge(wind, { policy: "sum", defaultValue: 0 })` | 重なる部分は合計（85・35）、片方だけの部分はそのまま |
+| `add(1)` | すべての値に 1 を足す |
+| `shiftX(22, 10)` | 東へ 10 ボクセル移動する |
+
+## policy
+
+`zoomOut`・`merge`・`extrude`・`falloff` は、同じボクセルに値が重なったときの決め方（`policy`）を取ります。型の上では省略できますが、省略するとサーバーが `policy must be specified` のエラーを返すので、必ず指定してください。`merge` の `defaultValue` も指定が必要です。
+
+| policy | 左 80・右 30 のとき |
+| --- | --- |
+| `"overwrite"` | 30 |
+| `"keepExisting"` | 80 |
+| `"sum"` | 110 |
+| `"max"` / `"min"` | 80 / 30 |
+| `"average"` | 55 |
+| `"difference"` | 50 |
+
+すべての演算は[クエリの一覧](/docs/query/)にまとめています。チュートリアルの[町の危険度マップ](/tutorial/)でも、`falloff`・`merge`・`filter` を組み合わせて使っています。
+
+## まとめ
+
+- `query.source()` から演算をつないで組み立て、`client.query()` で実行する
+- 結果は `ResultStream` で、テーブルは変わらない
+- `policy` を取る演算では、必ず指定する
+
+関連する API：[query](/api/variables/query/)、[QueryBuilder](/api/classes/querybuilder/)、[KasaneClient.query](/api/classes/kasaneclient/#query)

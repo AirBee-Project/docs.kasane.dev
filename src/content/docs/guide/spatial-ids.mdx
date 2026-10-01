@@ -1,0 +1,69 @@
+---
+title: 空間ID を作る
+sidebar:
+  order: 4
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/ids.ts?raw';
+
+:::note[このページで学ぶこと]
+- `SingleId`・`RangeId`・`FlexId` の作り方
+- 文字列との変換
+- 時間の付け方
+:::
+
+空間ID そのものの意味は、背景知識の[時空間IDの基礎](/concepts/spatial-id/)で説明しています。
+
+## 3 つのクラス
+
+| クラス | 表すもの | 作り方 |
+| --- | --- | --- |
+| `SingleId` | 1 ボクセル | `SingleId.create(z, f, x, y)` |
+| `RangeId` | 直方体に並んだボクセル | `RangeId.create(z, f, x, y)`。各軸に `[最小, 最大]` か 1 つの値を渡す |
+| `FlexId` | 軸ごとにズームレベルが違うボクセル | `FlexId.create(fのズーム, f, xのズーム, x, yのズーム, y)` |
+
+書き込み・検索・クエリには、どのクラスの ID を渡してもかまいません。ID の配列も渡せます。ふだんは `SingleId` と `RangeId` を使い、`FlexId` は検索結果の形として出てくることがあります。
+
+<StepCode code={c0} title="ids.ts" />
+
+<TutorialRunner step="guide/ids" />
+
+実行結果の例：
+
+```text
+SingleId: 20/0/931389/412900
+parse: 20/0/931389/412900
+RangeId: 20/0/931389:931390/412900:412901
+中のボクセル: [ '20/0/931389/412900', '20/0/931389/412901', '20/0/931390/412900', '20/0/931390/412901' ]
+FlexId: 20/0|20/931389|19/206450
+時間つき: 20/0/931389/412900_3600/482136  全時間か: false
+```
+
+## 文字列との変換
+
+- `id.toString()` で `"20/0/931389/412900"` の形の文字列になります。テンプレート文字列（`` `${id}` ``）でも同じです。
+- `SingleId.parse(文字列)`、`RangeId.parse(文字列)`、`FlexId.parse(文字列)` で文字列から作れます。
+- 書式が間違っていたり、値が範囲外だったりすると、`SpatialIdError` が投げられます（[エラー処理](/guide/errors/)）。
+
+## 時間を付ける
+
+`id.withTime(時間間隔, 時間インデックス)` で、時間つきの ID（時空間ID）になります。時間間隔は秒数か、`Interval.SECOND`・`Interval.MINUTE`・`Interval.HOUR`・`Interval.DAY` を渡します。`RangeId` なら、時間インデックスにも `[最小, 最大]` を渡せます。詳しくは [時空間ID を使う](/guide/temporal/) で説明しています。
+
+## そのほかの便利なメソッド
+
+| メソッド | 内容 |
+| --- | --- |
+| `singleId.toRangeId()` | `RangeId` に変換する |
+| `rangeId.toSingleIds()` | 中のボクセルを 1 つずつ `SingleId` で取り出す |
+| `id.isWholeTime()` | 時間を持たない（全時間の）ID か |
+| `SingleId.createUnchecked(...)` | 範囲の検証をせずに作る。速いが、不正な値を渡したときの動きは決まっていない |
+
+## まとめ
+
+- 1 ボクセルは `SingleId`、直方体は `RangeId` で作る
+- `toString()` と `parse()` で文字列と変換できる
+- `withTime()` で時間を付ける
+
+関連する API：[SingleId](/api/classes/singleid/)、[RangeId](/api/classes/rangeid/)、[FlexId](/api/classes/flexid/)、[Interval](/api/classes/interval/)

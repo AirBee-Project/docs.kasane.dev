@@ -1,0 +1,84 @@
+---
+title: 検索と結果の受け取り方
+sidebar:
+  order: 6
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/formats.ts?raw';
+import c1 from '../../../tutorial/steps/guide/stream.ts?raw';
+
+:::note[このページで学ぶこと]
+- `table.search` のオプション
+- 検索結果（`ResultStream`）の 3 つの受け取り方
+- 結果の ID の形（`format`）
+:::
+
+## 検索する
+
+`table.search(ID, オプション)` で、指定した範囲と重なるデータを検索します。範囲の外の部分は返りません。
+
+| オプション | 内容 |
+| --- | --- |
+| `format` | 結果の ID の形。`"singleId"`・`"rangeId"`（省略時）・`"flexId"` |
+| `policy` | テーブルより細かい ID の扱い（[書き込む](/guide/write/#テーブルより細かい-id)） |
+
+戻り値は `ResultStream` です。1 件は `{ id, value }` の形（`ResultItem`）で、`id` は空間ID のクラス、`value` はテーブルの型の値です。
+
+## 結果の受け取り方
+
+| 書き方 | 向いている場面 |
+| --- | --- |
+| `for await (const { id, value } of results)` | 結果が多いとき。届いた順に 1 件ずつ処理でき、メモリを使いすぎない |
+| `await results.toArray()` | 結果が少なく、配列でまとめて扱いたいとき |
+| `await results.toDictionaryMap()` | 値ごとに ID をまとめたいとき。`Map<値, 空間ID[]>` になる |
+
+<StepCode code={c1} title="stream.ts" />
+
+<TutorialRunner step="guide/stream" />
+
+実行結果の例：
+
+```text
+for await: 20/0/931392:931393/412900 => 2
+for await: 20/0/931389/412900 => 1
+for await: 20/0/931390:931391/412900 => 1
+toArray: 5 件
+toDictionaryMap: 2 => [ '20/0/931392/412900', '20/0/931393/412900' ]
+toDictionaryMap: 1 => [ '20/0/931389/412900', '20/0/931390/412900', '20/0/931391/412900' ]
+1 回目: 3 件
+2 回目: 0 件
+```
+
+`ResultStream` は 1 回しか読めません。2 回目は空になるので、何度も使う結果は `toArray()` で配列にしておきます。
+
+## 結果の ID の形
+
+同じデータでも、`format` で結果の ID の形が変わります。
+
+<StepCode code={c0} title="formats.ts" />
+
+<TutorialRunner step="guide/formats" />
+
+実行結果の例：
+
+```text
+singleId [ '20/0/931389/412900', '20/0/931389/412901', '20/0/931390/412900', '20/0/931390/412901' ]
+rangeId [ '20/0/931389/412900:412901', '20/0/931390/412900:412901' ]
+flexId [ '20/0|20/931389|19/206450', '20/0|20/931390|19/206450' ]
+```
+
+- `singleId`：1 ボクセルずつ返ります。数えたり、1 つずつ処理したりするときに使います。
+- `rangeId`：まとめられる部分をまとめて返ります。件数が少なくなります。
+- `flexId`：Kasane が内部で保存している形のまま返ります。
+
+広い範囲を `singleId` で受け取ると、件数がとても多くなることがあります。
+
+## まとめ
+
+- `table.search(ID, { format })` で検索する。範囲と重なる部分だけが返る
+- 結果は `for await`・`toArray()`・`toDictionaryMap()` で受け取る。1 回しか読めない
+- `format` で結果の ID の形を選ぶ
+
+関連する API：[TableHandle.search](/api/classes/tablehandle/#search)、[ResultStream](/api/classes/resultstream/)、[ResultItem](/api/interfaces/resultitem/)

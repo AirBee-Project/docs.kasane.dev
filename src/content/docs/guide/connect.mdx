@@ -1,0 +1,83 @@
+---
+title: 接続と認証
+sidebar:
+  order: 2
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/connect.ts?raw';
+
+:::note[このページで学ぶこと]
+- `KasaneClient.connect` でサーバーにつなぐ
+- 複数のサーバーを指定したときの動き
+- トークンの自動更新
+- データベースのハンドルを取る
+:::
+
+## 接続する
+
+`KasaneClient.connect(サーバーのURL, ユーザー名, パスワード)` で、サーバーに接続してログインします。戻り値の `KasaneClient` を、アプリの中で使い回します。
+
+```ts
+import { KasaneClient } from "@airbee-project/kasane-client";
+
+const client = await KasaneClient.connect("https://kasane.example.com", "alice", "alice-pass");
+```
+
+ユーザー名やパスワードが違うと、`[unauthenticated]` のエラーになります（[エラー処理](/guide/errors/)）。
+
+パスワードをコードに直接書かず、環境変数などから読み込むようにしてください。
+
+```ts
+const client = await KasaneClient.connect(process.env.KASANE_URL!, process.env.KASANE_USER!, process.env.KASANE_PASSWORD!);
+```
+
+## 複数のサーバーを指定する
+
+URL を配列で渡すと、最初のサーバーにつながらないとき、次のサーバーに自動で切り替えます。
+
+```ts
+const client = await KasaneClient.connect(
+  ["https://kasane-1.example.com", "https://kasane-2.example.com"],
+  "alice",
+  "alice-pass",
+);
+```
+
+切り替わるのは、サーバーにつながらないとき（`unavailable` や通信の失敗）だけです。権限が無いなど、サーバーが返したエラーでは切り替わりません。
+
+## トークンの自動更新
+
+ログインすると、クライアントはサーバーからトークン（JWT）を受け取り、以降のリクエストに自動で付けます。トークンの期限が切れると、クライアントが同じユーザー名とパスワードで自動的にログインし直すので、アプリ側で気にする必要はありません。
+
+`client.logout()` は、クライアントが持っているトークンを捨てます。v0.0.3 では、そのあとにリクエストを送ると自動でログインし直すので、完全にログアウトしたいときはクライアントそのものを使わないようにしてください。
+
+## データベースのハンドルを取る
+
+`client.database(名前)` で、データベースを操作するためのハンドル（`DatabaseHandle`）を取ります。ハンドルを作るだけでは通信しません。
+
+下のコードでは、見えるデータベースの一覧と、データベースの情報を取ります。このサイトでは、体験用のユーザーでログイン済みのクライアントが `client` に入っています。
+
+<StepCode code={c0} title="connect.ts" />
+
+<TutorialRunner step="guide/connect" />
+
+実行結果の例：
+
+```text
+データベース: [ 'tutorial' ]
+ハンドルの名前: tutorial
+情報: {"name":"tutorial"}
+```
+
+`listDatabases()` は、ログインしたユーザーが権限を持つデータベースだけを返します。
+
+## まとめ
+
+- `KasaneClient.connect(URL, ユーザー名, パスワード)` で接続し、クライアントを使い回す
+- URL を配列で渡すと、つながらないときに次のサーバーへ切り替わる
+- トークンの期限切れは、クライアントが自動で処理する
+- `client.database(名前)` でデータベースのハンドルを取る
+
+関連する API：[KasaneClient](/api/classes/kasaneclient/)

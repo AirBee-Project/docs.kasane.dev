@@ -1,0 +1,68 @@
+---
+title: エラー処理
+sidebar:
+  order: 10
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/guide/errors.ts?raw';
+
+:::note[このページで学ぶこと]
+- サーバーから返るエラーと、その見分け方
+- 空間ID の値が不正なときのエラー
+:::
+
+## 2 種類のエラー
+
+| エラー | いつ起きるか | 見分け方 |
+| --- | --- | --- |
+| サーバーのエラー（`ConnectError`） | サーバーがリクエストを断ったとき。権限が無い、テーブルが無い、型が違うなど | `isKasaneError(e)` |
+| `SpatialIdError` | 空間ID を作るときに、値が範囲外だったり書式が違ったりしたとき。通信する前にクライアントが投げる | `e instanceof SpatialIdError` |
+
+<StepCode code={c0} title="errors.ts" />
+
+<TutorialRunner step="guide/errors" />
+
+実行結果の例：
+
+```text
+無いテーブル: [not_found] Table 'no_such_table' not found  isNotFoundError: true
+権限が無い: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)  isPermissionDeniedError: true
+範囲外の x: X coordinate '1048576' is out of range for ZoomLevel '20'  kind: XOutOfRange
+書式の誤り: Failed to parse SingleId from '20/0/931389'  kind: ParseSpatialIdFormat
+```
+
+## サーバーのエラー
+
+`e.message` の先頭の `[ ]` に、エラーの種類が入っています。
+
+| 種類 | よくある原因 | 判定する関数 |
+| --- | --- | --- |
+| `invalid_argument` | 型違い、制約違反、ズームレベルの上限超え、使えない時間間隔、`policy` の指定漏れ | — |
+| `not_found` | テーブルが無い | `isNotFoundError(e)` |
+| `already_exists` | 同じ名前のテーブルがある | `isAlreadyExistsError(e)` |
+| `permission_denied` | 権限が無い | `isPermissionDeniedError(e)` |
+| `unauthenticated` | ユーザー名・パスワードの誤り | `isUnauthenticatedError(e)` |
+| `unavailable` | サーバーにつながらない | — |
+| `internal` | サーバー内部のエラー。Kasane の不具合の可能性がある | — |
+
+`isKasaneError(e)` は TypeScript の型ガードなので、`if (isKasaneError(e))` の中では `e.message` などをそのまま使えます。
+
+## SpatialIdError
+
+`e.info.kind` に、何が不正だったかが入っています。
+
+| kind | 内容 |
+| --- | --- |
+| `ZOutOfRange` | ズームレベルが範囲外 |
+| `FOutOfRange` / `XOutOfRange` / `YOutOfRange` | 各インデックスがそのズームレベルの範囲外 |
+| `TOutOfRange` / `TIntervalError` | 時間インデックスや時間間隔が不正 |
+| `ParseSpatialIdFormat` | `parse` に渡した文字列の書式が違う |
+
+## まとめ
+
+- サーバーのエラーは `isKasaneError(e)` で見分け、`e.message` の `[種類]` で原因が分かる
+- 空間ID の値の誤りは、通信する前に `SpatialIdError` になる
+
+関連する API：[isKasaneError](/api/functions/iskasaneerror/)、[SpatialIdError](/api/classes/spatialiderror/)

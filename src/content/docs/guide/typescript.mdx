@@ -1,0 +1,63 @@
+---
+title: TypeScript で使う
+sidebar:
+  order: 11
+---
+
+:::note[このページで学ぶこと]
+- TypeScript の設定
+- 型で気をつけること
+- 使える型の一覧
+:::
+
+## 設定
+
+`tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。v0.0.3 の型定義は、`"NodeNext"` だと `has no exported member` などのエラーになります。
+
+## 型で気をつけること
+
+### INT の値は bigint
+
+INT のテーブルに書くときは `number` でも `bigint` でもかまいませんが、読んだ値は `bigint` です。比べるときは `value === 42n` のように書くか、`Number(value)` で変換します。
+
+### table の型引数
+
+`db.table<T>(名前)` の型引数 `T` は、書く値と読む値の両方に使われます。INT のテーブルでは書く値（`number`）と読む値（`bigint`）が違うので、v0.0.3 では型引数を付けずに使うのがおすすめです。
+
+```ts
+const table = db.table("risk");       // 値の型は PrimitiveValue
+await table.insert(80, id);
+const results = await table.search(id).toArray();
+const value = results[0]?.value;       // string | number | bigint | boolean | null | undefined
+```
+
+### 制約の型
+
+`createTable` の `constraints` は、サーバーの API の型そのものなので、v0.0.3 では `as never` などを付けないと型エラーになります。
+
+```ts
+await db.createTable("score", "int", 25, {
+  constraints: { kind: { case: "int", value: { min: 0n, max: 100n } } } as never,
+});
+```
+
+### エラーの型
+
+`catch (e)` の `e` は `unknown` です。`isKasaneError(e)` か `e instanceof SpatialIdError` で型を絞ってから使います（[エラー処理](/guide/errors/)）。
+
+## 使える型
+
+クライアントから読み込める主な型です。
+
+| 型 | 内容 |
+| --- | --- |
+| `SpatialId` | `SingleId \| RangeId \| FlexId` |
+| `PrimitiveValue` | 値として使える JavaScript の型 |
+| `TableDataType` | `"text" \| "int" \| "boolean" \| "enum" \| "presence"` |
+| `OutputFormat` | `"singleId" \| "rangeId" \| "flexId"` |
+| `ZoomLevelPolicy` | `"error" \| "ignore" \| "normalize"` |
+| `MergePolicy` | クエリの `policy` |
+| `ResultItem` | 検索結果の 1 件（`{ id, value }`） |
+| `TableInfo` / `TableSummary` / `DatabaseInfo` | `info()` や `listTables()` の戻り値 |
+
+すべての型は [API リファレンス](/api/readme/)にあります。

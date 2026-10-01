@@ -1,21 +1,12 @@
-// docs のページ上でチュートリアルの各ステップを実行するための仕組み。
-// ブラウザから Kasane に直接つなぐ（gRPC-Web）。接続先はチュートリアル専用の共用アカウント。
-import { KasaneClient, RangeId, isKasaneError, type DatabaseHandle } from "@airbee-project/kasane-client";
+import { KasaneClient, QueryBuilder, isKasaneError, type DatabaseHandle, type TableHandle } from "@airbee-project/kasane-client";
 
 export interface Tutorial {
   client: KasaneClient;
   db: DatabaseHandle;
-  DB: string;
-  t: (name: string) => string;
-  check: (label: string, ok: boolean, detail?: unknown) => void;
-  log: (...values: unknown[]) => void;
-  describeError: (e: unknown) => string;
-  resetTable: (name: string) => Promise<void>;
-  WHOLE: RangeId;
 }
 
 export type Step = (tutorial: Tutorial) => Promise<void>;
-export type Line = { kind: "ok" | "ng" | "log" | "error"; text: string };
+export type Line = { kind: "log" | "error"; text: string };
 
 const config = {
   url: import.meta.env.PUBLIC_KASANE_TUTORIAL_URL as string | undefined,
@@ -34,7 +25,6 @@ function getClient(): Promise<KasaneClient> {
   return clientPromise;
 }
 
-/** この画面（タブ）だけの固有の文字。ステップをまたいで同じ値を使う */
 function sessionSuffix(): string {
   const key = "kasane-tutorial-suffix";
   try {
@@ -52,6 +42,7 @@ function format(value: unknown): string {
   if (typeof value === "string") return value;
   if (typeof value === "bigint") return `${value}n`;
   if (Array.isArray(value)) return `[ ${value.map((v) => (typeof v === "string" ? `'${v}'` : format(v))).join(", ")} ]`;
+  if (value instanceof Error) return value.message;
   if (value !== null && typeof value === "object") {
     if (value.toString !== Object.prototype.toString) return String(value);
     return JSON.stringify(value, (k, v) => (k === "$typeName" ? undefined : typeof v === "bigint" ? `${v}n` : v));
@@ -59,38 +50,89 @@ function format(value: unknown): string {
   return String(value);
 }
 
-function describeError(e: unknown): string {
-  return isKasaneError(e) ? e.message : String(e);
+function bind<T extends object>(target: T, overrides: Partial<Record<keyof T, unknown>>): T {
+  return new Proxy(target, {
+    get(t, prop) {
+      if (prop in overrides) return overrides[prop as keyof T];
+      const value = Reflect.get(t, prop, t);
+      return typeof value === "function" ? value.bind(t) : value;
+    },
+  });
 }
 
-/** ステップを実行し、表示する行を 1 行ずつ out に渡す */
-export async function runStep(step: Step, out: (line: Line) => void): Promise<void> {
-  const client = await getClient();
+function sandbox(client: KasaneClient, suffix: string): Tutorial {
+  const own = (name: string) => `${name}_${suffix}`;
+  const bare = (name: string) => (name.endsWith(`_${suffix}`) ? name.slice(0, -suffix.length - 1) : name);
+  const isOwnDb = (name?: string) => name === undefined || name === config.db;
+
+  const wrapTable = (table: TableHandle): TableHandle =>
+    bind(table, {
+      info: async () => {
+        const info = await table.info();
+        return { ...info, name: bare(info.name) };
+      },
+      copy: (name: string, dbName?: string) => table.copy(isOwnDb(dbName) ? own(name) : name, dbName),
+    });
+
+  const realDb = client.database(config.db!);
+  const db = bind(realDb, {
+    table: (name: string) => wrapTable(realDb.table(own(name))),
+    createTable: async (name: string, ...rest: unknown[]) => {
+      await realDb.table(own(name)).delete().catch(() => {});
+      const info = await (realDb.createTable as (...a: unknown[]) => Promise<{ name: string }>)(own(name), ...rest);
+      return { ...info, name: bare(info.name) };
+    },
+    listTables: async () =>
+      (await realDb.listTables()).filter((t) => t.name.endsWith(`_${suffix}`)).map((t) => ({ ...t, name: bare(t.name) })),
+  });
+
+  const renameSources = (node: unknown): void => {
+    if (node === null || typeof node !== "object") return;
+    const record = node as Record<string, unknown>;
+    if (record.$typeName === "kasane.QueryNode.Source" && isOwnDb(record.database as string)) {
+      record.table = own(record.table as string);
+    }
+    for (const value of Object.values(record)) renameSources(value);
+  };
+
+  const tableClient = bind(client.tableClient, {
+    update: (req: { dbName: string; tableName: string; newName?: string }) =>
+      client.tableClient.update(
+        isOwnDb(req.dbName)
+          ? { ...req, tableName: own(req.tableName), ...(req.newName ? { newName: own(req.newName) } : {}) }
+          : req,
+      ),
+  });
+
+  const wrapped = bind(client, {
+    database: (name: string) => (isOwnDb(name) ? db : client.database(name)),
+    tableClient,
+    query: (q: Parameters<KasaneClient["query"]>[0], ...rest: unknown[]) => {
+      const node = structuredClone(q instanceof QueryBuilder ? q.toProto() : q);
+      renameSources(node);
+      return (client.query as (...a: unknown[]) => unknown)(node, ...rest);
+    },
+  });
+
+  return { client: wrapped, db };
+}
+
+export async function runStep(step: Step, write: (line: Line) => void): Promise<void> {
   const suffix = sessionSuffix();
-  const db = client.database(config.db!);
-  const tutorial: Tutorial = {
-    client,
-    db,
-    DB: config.db!,
-    t: (name) => `${name}_${suffix}`,
-    check: (label, ok, detail) => {
-      out({ kind: ok ? "ok" : "ng", text: `${ok ? "OK" : "NG"}  ${label}` });
-      if (!ok && detail !== undefined) out({ kind: "ng", text: `   詳細: ${format(detail)}` });
-    },
-    log: (...values) => out({ kind: "log", text: values.map(format).join(" ") }),
-    describeError,
-    resetTable: async (name) => {
-      try {
-        await db.table(name).delete();
-      } catch {
-        // 無ければ何もしない
-      }
-    },
-    WHOLE: RangeId.create(0, [-1, 0], 0, 0),
+  const out = (line: Line) => write({ ...line, text: line.text.replaceAll(`_${suffix}`, "") });
+  const original = console.log;
+  console.log = (...values: unknown[]) => {
+    out({ kind: "log", text: values.map(format).join(" ") });
+    original(...values);
   };
   try {
-    await step(tutorial);
+    const client = await getClient();
+    await step(sandbox(client, suffix));
   } catch (e) {
-    out({ kind: "error", text: `エラー: ${describeError(e)}` });
+    const message = isKasaneError(e) ? e.message : String(e);
+    out({ kind: "error", text: `エラー: ${message}` });
+    if (message.includes("not_found")) out({ kind: "error", text: "前の Step を先に実行してください。" });
+  } finally {
+    console.log = original;
   }
 }

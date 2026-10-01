@@ -1,0 +1,61 @@
+---
+title: Step 5：危ない場所を地図で見る
+sidebar:
+  label: 5. 地図で見る
+  order: 5
+---
+
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import TablerIcon from '../../../components/TablerIcon.astro';
+import code from '../../../tutorial/steps/map/5-danger.ts?raw';
+
+最後に、危険度が `80` 以上の場所だけを取り出して、地図に表示します。
+
+`filter({ min: 80 })` は、値が 80 以上のボクセルだけを残します。町全体の範囲を、0 時台と 1 時台でそれぞれ検索します。
+
+<StepCode code={code} title="5-danger.ts" />
+
+<TutorialRunner step="map/5-danger" />
+
+実行結果の例：
+
+```text
+0 時台（50 件）:
+20/0:3/931388/412899_3600/482136,20/0:3/931388/412900:412901_3600/482136,20/0:3/931390/412903_3600/482136,…（省略）
+1 時台（115 件）:
+20/0:3/931381/412899_3600/482137,20/0:3/931382/412897_3600/482137,20/0:3/931381/412900:412901_3600/482137,…（省略）
+```
+
+## 地図で見比べる
+
+表示された 2 つの行を、下の地図にそれぞれ別の入力欄で貼り付けてみましょう。
+
+1. <TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 で入力欄を作り、0 時台の行を貼り付けます。
+2. もう一度 <TablerIcon name="plus" /> IDを追加 を押し、1 時台の行を貼り付けます。入力欄の右の ⬜︎ で色を変えると見比べやすくなります。
+3. 見つからないときは <TablerIcon name="target" /> を押します。
+4. 地図の下のタイムバーは、最初は 2025/01/01 09:00（日本時間。UTC の 0 時）です。このときは 0 時台の危険な場所が表示されます。タイムバーを 10:00 まで進めると、1 時台の表示に切り替わります。
+
+Senri は、時空間ID を「タイムバーの時刻に当てはまるものだけ」表示します。
+
+<iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+
+0 時台は、ビルのすぐそばと、雨が強い東側だけが危険です。1 時台は町全体に強い雨が降るので、危ない範囲がビルのまわりに大きく広がります。
+
+## まとめ
+
+このチュートリアルでは、次のことをしました。
+
+- 建物を RangeId でまとめて書き込んだ（Step 1）
+- クエリの `falloff` で、建物のまわりに危険度を広げた（Step 2）
+- 時間を扱うテーブルに、時間ごとの雨を書き込んだ（Step 3）
+- `merge` で、静的なデータと動的なデータを足し合わせた（Step 4）
+- `filter` で危ない場所だけを取り出し、地図で見た（Step 5）
+
+実際のアプリでも、建物のデータは一度だけ書き込み、天気のデータを 1 時間ごとに書き足せば、いつでも最新の危険度マップを計算できます。
+
+## 次に読むもの
+
+- [ガイド](/guide/install/)で、今回使ったクライアントの機能を 1 つずつ詳しく知る
+- [クエリを組み立てる](/guide/query/)で、ほかの演算を試す
+- [都市データを空間IDにする](/docs/plateau/)で、本物の建物データを使う

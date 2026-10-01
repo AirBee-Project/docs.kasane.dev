@@ -21,6 +21,9 @@
   },
   "devDependencies": {
     "@tabler/icons": "^3.48.0",
+    "starlight-typedoc": "0.23.1",
+    "typedoc": "0.28.20",
+    "typedoc-plugin-markdown": "4.13.1",
     "wrangler": "^4.141.0"
   }
 }
