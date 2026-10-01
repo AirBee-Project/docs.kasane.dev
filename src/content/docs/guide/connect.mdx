@@ -25,7 +25,9 @@ import { KasaneClient } from "@airbee-project/kasane-client";
 const client = await KasaneClient.connect("https://kasane.example.com", "alice", "alice-pass");
 ```
 
-ユーザー名やパスワードが違うと、`[unauthenticated]` のエラーになります（[エラー処理](/guide/errors/)）。
+:::caution
+v0.0.3 では、ユーザー名やパスワードが間違っていると、`connect` がエラーを返さず、サーバーにログインを繰り返し送り続けます（終わりません）。接続できないときは、まずユーザー名とパスワードを確かめてください。
+:::
 
 パスワードをコードに直接書かず、環境変数などから読み込むようにしてください。
 
@@ -35,7 +37,7 @@ const client = await KasaneClient.connect(process.env.KASANE_URL!, process.env.K
 
 ## 複数のサーバーを指定する
 
-URL を配列で渡すと、最初のサーバーにつながらないとき、次のサーバーに自動で切り替えます。
+URL は配列でも渡せます。サーバーが `[unavailable]` を返したときに、次のサーバーへ切り替える仕組みです。
 
 ```ts
 const client = await KasaneClient.connect(
@@ -45,7 +47,9 @@ const client = await KasaneClient.connect(
 );
 ```
 
-切り替わるのは、サーバーにつながらないとき（`unavailable` や通信の失敗）だけです。権限が無いなど、サーバーが返したエラーでは切り替わりません。
+:::caution
+v0.0.3 では、サーバーが止まっていて接続できないとき、エラーは `[unknown]` になり、次のサーバーへは切り替わりません（Node.js と Bun で確認）。今のところ、サーバーが止まったときの切り替えには使えません。
+:::
 
 ## トークンの自動更新
 
@@ -76,7 +80,8 @@ const client = await KasaneClient.connect(
 ## まとめ
 
 - `KasaneClient.connect(URL, ユーザー名, パスワード)` で接続し、クライアントを使い回す
-- URL を配列で渡すと、つながらないときに次のサーバーへ切り替わる
+- URL は配列でも渡せるが、v0.0.3 ではサーバーが止まったときに切り替わらない
+- v0.0.3 では、パスワードが違うと `connect` が終わらない
 - トークンの期限切れは、クライアントが自動で処理する
 - `client.database(名前)` でデータベースのハンドルを取る
 

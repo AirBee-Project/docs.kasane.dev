@@ -51,7 +51,7 @@ await db.createTable("weather", "enum", 20, {
 | `constraints` | 値の範囲や選択肢 |
 | `description` | テーブルの説明文 |
 
-値の型・最大ズームレベル・`isTemporal` は、あとから変えられません。同じ名前のテーブルがすでにあると、`[already_exists]` のエラーになります。
+値の型・最大ズームレベル・`isTemporal` は、あとから変えられません。同じ名前のテーブルがすでにあると、`[already_exists]` のエラーになります。このサイトの「実行する」では、何度でも試せるように、同じ名前のテーブルを自動で作り直しています。
 
 <StepCode code={c0} title="databases.ts" />
 
@@ -89,7 +89,7 @@ await db.createTable("weather", "enum", 20, {
 ほかのデータベース: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)
 ```
 
-テーブルの改名や説明文の変更には、v0.0.3 のクライアントに専用のメソッドがありません。`client.tableClient.update` で、サーバーの API を直接呼びます。
+テーブルの改名や説明文の変更には、v0.0.3 のクライアントに専用のメソッドがありません。`client.tableClient.update` で、サーバーの API を直接呼びます。`tableClient` はクライアントの内部向けのプロパティなので（API リファレンスには載っていません）、将来のバージョンで専用のメソッドに置き換わる可能性があります。
 
 ## まとめ
 

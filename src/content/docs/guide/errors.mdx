@@ -43,11 +43,13 @@ import c0 from '../../../tutorial/steps/guide/errors.ts?raw';
 | `not_found` | テーブルが無い | `isNotFoundError(e)` |
 | `already_exists` | 同じ名前のテーブルがある | `isAlreadyExistsError(e)` |
 | `permission_denied` | 権限が無い | `isPermissionDeniedError(e)` |
-| `unauthenticated` | ユーザー名・パスワードの誤り | `isUnauthenticatedError(e)` |
-| `unavailable` | サーバーにつながらない | — |
+| `unauthenticated` | 認証できない（トークンが無効など） | `isUnauthenticatedError(e)` |
+| `unknown` | サーバーにつながらない（URL の誤り、サーバーの停止など）。メッセージは `fetch failed` や `Unable to connect` | — |
 | `internal` | サーバー内部のエラー。Kasane の不具合の可能性がある | — |
 
 `isKasaneError(e)` は TypeScript の型ガードなので、`if (isKasaneError(e))` の中では `e.message` などをそのまま使えます。
+
+ログインのときにユーザー名やパスワードが間違っていると、v0.0.3 ではエラーにならず、`connect` が終わりません（[接続と認証](/guide/connect/)）。
 
 ## SpatialIdError
 

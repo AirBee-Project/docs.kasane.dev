@@ -5,8 +5,7 @@ export default async function ({ db }: Tutorial) {
   await db.createTable("modes", "int", 25);
   const table = db.table("modes");
   const a = SingleId.create(20, 0, 931389, 412900);
-  const b = SingleId.create(20, 0, 931390, 412900); // a の東隣
-  const ab = RangeId.create(20, 0, [931389, 931390], 412900); // a と b をまとめた範囲
+  const ab = RangeId.create(20, 0, [931389, 931390], 412900); // a と、その東隣の b をまとめた範囲
 
   async function show(label: string) {
     const results = await table.search(ab, { format: "singleId" }).toArray();

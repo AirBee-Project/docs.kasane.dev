@@ -20,6 +20,10 @@ INT の値は `bigint` で返ります。`Number(value)` で普通の数値に�
 
 v0.7 の Insert は上書きです。元の値を残したいときは Upsert を使います。
 
+## `connect` が終わらない
+
+v0.0.3 では、ユーザー名やパスワードが間違っていると、`connect` がエラーにならずにログインを繰り返し続けます。ユーザー名とパスワードを確かめてください（[接続と認証](/guide/connect/)）。
+
 ## `policy must be specified` と出る
 
 `zoomOut`、`merge`、`extrude`、`falloff` には `policy` を指定してください。

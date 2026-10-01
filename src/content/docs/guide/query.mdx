@@ -33,6 +33,7 @@ const results = await client.query(q, area, { format: "singleId" }).toArray();
 - `client.query(クエリ, 取り出す範囲, オプション)` で実行します。戻り値は `table.search` と同じ `ResultStream` です（[検索と結果の受け取り方](/guide/search/)）。
 - オプションの `format` は結果の ID の形、`valueType` は `mapValues` などで値の型が変わるときの結果の型です。
 - 参照するすべてのテーブルに read の権限が必要です。
+- `filter` の条件は `{ min, max }`（どちらか片方でもよい）、`{ equals: 値 }`、`{ notInRange: { min, max } }` の 3 つです。クライアントの説明（JSDoc）にある `{ inRange: { … } }` は、v0.0.3 では使えません。
 
 ## 試してみる
 

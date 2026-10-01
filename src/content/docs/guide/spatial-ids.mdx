@@ -49,7 +49,9 @@ FlexId: 20/0|20/931389|19/206450
 
 ## 時間を付ける
 
-`id.withTime(時間間隔, 時間インデックス)` で、時間つきの ID（時空間ID）になります。時間間隔は秒数か、`Interval.SECOND`・`Interval.MINUTE`・`Interval.HOUR`・`Interval.DAY` を渡します。`RangeId` なら、時間インデックスにも `[最小, 最大]` を渡せます。詳しくは [時空間ID を使う](/guide/temporal/) で説明しています。
+`SingleId` と `RangeId` は、`id.withTime(時間間隔, 時間インデックス)` で時間つきの ID（時空間ID）になります。時間間隔は秒数か、`Interval.SECOND`・`Interval.MINUTE`・`Interval.HOUR`・`Interval.DAY` を渡します。`RangeId` なら、時間インデックスにも `[最小, 最大]` を渡せます。
+
+`FlexId` の `withTime` は引数が違い、時間間隔の代わりに時間方向のズームレベルを取ります。ふだんは `SingleId` か `RangeId` に時間を付けてください。詳しくは [時空間ID を使う](/guide/temporal/) で説明しています。
 
 ## そのほかの便利なメソッド
 

@@ -4,7 +4,7 @@ sidebar:
   order: 2
 ---
 
-よく使う書き方を 1 ページにまとめています。それぞれの意味は「学ぶ」の各ページで説明しています。
+よく使う書き方を 1 ページにまとめています。それぞれの意味は[ガイド](/guide/install/)の各ページで説明しています。
 
 ## テーブル
 
@@ -26,7 +26,7 @@ await db.createTable("weather", "enum", 18, {
 
 制約は `text` なら `{ case: "text", value: { minLength, maxLength } }`、`int` なら `{ case: "int", value: { min, max } }` の形で指定します（数値は `bigint`）。
 
-テーブルの一覧は `db.listTables()`、情報は `table.info()`、コピーは `table.copy(名前)`、削除は `table.delete()` です。改名や説明文の変更は、クライアントに専用メソッドが無いので `client.tableClient.update({ dbName, tableName, newName })` を使います。
+テーブルの一覧は `db.listTables()`、情報は `table.info()`、コピーは `table.copy(名前)`、削除は `table.delete()` です。改名や説明文の変更は、クライアントに専用メソッドが無いので、内部向けの `client.tableClient.update({ dbName, tableName, newName })` を使います。
 
 ## 書き込み
 
@@ -77,7 +77,7 @@ await weather.search(place.withTime(Interval.DAY, day)).toArray(); // その日�
 | `not_found` | テーブルが無い |
 | `already_exists` | 同じ名前のテーブルがある |
 | `permission_denied` | 権限が無い |
-| `unauthenticated` | ユーザー名・パスワードの誤り |
+| `unknown` | サーバーにつながらない |
 | `internal` | サーバー内部のエラー。Kasane の不具合の可能性があります |
 
-`isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。
+`isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。詳しくは[エラー処理](/guide/errors/)を見てください。
