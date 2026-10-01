@@ -39,7 +39,7 @@ import c0 from '../../../tutorial/steps/guide/types.ts?raw';
 | TEXT | `{ kind: { case: "text", value: { minLength: 1n, maxLength: 20n } } }` |
 | ENUM | `{ kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } }` |
 
-数値は `bigint` で書きます。v0.0.3 では、制約の型がサーバーの API の型そのままなので、`as never` を付けないと型エラーになります（[TypeScript で使う](/guide/typescript/)）。
+数値は `bigint` で書きます。v0.0.3 では、制約の型がサーバーの API の型そのままなので、`as never` を付けないと型エラーになります。
 
 <StepCode code={c0} title="types.ts" />
 
@@ -57,6 +57,19 @@ INT に 150: [invalid_argument] Constraint violation: Value 150 is greater than 
 ENUM: 晴れ
 ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among allowed choices: ["晴れ", "曇り", "雨"]
 ```
+
+## TypeScript での値の型
+
+`db.table<T>(名前)` の型引数 `T` は、書く値と読む値の両方に使われます。INT のテーブルでは書く値（`number`）と読む値（`bigint`）が違うので、v0.0.3 では型引数を付けずに使うのがおすすめです。
+
+```ts
+const table = db.table("risk");       // 値の型は PrimitiveValue
+await table.insert(80, id);
+const results = await table.search(id).toArray();
+const value = results[0]?.value;       // string | number | bigint | boolean | null | undefined
+```
+
+読んだ値は `typeof value === "bigint"` などで型を確かめてから使います。
 
 ## まとめ
 
