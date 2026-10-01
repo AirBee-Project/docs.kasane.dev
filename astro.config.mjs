@@ -23,10 +23,10 @@ export default defineConfig({
 			lastUpdated: true,
 			sidebar: [
 				{ label: 'はじめに', slug: 'index' },
+				{ label: '背景知識', items: [{ autogenerate: { directory: 'concepts' } }] },
 				{ label: 'クイックスタート', slug: 'quickstart' },
 				{ label: 'チュートリアル', items: [{ autogenerate: { directory: 'tutorial' } }] },
 				{ label: 'ガイド', items: [{ autogenerate: { directory: 'guide' } }] },
-				{ label: '背景知識', items: [{ autogenerate: { directory: 'concepts' } }] },
 				{ label: 'リファレンス', items: [{ autogenerate: { directory: 'docs' } }] },
 				typeDocSidebarGroup,
 			],
