@@ -4,7 +4,9 @@ sidebar:
   order: 6
 ---
 
-## TypeScript で `has no exported member` と出る
+Kasane 全般の質問は[よくある質問](/faq/)にあります。
+
+## `has no exported member` と出る
 
 `tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。
 
@@ -12,22 +14,7 @@ sidebar:
 
 INT の値は `bigint` で返ります。`Number(value)` で普通の数値にできます。
 
-## `count` が書き込んだ件数と合わない
-
-`count` は内部の保存単位の数で、書き込んだ ID の数とは違います（[書き込む](/clients/typescript/guide/write/#まとめて書き込む)）。
-
-## 同じ場所に `insert` してもエラーにならない
-
-Kasane v0.7 の `insert` は上書きです。元の値を残したいときは `upsert` を使います。
-
 ## `connect` が終わらない
 
-v0.0.3 では、ユーザー名やパスワードが間違っていると、`connect` がエラーにならずにログインを繰り返し続けます。ユーザー名とパスワードを確かめてください（[接続と認証](/clients/typescript/guide/connect/)）。
+ユーザー名やパスワードが間違っていると、`connect` がエラーにならずにログインを繰り返し続けます。ユーザー名とパスワードを確かめてください（[接続と認証](/clients/typescript/guide/connect/)）。
 
-## `policy must be specified` と出る
-
-`zoomOut`、`merge`、`extrude`、`falloff` には `policy` を指定してください。
-
-## 30 分単位のデータを扱いたい
-
-時間間隔に 1800 秒は使えません。1 分単位で 30 個分の範囲（`withTime(60, [t, t + 29])`）として書き込んでください。

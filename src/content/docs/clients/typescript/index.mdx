@@ -1,0 +1,25 @@
+---
+title: TypeScript クライアント
+---
+
+このドキュメントでは TypeScript を用いて Kasane を操作する方法を学びます。Kasane への接続には `@airbee-project/kasane-client` を用います。
+
+```ts
+// 1 時間ごとの雨の強さを入れるテーブルを作る
+await db.createTable("rain", "int", 20, { isTemporal: true });
+const rain = db.table("rain");
+
+// 東京駅付近の 1 ボクセルに、2025-01-01 0 時台（UTC）の雨の強さ 60 を書き込む
+await rain.insert(60, SingleId.parse("20/0/931389/412900").withTime(3600, 482136));
+
+// 周辺の範囲を検索する
+const results = await rain.search(RangeId.parse("20/0/931380:931399/412890:412909")).toArray();
+```
+
+## 構成
+
+- **[クイックスタート](/clients/typescript/quickstart/)**：テーブルを作り、書き込み、地図で確認する
+- **[ガイド](/clients/typescript/guide/install/)**：機能ごとの説明
+- **リファレンス**：[コードの早見表](/clients/typescript/reference/usage/)・[API リファレンス](/clients/typescript/api/readme/)
+
+通しで使うなら[チュートリアル](/tutorial/)で、言語タブの TypeScript を選んでください。

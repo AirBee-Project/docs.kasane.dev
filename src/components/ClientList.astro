@@ -1,0 +1,51 @@
+---
+import typescriptIcon from '../assets/languages/typescript.svg';
+
+// 言語を増やすときは、アイコンを src/assets/languages/ に置いてここに足す。
+const clients = [{ name: 'TypeScript', href: '/clients/typescript/', icon: typescriptIcon }];
+---
+
+<ul class="client-list not-content">
+	{
+		clients.map((client) => (
+			<li>
+				<a href={client.href} class="client-link">
+					<img src={client.icon.src} alt="" width="64" height="64" />
+					<span>{client.name}</span>
+				</a>
+			</li>
+		))
+	}
+</ul>
+
+<style>
+	.client-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 1rem;
+		padding: 0;
+		list-style: none;
+	}
+	.client-link {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+		width: 7.5rem;
+		padding: 1rem 0.5rem;
+		border-radius: 0.5rem;
+		color: var(--sl-color-white);
+		font-weight: 600;
+		text-decoration: none;
+		transition: background-color 0.15s;
+	}
+	.client-link:hover,
+	.client-link:focus-visible {
+		background-color: var(--sl-color-gray-6);
+	}
+	.client-link img {
+		width: 4rem;
+		height: 4rem;
+	}
+</style>

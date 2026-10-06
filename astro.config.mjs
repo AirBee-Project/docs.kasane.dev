@@ -55,17 +55,19 @@ export default defineConfig({
 			},
 			lastUpdated: true,
 			sidebar: [
-				{ label: 'はじめに', slug: 'index' },
+				{ label: 'Kasane とは', slug: 'index' },
 				{ label: '背景知識', collapsed: true, items: [{ autogenerate: { directory: 'concepts' } }] },
 				{ label: 'チュートリアル', collapsed: true, items: [{ autogenerate: { directory: 'tutorial' } }] },
 				{
 					label: 'クライアント API',
 					collapsed: true,
 					items: [
+						{ label: '概要', slug: 'clients' },
 						{
 							label: 'TypeScript',
 							collapsed: true,
 							items: [
+								{ label: '概要', slug: 'clients/typescript' },
 								{ label: 'クイックスタート', slug: 'clients/typescript/quickstart' },
 								{ label: 'ガイド', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
 								{ label: 'リファレンス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
@@ -75,6 +77,7 @@ export default defineConfig({
 					],
 				},
 				{ label: 'ツール', collapsed: true, items: [{ autogenerate: { directory: 'tools' } }] },
+				{ label: 'よくある質問', slug: 'faq' },
 			],
 			components: {
 				Sidebar: './src/components/sidebar/Sidebar.astro',
