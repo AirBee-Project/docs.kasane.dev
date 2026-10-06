@@ -1,0 +1,10 @@
+---
+import { Tabs } from '@astrojs/starlight/components';
+---
+
+{/* 選んだ言語は、ページをまたいで保たれる */}
+<div class="lang-tabs">
+	<Tabs syncKey="lang">
+		<slot />
+	</Tabs>
+</div>

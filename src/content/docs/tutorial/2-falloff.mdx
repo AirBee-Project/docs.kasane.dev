@@ -5,32 +5,12 @@ sidebar:
   order: 2
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import code from '../../../tutorial/steps/map/2-falloff.ts?raw';
+import LangStep from '../../../components/LangStep.astro';
 
-ビルそのものだけでなく、ビルに近い場所も危険です。ビルから離れるほど危険度が下がるように、まわりに広げます。
+ドローンは風や測位の誤差で予定の位置からずれるので、ビルのまわりにもバッファが必要です。ビルから離れるほど下がるように、危険度を周囲に広げます。
 
-こうした計算には**クエリ**を使います。クエリは、テーブルに対する計算を組み立てて、サーバー側で実行する機能です。
+建物のテーブルにクエリの falloff を東西・南北の順にかけ、半径 4 ボクセルで 0 になるよう線形に減衰させます（[クエリの考え方](/concepts/query/)）。重なった部分は大きい方（policy は max）を取ります。
 
-- `query.source(データベース名, テーブル名)` で、計算のもとになるテーブルを選びます。
-- `falloffX(ズームレベル, 半径, …)` は、値を東西（X）方向に広げながら、半径のボクセル数で 0 になるように減らします。`falloffY` は南北（Y）方向です。
-- `client.query(クエリ, 空間ID)` で実行し、指定した場所の結果を受け取ります。
+<LangStep step="map/2-falloff" />
 
-<StepCode code={code} title="2-falloff.ts" />
-
-<TutorialRunner step="map/2-falloff" />
-
-実行結果の例：
-
-```text
-ビルA から 0 ボクセル: [ 100n ]
-ビルA から 1 ボクセル: [ 75n ]
-ビルA から 2 ボクセル: [ 50n ]
-ビルA から 3 ボクセル: [ 25n ]
-ビルA から 4 ボクセル: [ 12n ]
-```
-
-ビルの中は `100`、そこから 1 ボクセル離れるごとに `75`、`50`、`25` と下がります。4 ボクセル離れた場所はビルA の影響が `0` になりますが、近くにあるビルB の危険度が届いているので `12` になっています。
-
-クエリは計算した結果を返すだけで、`buildings` テーブルの中身は変わりません。建物のデータはそのままに、見たいときに何度でも計算し直せます。
+4 ボクセル離れるとビルA の影響は 0 ですが、ビルB の影響が届くので 12 になります。

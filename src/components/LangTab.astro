@@ -1,0 +1,13 @@
+---
+import { TabItem } from '@astrojs/starlight/components';
+import { languages, type LanguageId } from '../tutorial/languages';
+
+interface Props {
+	lang: LanguageId;
+}
+const { label, icon } = languages[Astro.props.lang];
+---
+
+<TabItem label={label} icon={icon}>
+	<slot />
+</TabItem>

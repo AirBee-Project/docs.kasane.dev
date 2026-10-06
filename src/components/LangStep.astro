@@ -1,0 +1,62 @@
+---
+import { Code } from '@astrojs/starlight/components';
+import LangTab from './LangTab.astro';
+import LangTabs from './LangTabs.astro';
+import StepCode from './StepCode.astro';
+import TutorialRunner from './TutorialRunner.astro';
+import { languages, type LanguageId } from '../tutorial/languages';
+
+interface Props {
+	/** ステップ名。例："map/1-buildings" */
+	step: string;
+}
+const { step } = Astro.props;
+
+type Files = Record<string, string>;
+/** glob の結果を、ステップ名をキーにした表にする */
+const byStep = (files: Files, base: string, ext: string): Files =>
+	Object.fromEntries(Object.entries(files).map(([path, text]) => [path.slice(base.length, -ext.length), text]));
+
+// 言語ごとのコードと実行結果の例の置き場所。import.meta.glob は文字列リテラルしか受け付けないので、言語ごとに書く。
+// runnable は、このサイトの「実行する」ボタンで動かせるか。
+const sources: Record<LanguageId, { code: Files; output: Files; runnable: boolean }> = {
+	typescript: {
+		code: byStep(
+			import.meta.glob('../tutorial/steps/**/*.ts', { query: '?raw', import: 'default', eager: true }),
+			'../tutorial/steps/',
+			'.ts',
+		),
+		output: byStep(
+			import.meta.glob('../tutorial/steps/**/*.out.txt', { query: '?raw', import: 'default', eager: true }),
+			'../tutorial/steps/',
+			'.out.txt',
+		),
+		runnable: true,
+	},
+};
+
+const tabs = (Object.keys(languages) as LanguageId[])
+	.filter((id) => sources[id].code[step] !== undefined)
+	.map((id) => ({ id, ...languages[id], ...sources[id] }));
+const fileName = step.split('/').pop();
+---
+
+<LangTabs>
+	{
+		tabs.map((t) => (
+			<LangTab lang={t.id}>
+				<StepCode code={t.code[step]!} title={`${fileName}${t.ext}`} lang={t.codeLang} />
+				{/* コードの下に、区切り線を挟んで実行ボタンと実行結果の例を並べる（見た目は custom.css） */}
+				<div class="lang-step-result">
+					{t.runnable && <TutorialRunner step={step} />}
+					{t.output[step] && (
+						<>
+							<p>実行結果の例：</p>
+							<Code code={t.output[step].trimEnd()} lang="text" />
+						</>
+					)}
+				</div>
+			</LangTab>
+		))
+	}
+</LangTabs>

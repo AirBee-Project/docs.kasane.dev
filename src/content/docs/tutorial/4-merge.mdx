@@ -5,30 +5,15 @@ sidebar:
   order: 4
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import code from '../../../tutorial/steps/map/4-merge.ts?raw';
+import LangStep from '../../../components/LangStep.astro';
 
-建物の危険度（Step 2）と雨の強さ（Step 3）を足し合わせます。
+Step 2 の建物の危険度と Step 3 の雨を merge で重ね合わせます。policy は sum、雨が無い場所は既定値 0 として計算します。
 
-`merge` は、2 つのクエリの結果を重ね合わせます。同じボクセルに両方の値があるときの計算方法を `policy` で指定します。ここでは合計（`"sum"`）にします。雨が降っていない場所は、`defaultValue` の `0` として計算します。
+<LangStep step="map/4-merge" />
 
-<StepCode code={code} title="4-merge.ts" />
-
-<TutorialRunner step="map/4-merge" />
-
-実行結果の例：
-
-```text
-0 時台  西: [ 60n ]  東: [ 80n ]
-1 時台  西: [ 110n ]  東: [ 110n ]
-```
-
-どちらの点も、ビルA から 2 ボクセル離れているので、建物の危険度は `50` です。そこに雨の強さが足されます。
+どちらの点もビルA から 2 ボクセルなので、建物の危険度は 50 です。
 
 | | 0 時台 | 1 時台 |
 | --- | --- | --- |
 | 西 | 50 + 10 = 60 | 50 + 60 = 110 |
 | 東 | 50 + 30 = 80 | 50 + 60 = 110 |
-
-静的な建物のデータと、動的な雨のデータを、書き込んだあとで自由に組み合わせられるのがクエリの便利なところです。
