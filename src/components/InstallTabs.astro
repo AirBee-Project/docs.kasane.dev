@@ -1,0 +1,53 @@
+---
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+
+interface Props {
+	pkg: string;
+}
+
+const { pkg } = Astro.props;
+// ロゴは public/icons/package-managers/ にある公式配色の SVG（devicon より）。
+// 並び順を変えるときは、下の style のロゴの指定も合わせる。
+const managers = [
+	{ label: 'npm', command: `npm install ${pkg}` },
+	{ label: 'yarn', command: `yarn add ${pkg}` },
+	{ label: 'pnpm', command: `pnpm add ${pkg}` },
+	{ label: 'bun', command: `bun add ${pkg}` },
+];
+---
+
+<div class="install-tabs">
+	<Tabs syncKey="pkg">
+		{
+			managers.map((m) => (
+				<TabItem label={m.label}>
+					<Code code={m.command} lang="sh" wrap />
+				</TabItem>
+			))
+		}
+	</Tabs>
+</div>
+
+<style>
+	.install-tabs :global([role='tab'])::before {
+		content: '';
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		margin-inline-end: 0.4em;
+		vertical-align: -0.125em;
+		background: center / contain no-repeat;
+	}
+	.install-tabs :global(li:nth-child(1) [role='tab'])::before {
+		background-image: url('/icons/package-managers/npm.svg');
+	}
+	.install-tabs :global(li:nth-child(2) [role='tab'])::before {
+		background-image: url('/icons/package-managers/yarn.svg');
+	}
+	.install-tabs :global(li:nth-child(3) [role='tab'])::before {
+		background-image: url('/icons/package-managers/pnpm.svg');
+	}
+	.install-tabs :global(li:nth-child(4) [role='tab'])::before {
+		background-image: url('/icons/package-managers/bun.svg');
+	}
+</style>

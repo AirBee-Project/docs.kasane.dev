@@ -2,6 +2,7 @@
 title: クイックスタート
 ---
 
+import InstallTabs from '../../../../components/InstallTabs.astro';
 import StepCode from '../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../components/TutorialRunner.astro';
 import TablerIcon from '../../../../components/TablerIcon.astro';
@@ -52,11 +53,9 @@ import code from '../../../../tutorial/steps/quickstart.ts?raw';
 
 ## 自分のプロジェクトで使う
 
-クライアントを npm からインストールします。
+クライアントをインストールします。
 
-```sh
-npm install @airbee-project/kasane-client
-```
+<InstallTabs pkg="https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz" />
 
 接続してデータベースを選べば、あとは上のコードと同じです（[接続と認証](/clients/typescript/guide/connect/)）。
 

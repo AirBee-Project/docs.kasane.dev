@@ -56,27 +56,32 @@ export default defineConfig({
 			lastUpdated: true,
 			sidebar: [
 				{ label: 'はじめに', slug: 'index' },
-				{ label: '背景知識', items: [{ autogenerate: { directory: 'concepts' } }] },
-				{ label: 'チュートリアル', items: [{ autogenerate: { directory: 'tutorial' } }] },
+				{ label: '背景知識', collapsed: true, items: [{ autogenerate: { directory: 'concepts' } }] },
+				{ label: 'チュートリアル', collapsed: true, items: [{ autogenerate: { directory: 'tutorial' } }] },
 				{
 					label: 'クライアント API',
+					collapsed: true,
 					items: [
 						{
 							label: 'TypeScript',
+							collapsed: true,
 							items: [
 								{ label: 'クイックスタート', slug: 'clients/typescript/quickstart' },
-								{ label: 'ガイド', items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
-								{ label: 'リファレンス', items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
+								{ label: 'ガイド', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
+								{ label: 'リファレンス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
 								typeDocSidebarGroup,
 							],
 						},
 					],
 				},
-				{ label: 'ツール', items: [{ autogenerate: { directory: 'tools' } }] },
+				{ label: 'ツール', collapsed: true, items: [{ autogenerate: { directory: 'tools' } }] },
 			],
+			components: {
+				Sidebar: './src/components/sidebar/Sidebar.astro',
+			},
 			customCss: ['@fontsource-variable/noto-sans-jp', './src/styles/custom.css'],
 			plugins: [
-				lucode(),
+				lucode({ warnOverrides: false }),
 				starlightTypeDoc({
 					entryPoints: ['node_modules/@airbee-project/kasane-client/dist/index.d.ts'],
 					tsconfig: './tsconfig.typedoc.json',
