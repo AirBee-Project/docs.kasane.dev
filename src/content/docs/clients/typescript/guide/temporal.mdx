@@ -8,29 +8,17 @@ import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/temporal.ts?raw';
 
-:::note[このページで学ぶこと]
-- 時間を扱うテーブルの作り方
-- 時空間ID での書き込みと検索
-- 全時間の値
-:::
+時空間ID の定義は[時空間ID の基礎](/concepts/spatial-id/#時空間id)にあります。
 
-時空間ID の意味は、背景知識の[時空間ID の基礎](/concepts/spatial-id/#時空間id)で説明しています。
-
-## 時間を扱うテーブル
-
-`createTable` のオプションで `isTemporal: true` を指定すると、時空間ID（時間つきの ID）を書き込めるテーブルになります。
+`isTemporal: true` で作ったテーブルに、`withTime(時間間隔, 時間インデックス)` を付けた ID で書き込み・検索します。
 
 ```ts
 await db.createTable("weather", "text", 25, { isTemporal: true });
 ```
 
-## 時間を付けて書く・検索する
-
-空間ID に `.withTime(時間間隔, 時間インデックス)` を付けます。
-
-- 時間間隔は、1（`Interval.SECOND`）・60（`Interval.MINUTE`）・3600（`Interval.HOUR`）・86400（`Interval.DAY`）秒の 4 つだけです。
-- 時間インデックスは、UNIX 時間（秒）を時間間隔で割って切り捨てた番号です。`Math.floor(Date.UTC(2025, 0, 1) / 1000 / 3600)` のように求めます。
-- `RangeId` なら `.withTime(3600, [開始, 終了])` で時間の範囲も指定できます。
+- 時間間隔は 1（`Interval.SECOND`）・60（`MINUTE`）・3600（`HOUR`）・86400（`DAY`）秒のみ
+- 時間インデックスは `Math.floor(Date.UTC(2025, 0, 1) / 1000 / 3600)` のように求める
+- `RangeId` は `withTime(3600, [開始, 終了])` で時間の範囲を指定できる
 
 <StepCode code={c0} title="temporal.ts" />
 
@@ -46,14 +34,8 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 1800 秒: [invalid_argument] Invalid spatial ID: interval 1800 is not allowed; i must be one of: 34359738368, 86400, 3600, 60, 1
 ```
 
-- 検索は、指定した時間と重なるデータを返します。1 日単位で検索すると、その日に含まれる 1 時間単位のデータも返ります。
-- 時間を扱うテーブルに時間なしの ID で書くと、全時間の値になり、どの時刻で検索しても返ります。
-- 時間を扱わないテーブルに、時間つきの ID は書き込めません。
-
-## まとめ
-
-- `isTemporal: true` のテーブルに、`.withTime()` を付けた ID で書き込む
-- 時間間隔は 1・60・3600・86400 秒の 4 つ
-- 時間なしで書いた値は全時間の値になる
+- 検索は指定した時間と重なるデータを返す。1 日単位で検索すると、その日の 1 時間単位のデータも返る
+- 時間なしの ID で書いた値は全時間の値になり、どの時刻で検索しても返る
+- 時間を扱わないテーブルに時空間ID は書き込めない
 
 関連する API：[Interval](/clients/typescript/api/classes/interval/)、[SingleId.withTime](/clients/typescript/api/classes/singleid/#withtime)

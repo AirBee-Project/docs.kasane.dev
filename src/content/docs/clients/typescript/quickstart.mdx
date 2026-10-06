@@ -2,28 +2,15 @@
 title: クイックスタート
 ---
 
+import { Code } from '@astrojs/starlight/components';
 import InstallTabs from '../../../../components/InstallTabs.astro';
 import StepCode from '../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../components/TutorialRunner.astro';
 import TablerIcon from '../../../../components/TablerIcon.astro';
 import code from '../../../../tutorial/steps/quickstart.ts?raw';
+import output from '../../../../tutorial/steps/quickstart.out.txt?raw';
 
-:::note[このページで学ぶこと]
-- テーブルを作る
-- ボクセルに値を書き込む
-- 書き込んだ値を検索する
-- 書き込んだ場所を地図で見る
-:::
-
-## 3 行でわかる Kasane
-
-- Kasane のデータは、**データベース**の中の**テーブル**に入っています。
-- テーブルの中では、地球を区切った小さな箱（**ボクセル**）ごとに、値を 1 つ持てます。
-- ボクセルは `20/0/931389/412900` のような**空間ID** で指定します。空間ID の仕組みは[時空間ID の基礎](/concepts/spatial-id/)で説明しています。
-
-## 動かしてみる
-
-下のコードは、テーブル `hello` を作り、東京駅付近のボクセルに値 `42` を書き込んで、読み戻します。「実行する」を押すと、このページの上で実際に Kasane に接続して動きます。
+テーブル `hello` を作り、東京駅付近のボクセルに `42` を書き込んで検索します。
 
 <StepCode code={code} title="quickstart.ts" />
 
@@ -31,33 +18,27 @@ import code from '../../../../tutorial/steps/quickstart.ts?raw';
 
 実行結果の例：
 
-```text
-20/0/931389/412900 => 42
-```
+<Code code={output.trimEnd()} lang="text" />
 
-- `db.createTable(名前, 値の型, 最大ズームレベル)` でテーブルを作ります。
-- `table.insert(値, 空間ID)` で書き込み、`table.search(空間ID)` で検索します。
-- INT の値は `42n` のような `bigint` で返ります。表示すると `42` です。
+:::note[「実行する」の実行環境]
+共有の体験用データベース `tutorial` で動きます。テーブル名には他の人と衝突しないよう固有の接尾辞が付き、同名のテーブルは作り直されます。データは定期的に消えます。公開できないデータは書き込まないでください。
+:::
 
 ## 地図で見る
 
-書き込んだ場所を、地図ツール Senri で見てみましょう。
-
 1. 地図の左上の <TablerIcon name="cube" /> 空間ID を押します。
-2. <TablerIcon name="plus" /> IDを追加 を押し、できた入力欄に `20/0/931389/412900` を貼り付けます。
-3. 見つからないときは、入力欄の右の <TablerIcon name="target" /> を押すと、その場所へ移動します。
+2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に `20/0/931389/412900` を貼り付けます。
+3. 入力欄の右の <TablerIcon name="target" /> でその場所へ移動します。
 
 <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
 
-東京駅の丸の内側に、1 辺約 30 m のボクセルが 1 つ表示されます。
+東京駅の丸の内側に、1 辺約 30 m のボクセルが表示されます。
 
 ## 自分のプロジェクトで使う
 
-クライアントをインストールします。
-
 <InstallTabs pkg="https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz" />
 
-接続してデータベースを選べば、あとは上のコードと同じです（[接続と認証](/clients/typescript/guide/connect/)）。
+次のように接続すれば、あとは上のコードと同じです。`tsconfig.json` の設定は[インストール](/clients/typescript/guide/install/#typescript-の設定)にあります。
 
 ```ts
 import { KasaneClient } from "@airbee-project/kasane-client";
@@ -66,14 +47,7 @@ const client = await KasaneClient.connect("https://サーバーのURL", "ユー�
 const db = client.database("データベース名");
 ```
 
-TypeScript で型チェックをするときは、`tsconfig.json` の `moduleResolution` を `"Bundler"` にしてください。
-
-:::note[このサイトでの実行について]
-「実行する」ボタンのコードは、みんなで使う体験用のデータベース `tutorial` で動きます。ほかの人とぶつからないよう、テーブル名には見えないところで固有の文字が付き、同じ名前のテーブルがあれば作り直されます。書き込んだデータは定期的に消されるので、個人情報や公開できないデータは書き込まないでください。
-:::
-
 ## 次に読むもの
 
-- [チュートリアル：町の危険度マップ](/tutorial/)：Kasane で小さな地図アプリのデータを作ります。
-- [ガイド](/clients/typescript/guide/install/)：クライアントの機能を 1 つずつ詳しく知ります。
-- [時空間ID の基礎](/concepts/spatial-id/)：空間ID の仕組みを知ります。
+- [チュートリアル](/tutorial/)
+- [ガイド](/clients/typescript/guide/install/)

@@ -9,30 +9,24 @@ import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/formats.ts?raw';
 import c1 from '../../../../../tutorial/steps/guide/stream.ts?raw';
 
-:::note[このページで学ぶこと]
-- `table.search` のオプション
-- 検索結果（`ResultStream`）の 3 つの受け取り方
-- 結果の ID の形（`format`）
-:::
-
-## 検索する
-
-`table.search(ID, オプション)` で、指定した範囲と重なるデータを検索します。範囲の外の部分は返りません。
+`table.search(ID, オプション)` は、指定した範囲と重なる部分だけを返します。
 
 | オプション | 内容 |
 | --- | --- |
-| `format` | 結果の ID の形。`"singleId"`・`"rangeId"`（省略時）・`"flexId"` |
+| `format` | 結果の ID の形式。`"singleId"`・`"rangeId"`（既定）・`"flexId"` |
 | `policy` | テーブルより細かい ID の扱い（[書き込む](/clients/typescript/guide/write/#テーブルより細かい-id)） |
 
-戻り値は `ResultStream` です。1 件は `{ id, value }` の形（`ResultItem`）で、`id` は空間ID のクラス、`value` はテーブルの型の値です。
+戻り値は `ResultStream` で、要素は `{ id, value }`（`ResultItem`）です。
 
 ## 結果の受け取り方
 
-| 書き方 | 向いている場面 |
+| 書き方 | 用途 |
 | --- | --- |
-| `for await (const { id, value } of results)` | 結果が多いとき。届いた順に 1 件ずつ処理でき、メモリを使いすぎない |
-| `await results.toArray()` | 結果が少なく、配列でまとめて扱いたいとき |
-| `await results.toDictionaryMap()` | 値ごとに ID をまとめたいとき。`Map<値, 空間ID[]>` になる |
+| `for await (const { id, value } of results)` | 1 件ずつ処理する |
+| `await results.toArray()` | 配列にする |
+| `await results.toDictionaryMap()` | 値ごとに ID をまとめる（`Map<値, 空間ID[]>`） |
+
+`ResultStream` は 1 回しか読めず、2 回目は空になります。
 
 <StepCode code={c1} title="stream.ts" />
 
@@ -51,11 +45,7 @@ toDictionaryMap: 1 => [ '20/0/931389/412900', '20/0/931390/412900', '20/0/931391
 2 回目: 0 件
 ```
 
-`ResultStream` は 1 回しか読めません。2 回目は空になるので、何度も使う結果は `toArray()` で配列にしておきます。
-
-## 結果の ID の形
-
-同じデータでも、`format` で結果の ID の形が変わります。
+## 結果の ID の形式
 
 <StepCode code={c0} title="formats.ts" />
 
@@ -69,16 +59,8 @@ rangeId [ '20/0/931389/412900:412901', '20/0/931390/412900:412901' ]
 flexId [ '20/0|20/931389|19/206450', '20/0|20/931390|19/206450' ]
 ```
 
-- `singleId`：1 ボクセルずつ返ります。数えたり、1 つずつ処理したりするときに使います。
-- `rangeId`：まとめられる部分をまとめて返ります。件数が少なくなります。
-- `flexId`：Kasane が内部で保存している形のまま返ります。
-
-広い範囲を `singleId` で受け取ると、件数がとても多くなることがあります。
-
-## まとめ
-
-- `table.search(ID, { format })` で検索する。範囲と重なる部分だけが返る
-- 結果は `for await`・`toArray()`・`toDictionaryMap()` で受け取る。1 回しか読めない
-- `format` で結果の ID の形を選ぶ
+- `singleId`：1 ボクセルずつ。広い範囲では件数が非常に多くなる
+- `rangeId`：まとめられる部分をまとめる
+- `flexId`：内部の保存形式のまま
 
 関連する API：[TableHandle.search](/clients/typescript/api/classes/tablehandle/#search)、[ResultStream](/clients/typescript/api/classes/resultstream/)、[ResultItem](/clients/typescript/api/interfaces/resultitem/)

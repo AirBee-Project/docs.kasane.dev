@@ -6,19 +6,7 @@ sidebar:
 
 import InstallTabs from '../../../../../components/InstallTabs.astro';
 
-:::note[このページで学ぶこと]
-- kasane-client のインストール方法
-- 動く環境と、通信のしくみ
-- TypeScript の設定
-:::
-
-`@airbee-project/kasane-client` は、Kasane を TypeScript から使うためのクライアントライブラリです。Kasane のサーバーとのやり取りはすべてこのライブラリが引き受けるので、アプリからは関数を呼ぶだけで、テーブルの作成・書き込み・検索・クエリができます。
-
-## インストール
-
 <InstallTabs pkg="https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz" />
-
-使うものを名前で読み込みます。
 
 ```ts
 import { KasaneClient } from "@airbee-project/kasane-client";
@@ -27,21 +15,19 @@ const client = await KasaneClient.connect("https://kasane.example.com", "alice",
 console.log(await client.listDatabases());
 ```
 
-## 動く環境
+## 動作環境
 
 | 環境 | 対応 |
 | --- | --- |
-| Node.js | 対応（標準の `fetch` を使うので、18 以上。22 で動作を確認） |
+| Node.js | 18 以上（標準の `fetch` を使用。22 で確認） |
 | Bun | 対応 |
-| ブラウザ | 対応（このサイトの「実行する」ボタンも、ブラウザでクライアントを動かしています） |
+| ブラウザ | 対応 |
 
-クライアントは **gRPC-Web** で Kasane と通信します。同じコードが Node.js でもブラウザでも動きます。
-
-ブラウザから Kasane に直接つなぐときは、Kasane のサーバー側で、そのサイトからのアクセス（CORS）が許可されている必要があります。また、ブラウザで動くコードに書いたパスワードは誰でも見られるので、読み取り専用のユーザーを使うなど、見られても困らないユーザーにしてください。
+ブラウザから直接接続するには、Kasane サーバー側でそのオリジンからの CORS を許可する必要があります。
 
 ## TypeScript の設定
 
-型定義はパッケージに含まれています。`tsconfig.json` の `moduleResolution` は `"Bundler"` にしてください。v0.0.3 の型定義は、`"NodeNext"` だと読み込めません。
+`moduleResolution` は `"Bundler"` にしてください。型定義は `"NodeNext"` では読み込めません。
 
 ```json
 {
@@ -53,10 +39,3 @@ console.log(await client.listDatabases());
   }
 }
 ```
-
-値の型の注意点は[値の型と制約](/clients/typescript/guide/types/#typescript-での値の型)で説明しています。
-
-## 次に読むもの
-
-- [空間ID を作る](/clients/typescript/guide/spatial-ids/)：書き込みや検索に使う ID の作り方を知る（サーバーに接続しなくても試せます）
-- [接続と認証](/clients/typescript/guide/connect/)：サーバーにつないでログインする

@@ -4,8 +4,6 @@ sidebar:
   order: 2
 ---
 
-よく使う書き方を 1 ページにまとめています。それぞれの意味は[ガイド](/clients/typescript/guide/install/)の各ページで説明しています。
-
 ## テーブル
 
 ```ts
@@ -14,70 +12,59 @@ await db.createTable("weather", "enum", 18, {
   isTemporal: true,
   constraints: { kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } } as never,
 });
+
+await db.listTables();
+await table.info();
+await table.copy("backup");
+await table.delete();
+await client.tableClient.update({ dbName, tableName, newName }); // 改名（内部向け API）
 ```
-
-| 型 | 書く値 | 読んだときの値 |
-| --- | --- | --- |
-| `text` | 文字列 | `string` |
-| `int` | 整数 | `bigint` |
-| `boolean` | `true` / `false` | `boolean` |
-| `enum` | 選択肢の文字列 | `string` |
-| `presence` | `null` | `null` |
-
-制約は `text` なら `{ case: "text", value: { minLength, maxLength } }`、`int` なら `{ case: "int", value: { min, max } }` の形で指定します（数値は `bigint`）。
-
-テーブルの一覧は `db.listTables()`、情報は `table.info()`、コピーは `table.copy(名前)`、削除は `table.delete()` です。改名や説明文の変更は、クライアントに専用メソッドが無いので、内部向けの `client.tableClient.update({ dbName, tableName, newName })` を使います。
 
 ## 書き込み
 
 ```ts
-await table.insert(80, id);           // 空いていれば書く、値があれば上書き
-await table.upsert(80, id);           // 空いている部分にだけ書く
-await table.remove(id);               // 消す
-await table.insert(80, [id1, id2]);   // 配列でまとめて書ける
+await table.insert(80, id);              // 上書き
+await table.upsert(80, id);              // 空いている部分だけ
+await table.remove(id);
+await table.insert(80, [id1, id2]);      // 同じ値をまとめて
+await table.insert(80, id, "normalize"); // 細かすぎる ID を親に丸める（"error" / "ignore"）
 ```
-
-1 回に書ける値は 1 つです。値が違うデータは、値ごとに ID をまとめて送ると速くなります。隣り合うボクセルは RangeId 1 つにまとめると、さらに軽くなります。
-
-テーブルの最大ズームレベルより細かい ID は、既定ではエラーになります。第 3 引数に `"ignore"`（無視）か `"normalize"`（親のボクセルに丸める）を渡すと扱いを変えられます。
 
 ## 検索
 
 ```ts
 const results = await table.search(area).toArray();
 for await (const { id, value } of table.search(area, { format: "singleId" })) { /* ... */ }
+
+// テーブル全体
+await table.search(RangeId.create(0, [-1, 0], 0, 0)).toArray();
 ```
 
-指定した範囲と重なる部分だけが返ります。結果はストリーミングで届くので、大量の結果は `for await` で 1 件ずつ処理できます。検索結果は 1 回しか読めず、2 回目は空になります。テーブル全体を取り出すときは `RangeId.create(0, [-1, 0], 0, 0)` で検索します。
-
-`table.info()` の `count` は、内部の保存単位（FlexId）の数です。書き込んだ ID の数とは一致しませんが、テーブル全体を `format: "flexId"` で検索した件数とは一致します。
+`table.info()` の `count` は、テーブル全体を `format: "flexId"` で検索した件数と一致します。
 
 ## 時空間ID
-
-テーブルを `isTemporal: true` で作ると、時間つきの ID を書けます。
 
 ```ts
 await weather.insert("晴れ", place.withTime(3600, t));
 await weather.search(place.withTime(Interval.DAY, day)).toArray(); // その日に含まれるデータ
 ```
 
-時間なしの ID で書くと全時間の値になります。時間を扱わないテーブルに時間つきの ID を書くとエラーです。
+## クエリ
+
+```ts
+const q = query.source("city", "risk").filter({ min: 50 }).zoomOut(20, "max");
+const results = await client.query(q, area, { format: "singleId" }).toArray();
+```
 
 ## エラー
 
-失敗すると、クライアントは `ConnectError` を投げます。`e.message` の先頭に種類が入っています。
-
-```text
-[invalid_argument] Value type mismatch: expected String, got Int
+```ts
+try {
+  await table.insert(80, id);
+} catch (e) {
+  if (isNotFoundError(e)) { /* テーブルが無い */ }
+  else if (isKasaneError(e)) console.error(e.message); // "[invalid_argument] ..."
+}
 ```
 
-| 種類 | よくある原因 |
-| --- | --- |
-| `invalid_argument` | 型違い、制約違反、ズームレベルの上限超え、使えない時間間隔、`policy` の指定漏れ |
-| `not_found` | テーブルが無い |
-| `already_exists` | 同じ名前のテーブルがある |
-| `permission_denied` | 権限が無い |
-| `unknown` | サーバーにつながらない |
-| `internal` | サーバー内部のエラー。Kasane の不具合の可能性があります |
-
-`isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。詳しくは[エラー処理](/clients/typescript/guide/errors/)を見てください。
+種類の一覧は[エラー処理](/clients/typescript/guide/errors/#サーバーのエラー)にあります。

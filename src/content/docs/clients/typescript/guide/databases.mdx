@@ -9,17 +9,11 @@ import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/databases.ts?raw';
 import c1 from '../../../../../tutorial/steps/guide/manage.ts?raw';
 
-:::note[このページで学ぶこと]
-- `DatabaseHandle` と `TableHandle` の使い方
-- テーブルの作成と、そのオプション
-- テーブルのコピー・改名・削除
-:::
-
-データベースとテーブルの関係は、背景知識の [Kasane のデータの持ち方](/concepts/data-model/)で説明しています。
+テーブルの設定項目と権限は[データの持ち方](/concepts/data-model/)にあります。
 
 ## ハンドル
 
-クライアントでは、データベースやテーブルを「ハンドル」で操作します。ハンドルは名前を覚えているだけのオブジェクトで、作るだけでは通信しません。
+データベースとテーブルはハンドルで操作します。ハンドルの作成では通信しません。
 
 ```ts
 const db = client.database("city");       // DatabaseHandle
@@ -33,7 +27,7 @@ const buildings = db.table("buildings");  // TableHandle
 
 ## テーブルを作る
 
-`db.createTable(名前, 値の型, 最大ズームレベル, オプション)` で作ります。
+`db.createTable(名前, 値の型, 最大ズームレベル, オプション)`
 
 ```ts
 await db.createTable("weather", "enum", 20, {
@@ -46,12 +40,11 @@ await db.createTable("weather", "enum", 20, {
 | 引数・オプション | 内容 |
 | --- | --- |
 | 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/clients/typescript/guide/types/)） |
-| 最大ズームレベル | 書き込める ID の細かさの上限 |
-| `isTemporal` | `true` にすると時空間ID を書ける（[時空間ID を使う](/clients/typescript/guide/temporal/)） |
+| `isTemporal` | 時空間ID を書き込めるようにする（[時空間ID を使う](/clients/typescript/guide/temporal/)） |
 | `constraints` | 値の範囲や選択肢 |
-| `description` | テーブルの説明文 |
+| `description` | 説明文 |
 
-値の型・最大ズームレベル・`isTemporal` は、あとから変えられません。同じ名前のテーブルがすでにあると、`[already_exists]` のエラーになります。このサイトの「実行する」では、何度でも試せるように、同じ名前のテーブルを自動で作り直しています。
+同名のテーブルがあると `[already_exists]` になります（「実行する」では自動で作り直しています）。
 
 <StepCode code={c0} title="databases.ts" />
 
@@ -66,7 +59,7 @@ await db.createTable("weather", "enum", 20, {
 データベースの作成: [permission_denied] Authentication error: Requires the global 'Manage' role or higher
 ```
 
-`info()` の `count` は、内部の保存単位（FlexId）の数です（[書き込む](/clients/typescript/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
+データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは失敗します。
 
 ## コピー・改名・削除
 
@@ -89,12 +82,6 @@ await db.createTable("weather", "enum", 20, {
 ほかのデータベース: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)
 ```
 
-テーブルの改名や説明文の変更には、v0.0.3 のクライアントに専用のメソッドがありません。`client.tableClient.update` で、サーバーの API を直接呼びます。`tableClient` はクライアントの内部向けのプロパティなので（API リファレンスには載っていません）、将来のバージョンで専用のメソッドに置き換わる可能性があります。
-
-## まとめ
-
-- データベースは `client.database()`、テーブルは `db.table()` でハンドルを取る
-- `db.createTable()` の値の型・最大ズームレベル・`isTemporal` はあとから変えられない
-- コピーは `copy`、削除は `delete`、改名は `client.tableClient.update`
+改名や説明文の変更のメソッドが無いため、内部向けの `client.tableClient.update` でサーバーの API を直接呼びます。API リファレンスには載っておらず、将来のバージョンで置き換わる可能性があります。
 
 関連する API：[DatabaseHandle](/clients/typescript/api/classes/databasehandle/)、[TableHandle](/clients/typescript/api/classes/tablehandle/)

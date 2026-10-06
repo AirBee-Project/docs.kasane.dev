@@ -8,30 +8,21 @@ import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/types.ts?raw';
 
-:::note[このページで学ぶこと]
-- 5 つの値の型と、TypeScript での型の対応
-- 制約で値の範囲や選択肢を決める方法
-:::
-
 ## 値の型
-
-テーブルの値の型は、作るときに決めます（[データベースとテーブル](/clients/typescript/guide/databases/)）。書くときと読んだときの、TypeScript での型は次のとおりです。
 
 | 型 | 書く値 | 読んだ値 |
 | --- | --- | --- |
 | `"text"` | `string` | `string` |
-| `"int"` | `number` または `bigint` | `bigint`（`80n` など） |
+| `"int"` | `number` または `bigint` | `bigint` |
 | `"boolean"` | `boolean` | `boolean` |
 | `"enum"` | 選択肢の `string` | `string` |
 | `"presence"` | `null` | `null` |
 
-- INT の値は `bigint` で返ります。普通の数値にしたいときは `Number(value)` で変換します。
-- 小数の型はありません。INT に `3.9` を渡すと、クライアントで `3` に切り捨てられます。小数を扱うときは、10 倍や 100 倍した整数にします。
-- PRESENCE は「そこに何かがある」ことだけを記録する型です。値は `null` です。
+INT に小数を渡すと、クライアントで切り捨てられます（`3.9` → `3`）。
 
 ## 制約
 
-`createTable` の `constraints` で、書き込める値を制限できます。制約に違反する値や、型に合わない値を書くと、`[invalid_argument]` のエラーになります。
+`createTable` の `constraints` で書き込める値を制限します。制約違反や型の不一致は `[invalid_argument]` になります。
 
 | 型 | 書き方 |
 | --- | --- |
@@ -39,7 +30,7 @@ import c0 from '../../../../../tutorial/steps/guide/types.ts?raw';
 | TEXT | `{ kind: { case: "text", value: { minLength: 1n, maxLength: 20n } } }` |
 | ENUM | `{ kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } }` |
 
-数値は `bigint` で書きます。v0.0.3 では、制約の型がサーバーの API の型そのままなので、`as never` を付けないと型エラーになります。
+数値は `bigint` で書きます。制約の型はサーバー API の型そのままなので、`as never` が必要です。
 
 <StepCode code={c0} title="types.ts" />
 
@@ -58,31 +49,19 @@ ENUM: 晴れ
 ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among allowed choices: ["晴れ", "曇り", "雨"]
 ```
 
-## TypeScript での値の型
+## 型パラメーター
 
-`db.table<T>(名前)` の `<T>` で、そのテーブルの値の型を TypeScript に教えられます。`T` は、書く値と読んだ値の両方の型になります。
+`db.table<T>(名前)` の `T` が、書く値と読んだ値の型になります。サーバーのテーブル定義とは連動しないので、正しい型を自分で指定します。省略時は `string | number | bigint | boolean | null | undefined` です。
 
-`createTable` で決めた値の型はサーバーが守るもので、クライアントは TypeScript に自動では伝えません。`<T>` は、エディタと型チェックのための目印です。通信や実行には影響しないので、間違った型を指定しても、書き込んだ時点でサーバーに断られるだけです。
-
-`<T>` は省略できます。このドキュメントのほかの例は、値を表示するだけなので省略しています。読んだ値で計算するときは、次のように指定してください。
-
-INT のテーブルは、`<bigint>` を指定して、書くときも `80n` のように bigint で書いてください。読んだ値は必ず bigint なので、型と実際の値が一致します。
+INT のテーブルには `<bigint>` を指定し、書くときも bigint にします。
 
 ```ts
 const risk = db.table<bigint>("risk");
-await risk.insert(80n, id);                       // 80 と書くと型エラー
-const results = await risk.search(id).toArray();
-const value = results[0]?.value;                  // bigint | undefined
-if (value !== undefined) console.log(value + 1n); // 81n
+await risk.insert(80n, id);
+const value = (await risk.search(id).toArray())[0]?.value; // bigint | undefined
+if (value !== undefined) console.log(value + 1n);           // 81n
 ```
 
-`<number>` を指定すると、`insert(80, id)` は通りますが、読んだ値の型が `number` になってしまいます。実際の値は bigint なので、`value + 1` が型チェックを通るのに、実行すると `Cannot mix BigInt and other types` のエラーになります。
-
-TEXT と ENUM のテーブルは `<string>`、BOOLEAN のテーブルは `<boolean>` を指定できます。`<T>` を省略すると、値の型は `string | number | bigint | boolean | null | undefined` になります。
-
-## まとめ
-
-- 型は text・int・boolean・enum・presence の 5 つ。INT は `bigint` で返る
-- 制約を付けると、範囲外の値や選択肢に無い値を防げる
+`<number>` にすると型の上では `value + 1` が通りますが、実際の値は bigint なので実行時に `Cannot mix BigInt and other types` になります。
 
 関連する API：[TableDataType](/clients/typescript/api/type-aliases/tabledatatype/)、[PrimitiveValue](/clients/typescript/api/type-aliases/primitivevalue/)

@@ -8,36 +8,26 @@ import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/query.ts?raw';
 
-:::note[このページで学ぶこと]
-- `query` でクエリを組み立てる方法
-- `client.query` での実行と、そのオプション
-- `policy` の意味
-:::
-
-## クエリとは
-
-クエリは、テーブルに対する計算（絞り込み、重ね合わせ、移動など）を組み立てて、サーバー側で実行する機能です。結果を返すだけで、テーブルの中身は変わりません。
+演算と policy の意味は[クエリの考え方](/concepts/query/)にあります。
 
 ```ts
 import { query } from "@airbee-project/kasane-client";
 
 const q = query
-  .source("city", "risk")            // データベース city のテーブル risk から始める
-  .filter({ min: 50 })               // 50 以上だけ残す
-  .zoomOut(20, "max");               // ズームレベル 20 にまとめる（重なったら最大値）
+  .source("city", "risk")  // データベース city のテーブル risk
+  .filter({ min: 50 })
+  .zoomOut(20, "max");
 
 const results = await client.query(q, area, { format: "singleId" }).toArray();
 ```
 
-- `query.source(データベース名, テーブル名)` から始めて、演算をメソッドでつなぎます。演算のメソッドは、新しい `QueryBuilder` を返します。
-- `client.query(クエリ, 取り出す範囲, オプション)` で実行します。戻り値は `table.search` と同じ `ResultStream` です（[検索と結果の受け取り方](/clients/typescript/guide/search/)）。
-- オプションの `format` は結果の ID の形、`valueType` は `mapValues` などで値の型が変わるときの結果の型です。
-- 参照するすべてのテーブルに read の権限が必要です。
-- `filter` の条件は `{ min, max }`（どちらか片方でもよい）、`{ equals: 値 }`、`{ notInRange: { min, max } }` の 3 つです。クライアントの説明（JSDoc）にある `{ inRange: { … } }` は、v0.0.3 では使えません。
+- `query.source(データベース名, テーブル名)` から演算をメソッドチェーンでつなぐ。各メソッドは新しい `QueryBuilder` を返す
+- `client.query(クエリ, 検索する範囲, オプション)` で実行する。戻り値は `table.search` と同じ `ResultStream`
+- オプションの `valueType` は、`mapValues` などで値の型が変わるときに指定する
+- `filter` の条件は `{ min, max }`（片方でもよい）・`{ equals: 値 }`・`{ notInRange: { min, max } }`。JSDoc にある `{ inRange: { … } }` は使えない
+- `policy` は型の上では省略できるが、省略するとサーバーが `policy must be specified` を返す。`merge` の `defaultValue` も必須
 
 ## 試してみる
-
-小さなテーブルを 2 つ作って、よく使う演算を試します。
 
 ```text
           x →   X   X+1  X+2  X+3  X+4  X+5  X+6  X+7
@@ -63,32 +53,13 @@ shiftX（10 右へ）: 5: 6
 
 | 演算 | 結果 |
 | --- | --- |
-| `filter({ min: 50 })` | 80 のボクセル 8 個だけが残る |
-| `intersection(wind)` | 両方にある 4 ボクセル（値は risk のもの） |
+| `filter({ min: 50 })` | 80 の 8 ボクセル |
+| `intersection(wind)` | 両方にある 4 ボクセル（値は risk） |
 | `difference(wind)` | risk から wind と重なる 4 ボクセルを除いた 8 ボクセル |
 | `merge(wind, { policy: "sum", defaultValue: 0 })` | 重なる部分は合計（85・35）、片方だけの部分はそのまま |
-| `add(1)` | すべての値に 1 を足す |
+| `add(1)` | 全ボクセルに 1 を足す |
 | `shiftX(22, 10)` | 東へ 10 ボクセル移動する |
 
-## policy
-
-`zoomOut`・`merge`・`extrude`・`falloff` は、同じボクセルに値が重なったときの決め方（`policy`）を取ります。型の上では省略できますが、省略するとサーバーが `policy must be specified` のエラーを返すので、必ず指定してください。`merge` の `defaultValue` も指定が必要です。
-
-| policy | 左 80・右 30 のとき |
-| --- | --- |
-| `"overwrite"` | 30 |
-| `"keepExisting"` | 80 |
-| `"sum"` | 110 |
-| `"max"` / `"min"` | 80 / 30 |
-| `"average"` | 55 |
-| `"difference"` | 50 |
-
-すべての演算は[クエリの一覧](/clients/typescript/reference/query/)にまとめています。チュートリアルの[町の危険度マップ](/tutorial/)でも、`falloff`・`merge`・`filter` を組み合わせて使っています。
-
-## まとめ
-
-- `query.source()` から演算をつないで組み立て、`client.query()` で実行する
-- 結果は `ResultStream` で、テーブルは変わらない
-- `policy` を取る演算では、必ず指定する
+全演算の書き方は[クエリの一覧](/clients/typescript/reference/query/)にあります。
 
 関連する API：[query](/clients/typescript/api/variables/query/)、[QueryBuilder](/clients/typescript/api/classes/querybuilder/)、[KasaneClient.query](/clients/typescript/api/classes/kasaneclient/#query)

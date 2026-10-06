@@ -8,23 +8,15 @@ import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
 import c0 from '../../../../../tutorial/steps/guide/ids.ts?raw';
 
-:::note[このページで学ぶこと]
-- `SingleId`・`RangeId`・`FlexId` の作り方
-- 文字列との変換
-- 時間の付け方
-:::
+Kasane の空間ID の種類は[Kasane での空間ID](/concepts/kasane-spatial-id/)にあります。クライアントでは、種類ごとにクラスがあります。
 
-空間ID そのものの意味は、背景知識の[時空間ID の基礎](/concepts/spatial-id/)で説明しています。
+| 種類 | 作り方 |
+| --- | --- |
+| `SingleId` | `SingleId.create(z, f, x, y)` |
+| `RangeId` | `RangeId.create(z, f, x, y)`。各軸に `[最小, 最大]` か 1 つの値を渡す |
+| `FlexId` | `FlexId.create(fのズーム, f, xのズーム, x, yのズーム, y)` |
 
-## 3 つのクラス
-
-| クラス | 表すもの | 作り方 |
-| --- | --- | --- |
-| `SingleId` | 1 ボクセル | `SingleId.create(z, f, x, y)` |
-| `RangeId` | 直方体に並んだボクセル | `RangeId.create(z, f, x, y)`。各軸に `[最小, 最大]` か 1 つの値を渡す |
-| `FlexId` | 軸ごとにズームレベルが違うボクセル | `FlexId.create(fのズーム, f, xのズーム, x, yのズーム, y)` |
-
-書き込み・検索・クエリには、どのクラスの ID を渡してもかまいません。ID の配列も渡せます。ふだんは `SingleId` と `RangeId` を使い、`FlexId` は検索結果の形として出てくることがあります。
+書き込み・検索・クエリには、どの種類の空間ID も、その配列も渡せます。
 
 <StepCode code={c0} title="ids.ts" />
 
@@ -43,29 +35,21 @@ FlexId: 20/0|20/931389|19/206450
 
 ## 文字列との変換
 
-- `id.toString()` で `"20/0/931389/412900"` の形の文字列になります。テンプレート文字列（`` `${id}` ``）でも同じです。
-- `SingleId.parse(文字列)`、`RangeId.parse(文字列)`、`FlexId.parse(文字列)` で文字列から作れます。
-- 書式が間違っていたり、値が範囲外だったりすると、`SpatialIdError` が投げられます（[エラー処理](/clients/typescript/guide/errors/)）。
+`toString()` で文字列に、`SingleId.parse()`・`RangeId.parse()`・`FlexId.parse()` で文字列から変換します。書式の誤りや範囲外の値は `SpatialIdError` になります（[エラー処理](/clients/typescript/guide/errors/)）。
 
 ## 時間を付ける
 
-`SingleId` と `RangeId` は、`id.withTime(時間間隔, 時間インデックス)` で時間つきの ID（時空間ID）になります。時間間隔は秒数か、`Interval.SECOND`・`Interval.MINUTE`・`Interval.HOUR`・`Interval.DAY` を渡します。`RangeId` なら、時間インデックスにも `[最小, 最大]` を渡せます。
+`SingleId` と `RangeId` は `withTime(時間間隔, 時間インデックス)` で時空間ID になります。時間間隔には秒数か `Interval.SECOND`・`MINUTE`・`HOUR`・`DAY` を渡します。`RangeId` は時間インデックスに `[最小, 最大]` も渡せます。
 
-`FlexId` の `withTime` は引数が違い、時間間隔の代わりに時間方向のズームレベルを取ります。ふだんは `SingleId` か `RangeId` に時間を付けてください。詳しくは [時空間ID を使う](/clients/typescript/guide/temporal/) で説明しています。
+`FlexId.withTime` は時間間隔の代わりに時間方向のズームレベルを取ります。通常は `SingleId` か `RangeId` を使ってください（[時空間ID を使う](/clients/typescript/guide/temporal/)）。
 
-## そのほかの便利なメソッド
+## その他のメソッド
 
 | メソッド | 内容 |
 | --- | --- |
 | `singleId.toRangeId()` | `RangeId` に変換する |
-| `rangeId.toSingleIds()` | 中のボクセルを 1 つずつ `SingleId` で取り出す |
-| `id.isWholeTime()` | 時間を持たない（全時間の）ID か |
-| `SingleId.createUnchecked(...)` | 範囲の検証をせずに作る。速いが、不正な値を渡したときの動きは決まっていない |
-
-## まとめ
-
-- 1 ボクセルは `SingleId`、直方体は `RangeId` で作る
-- `toString()` と `parse()` で文字列と変換できる
-- `withTime()` で時間を付ける
+| `rangeId.toSingleIds()` | 中のボクセルを `SingleId` で列挙する |
+| `id.isWholeTime()` | 全時間の ID か |
+| `SingleId.createUnchecked(...)` | 範囲検証を省いて作る。不正な値での動作は未定義 |
 
 関連する API：[SingleId](/clients/typescript/api/classes/singleid/)、[RangeId](/clients/typescript/api/classes/rangeid/)、[FlexId](/clients/typescript/api/classes/flexid/)、[Interval](/clients/typescript/api/classes/interval/)
