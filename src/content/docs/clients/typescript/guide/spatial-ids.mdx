@@ -4,9 +4,9 @@ sidebar:
   order: 2
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/ids.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/ids.ts?raw';
 
 :::note[このページで学ぶこと]
 - `SingleId`・`RangeId`・`FlexId` の作り方
@@ -45,13 +45,13 @@ FlexId: 20/0|20/931389|19/206450
 
 - `id.toString()` で `"20/0/931389/412900"` の形の文字列になります。テンプレート文字列（`` `${id}` ``）でも同じです。
 - `SingleId.parse(文字列)`、`RangeId.parse(文字列)`、`FlexId.parse(文字列)` で文字列から作れます。
-- 書式が間違っていたり、値が範囲外だったりすると、`SpatialIdError` が投げられます（[エラー処理](/guide/errors/)）。
+- 書式が間違っていたり、値が範囲外だったりすると、`SpatialIdError` が投げられます（[エラー処理](/clients/typescript/guide/errors/)）。
 
 ## 時間を付ける
 
 `SingleId` と `RangeId` は、`id.withTime(時間間隔, 時間インデックス)` で時間つきの ID（時空間ID）になります。時間間隔は秒数か、`Interval.SECOND`・`Interval.MINUTE`・`Interval.HOUR`・`Interval.DAY` を渡します。`RangeId` なら、時間インデックスにも `[最小, 最大]` を渡せます。
 
-`FlexId` の `withTime` は引数が違い、時間間隔の代わりに時間方向のズームレベルを取ります。ふだんは `SingleId` か `RangeId` に時間を付けてください。詳しくは [時空間ID を使う](/guide/temporal/) で説明しています。
+`FlexId` の `withTime` は引数が違い、時間間隔の代わりに時間方向のズームレベルを取ります。ふだんは `SingleId` か `RangeId` に時間を付けてください。詳しくは [時空間ID を使う](/clients/typescript/guide/temporal/) で説明しています。
 
 ## そのほかの便利なメソッド
 
@@ -68,4 +68,4 @@ FlexId: 20/0|20/931389|19/206450
 - `toString()` と `parse()` で文字列と変換できる
 - `withTime()` で時間を付ける
 
-関連する API：[SingleId](/api/classes/singleid/)、[RangeId](/api/classes/rangeid/)、[FlexId](/api/classes/flexid/)、[Interval](/api/classes/interval/)
+関連する API：[SingleId](/clients/typescript/api/classes/singleid/)、[RangeId](/clients/typescript/api/classes/rangeid/)、[FlexId](/clients/typescript/api/classes/flexid/)、[Interval](/clients/typescript/api/classes/interval/)

@@ -4,10 +4,10 @@ sidebar:
   order: 4
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/databases.ts?raw';
-import c1 from '../../../tutorial/steps/guide/manage.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/databases.ts?raw';
+import c1 from '../../../../../tutorial/steps/guide/manage.ts?raw';
 
 :::note[このページで学ぶこと]
 - `DatabaseHandle` と `TableHandle` の使い方
@@ -45,9 +45,9 @@ await db.createTable("weather", "enum", 20, {
 
 | 引数・オプション | 内容 |
 | --- | --- |
-| 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/guide/types/)） |
+| 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/clients/typescript/guide/types/)） |
 | 最大ズームレベル | 書き込める ID の細かさの上限 |
-| `isTemporal` | `true` にすると時空間ID を書ける（[時空間ID を使う](/guide/temporal/)） |
+| `isTemporal` | `true` にすると時空間ID を書ける（[時空間ID を使う](/clients/typescript/guide/temporal/)） |
 | `constraints` | 値の範囲や選択肢 |
 | `description` | テーブルの説明文 |
 
@@ -66,7 +66,7 @@ await db.createTable("weather", "enum", 20, {
 データベースの作成: [permission_denied] Authentication error: Requires the global 'Manage' role or higher
 ```
 
-`info()` の `count` は、内部の保存単位（FlexId）の数です（[書き込む](/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
+`info()` の `count` は、内部の保存単位（FlexId）の数です（[書き込む](/clients/typescript/guide/write/#まとめて書き込む)）。データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは断られます。
 
 ## コピー・改名・削除
 
@@ -97,4 +97,4 @@ await db.createTable("weather", "enum", 20, {
 - `db.createTable()` の値の型・最大ズームレベル・`isTemporal` はあとから変えられない
 - コピーは `copy`、削除は `delete`、改名は `client.tableClient.update`
 
-関連する API：[DatabaseHandle](/api/classes/databasehandle/)、[TableHandle](/api/classes/tablehandle/)
+関連する API：[DatabaseHandle](/clients/typescript/api/classes/databasehandle/)、[TableHandle](/clients/typescript/api/classes/tablehandle/)

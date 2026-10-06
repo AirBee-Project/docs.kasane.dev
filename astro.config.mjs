@@ -4,6 +4,39 @@ import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
 import lucode from 'lucode-starlight';
 import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
+import { readdirSync } from 'node:fs';
+
+// 旧 URL（TypeScript の各ページを clients/typescript/ の下へ移す前）から新しい URL へのリダイレクト。
+// API リファレンスは starlight-typedoc が生成するので、生成後に一覧を読む。
+function legacyRedirects() {
+	return {
+		name: 'legacy-redirects',
+		hooks: {
+			'astro:config:setup': ({ updateConfig }) => {
+				const docs = new URL('./src/content/docs/', import.meta.url);
+				/** @type {Record<string, string>} */
+				const redirects = {
+					'/quickstart': '/clients/typescript/quickstart/',
+					'/docs/usage': '/clients/typescript/reference/usage/',
+					'/docs/query': '/clients/typescript/reference/query/',
+					'/docs/faq': '/clients/typescript/reference/faq/',
+					'/docs/plateau': '/tools/plateau/',
+				};
+				for (const dir of ['guide', 'api']) {
+					const files = readdirSync(new URL(`clients/typescript/${dir}/`, docs), { recursive: true, encoding: 'utf8' });
+					for (const file of files) {
+						const m = file.match(/^(.*?)(?:index)?\.mdx?$/);
+						if (!m) continue;
+						const slug = m[1].replace(/\/$/, '').toLowerCase();
+						const from = slug ? `/${dir}/${slug}` : `/${dir}`;
+						redirects[from] = `/clients/typescript${from}/`;
+					}
+				}
+				updateConfig({ redirects });
+			},
+		},
+	};
+}
 
 export default defineConfig({
 	site: 'https://docs.kasane.dev',
@@ -24,11 +57,22 @@ export default defineConfig({
 			sidebar: [
 				{ label: 'はじめに', slug: 'index' },
 				{ label: '背景知識', items: [{ autogenerate: { directory: 'concepts' } }] },
-				{ label: 'クイックスタート', slug: 'quickstart' },
 				{ label: 'チュートリアル', items: [{ autogenerate: { directory: 'tutorial' } }] },
-				{ label: 'ガイド', items: [{ autogenerate: { directory: 'guide' } }] },
-				{ label: 'リファレンス', items: [{ autogenerate: { directory: 'docs' } }] },
-				typeDocSidebarGroup,
+				{
+					label: 'クライアント API',
+					items: [
+						{
+							label: 'TypeScript',
+							items: [
+								{ label: 'クイックスタート', slug: 'clients/typescript/quickstart' },
+								{ label: 'ガイド', items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
+								{ label: 'リファレンス', items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
+								typeDocSidebarGroup,
+							],
+						},
+					],
+				},
+				{ label: 'ツール', items: [{ autogenerate: { directory: 'tools' } }] },
 			],
 			customCss: ['@fontsource-variable/noto-sans-jp', './src/styles/custom.css'],
 			plugins: [
@@ -36,7 +80,7 @@ export default defineConfig({
 				starlightTypeDoc({
 					entryPoints: ['node_modules/@airbee-project/kasane-client/dist/index.d.ts'],
 					tsconfig: './tsconfig.typedoc.json',
-					output: 'api',
+					output: 'clients/typescript/api',
 					sidebar: { label: 'API リファレンス', collapsed: true },
 					typeDoc: {
 						excludeInternal: true,
@@ -48,5 +92,6 @@ export default defineConfig({
 				}),
 			],
 		}),
+		legacyRedirects(),
 	],
 });

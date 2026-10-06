@@ -4,11 +4,11 @@ sidebar:
   order: 5
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/write-modes.ts?raw';
-import c1 from '../../../tutorial/steps/guide/bulk-write.ts?raw';
-import c2 from '../../../tutorial/steps/guide/zoom.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/write-modes.ts?raw';
+import c1 from '../../../../../tutorial/steps/guide/bulk-write.ts?raw';
+import c2 from '../../../../../tutorial/steps/guide/zoom.ts?raw';
 
 :::note[このページで学ぶこと]
 - `insert`・`upsert`・`remove` の違い
@@ -92,4 +92,4 @@ normalize: [ '20/0/931389/412900 => 1' ]
 - 同じ値はまとめて 1 回で送る。隣り合うボクセルは `RangeId` にまとめる
 - 細かすぎる ID は `"error"`・`"ignore"`・`"normalize"` で扱いを選ぶ
 
-関連する API：[TableHandle](/api/classes/tablehandle/)、[ZoomLevelPolicy](/api/type-aliases/zoomlevelpolicy/)
+関連する API：[TableHandle](/clients/typescript/api/classes/tablehandle/)、[ZoomLevelPolicy](/clients/typescript/api/type-aliases/zoomlevelpolicy/)

@@ -5,10 +5,10 @@ sidebar:
   order: 0
 ---
 
-このチュートリアルでは、ドローンが町を飛ぶときの「危険度マップ」を Kasane で作ります。[クイックスタート](/quickstart/)を終えていれば、上から順に進めるだけで完成します。
+このチュートリアルでは、ドローンが町を飛ぶときの「危険度マップ」を Kasane で作ります。[クイックスタート](/clients/typescript/quickstart/)を終えていれば、上から順に進めるだけで完成します。
 
 :::note[読む前に]
-空間ID（`20/0/931389/412900` のような ID）と、範囲を表す `RangeId` を使います。初めての人は、先に[時空間ID の基礎](/concepts/spatial-id/)と[空間ID を作る](/guide/spatial-ids/)を読んでおくと分かりやすくなります。
+空間ID（`20/0/931389/412900` のような ID）と、範囲を表す `RangeId` を使います。初めての人は、先に[時空間ID の基礎](/concepts/spatial-id/)と[空間ID を作る](/clients/typescript/guide/spatial-ids/)を読んでおくと分かりやすくなります。
 :::
 
 ## 作るもの
@@ -47,7 +47,7 @@ sidebar:
 - `client`：ログイン済みの `KasaneClient` です。
 - `db`：データベース `tutorial` のハンドル（`client.database("tutorial")`）です。
 
-「実行する」を押すと、このサイトが体験用のユーザーでログインして、この 2 つを渡します。自分のプロジェクトで書くときは、関数の引数の代わりに、先頭で次のように用意すれば同じように動きます（[接続と認証](/guide/connect/)）。
+「実行する」を押すと、このサイトが体験用のユーザーでログインして、この 2 つを渡します。自分のプロジェクトで書くときは、関数の引数の代わりに、先頭で次のように用意すれば同じように動きます（[接続と認証](/clients/typescript/guide/connect/)）。
 
 ```ts
 import { KasaneClient } from "@airbee-project/kasane-client";

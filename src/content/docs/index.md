@@ -29,10 +29,10 @@ const results = await rain.search(RangeId.parse("20/0/931380:931399/412890:41290
 Kasane は、クライアントライブラリ `@airbee-project/kasane-client` を使って TypeScript から操作します。このドキュメントは、このクライアントを使いこなせるようになることを目指しています。
 
 1. **背景知識**：[時空間ID の基礎](/concepts/spatial-id/)と [Kasane のデータの持ち方](/concepts/data-model/)で、Kasane の考え方を知る。
-2. **[クイックスタート](/quickstart/)**：5 分で、テーブルを作って書き込み、地図で見るところまで体験する
+2. **[クイックスタート](/clients/typescript/quickstart/)**：5 分で、テーブルを作って書き込み、地図で見るところまで体験する
 3. **[チュートリアル](/tutorial/)**：町の危険度マップを作りながら、クライアントの主な機能を一通り使う
-4. **[ガイド](/guide/install/)**：空間ID の作り方、接続、書き込み、検索、クエリ、エラー処理など、クライアントの機能を 1 つずつ詳しく知る
-5. **リファレンス**：[API リファレンス](/api/readme/)で、すべてのクラスとメソッドを調べる
+4. **[ガイド](/clients/typescript/guide/install/)**：空間ID の作り方、接続、書き込み、検索、クエリ、エラー処理など、クライアントの機能を 1 つずつ詳しく知る
+5. **リファレンス**：[API リファレンス](/clients/typescript/api/readme/)で、すべてのクラスとメソッドを調べる
 
 各ページの「実行する」ボタンで、コードをその場で動かせます。
 

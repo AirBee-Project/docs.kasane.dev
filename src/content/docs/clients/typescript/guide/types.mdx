@@ -4,9 +4,9 @@ sidebar:
   order: 7
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/types.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/types.ts?raw';
 
 :::note[このページで学ぶこと]
 - 5 つの値の型と、TypeScript での型の対応
@@ -15,7 +15,7 @@ import c0 from '../../../tutorial/steps/guide/types.ts?raw';
 
 ## 値の型
 
-テーブルの値の型は、作るときに決めます（[データベースとテーブル](/guide/databases/)）。書くときと読んだときの、TypeScript での型は次のとおりです。
+テーブルの値の型は、作るときに決めます（[データベースとテーブル](/clients/typescript/guide/databases/)）。書くときと読んだときの、TypeScript での型は次のとおりです。
 
 | 型 | 書く値 | 読んだ値 |
 | --- | --- | --- |
@@ -85,4 +85,4 @@ TEXT と ENUM のテーブルは `<string>`、BOOLEAN のテーブルは `<boole
 - 型は text・int・boolean・enum・presence の 5 つ。INT は `bigint` で返る
 - 制約を付けると、範囲外の値や選択肢に無い値を防げる
 
-関連する API：[TableDataType](/api/type-aliases/tabledatatype/)、[PrimitiveValue](/api/type-aliases/primitivevalue/)
+関連する API：[TableDataType](/clients/typescript/api/type-aliases/tabledatatype/)、[PrimitiveValue](/clients/typescript/api/type-aliases/primitivevalue/)

@@ -4,9 +4,9 @@ sidebar:
   order: 8
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/temporal.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/temporal.ts?raw';
 
 :::note[このページで学ぶこと]
 - 時間を扱うテーブルの作り方
@@ -56,4 +56,4 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 - 時間間隔は 1・60・3600・86400 秒の 4 つ
 - 時間なしで書いた値は全時間の値になる
 
-関連する API：[Interval](/api/classes/interval/)、[SingleId.withTime](/api/classes/singleid/#withtime)
+関連する API：[Interval](/clients/typescript/api/classes/interval/)、[SingleId.withTime](/clients/typescript/api/classes/singleid/#withtime)

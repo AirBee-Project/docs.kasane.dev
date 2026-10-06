@@ -4,10 +4,10 @@ sidebar:
   order: 6
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/formats.ts?raw';
-import c1 from '../../../tutorial/steps/guide/stream.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/formats.ts?raw';
+import c1 from '../../../../../tutorial/steps/guide/stream.ts?raw';
 
 :::note[このページで学ぶこと]
 - `table.search` のオプション
@@ -22,7 +22,7 @@ import c1 from '../../../tutorial/steps/guide/stream.ts?raw';
 | オプション | 内容 |
 | --- | --- |
 | `format` | 結果の ID の形。`"singleId"`・`"rangeId"`（省略時）・`"flexId"` |
-| `policy` | テーブルより細かい ID の扱い（[書き込む](/guide/write/#テーブルより細かい-id)） |
+| `policy` | テーブルより細かい ID の扱い（[書き込む](/clients/typescript/guide/write/#テーブルより細かい-id)） |
 
 戻り値は `ResultStream` です。1 件は `{ id, value }` の形（`ResultItem`）で、`id` は空間ID のクラス、`value` はテーブルの型の値です。
 
@@ -81,4 +81,4 @@ flexId [ '20/0|20/931389|19/206450', '20/0|20/931390|19/206450' ]
 - 結果は `for await`・`toArray()`・`toDictionaryMap()` で受け取る。1 回しか読めない
 - `format` で結果の ID の形を選ぶ
 
-関連する API：[TableHandle.search](/api/classes/tablehandle/#search)、[ResultStream](/api/classes/resultstream/)、[ResultItem](/api/interfaces/resultitem/)
+関連する API：[TableHandle.search](/clients/typescript/api/classes/tablehandle/#search)、[ResultStream](/clients/typescript/api/classes/resultstream/)、[ResultItem](/clients/typescript/api/interfaces/resultitem/)

@@ -27,4 +27,4 @@ plan/
 # reference copy of another repository
 docs.airbee.jp/
 
-src/content/docs/api/
+src/content/docs/clients/typescript/api/

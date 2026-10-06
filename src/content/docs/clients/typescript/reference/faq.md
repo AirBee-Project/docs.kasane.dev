@@ -14,7 +14,7 @@ INT の値は `bigint` で返ります。`Number(value)` で普通の数値に�
 
 ## `count` が書き込んだ件数と合わない
 
-`count` は内部の保存単位の数で、書き込んだ ID の数とは違います（[書き込む](/guide/write/#まとめて書き込む)）。
+`count` は内部の保存単位の数で、書き込んだ ID の数とは違います（[書き込む](/clients/typescript/guide/write/#まとめて書き込む)）。
 
 ## 同じ場所に `insert` してもエラーにならない
 
@@ -22,7 +22,7 @@ Kasane v0.7 の `insert` は上書きです。元の値を残したいときは 
 
 ## `connect` が終わらない
 
-v0.0.3 では、ユーザー名やパスワードが間違っていると、`connect` がエラーにならずにログインを繰り返し続けます。ユーザー名とパスワードを確かめてください（[接続と認証](/guide/connect/)）。
+v0.0.3 では、ユーザー名やパスワードが間違っていると、`connect` がエラーにならずにログインを繰り返し続けます。ユーザー名とパスワードを確かめてください（[接続と認証](/clients/typescript/guide/connect/)）。
 
 ## `policy must be specified` と出る
 

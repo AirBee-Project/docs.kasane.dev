@@ -2,10 +2,10 @@
 title: クイックスタート
 ---
 
-import StepCode from '../../components/StepCode.astro';
-import TutorialRunner from '../../components/TutorialRunner.astro';
-import TablerIcon from '../../components/TablerIcon.astro';
-import code from '../../tutorial/steps/quickstart.ts?raw';
+import StepCode from '../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../components/TutorialRunner.astro';
+import TablerIcon from '../../../../components/TablerIcon.astro';
+import code from '../../../../tutorial/steps/quickstart.ts?raw';
 
 :::note[このページで学ぶこと]
 - テーブルを作る
@@ -58,7 +58,7 @@ import code from '../../tutorial/steps/quickstart.ts?raw';
 npm install @airbee-project/kasane-client
 ```
 
-接続してデータベースを選べば、あとは上のコードと同じです（[接続と認証](/guide/connect/)）。
+接続してデータベースを選べば、あとは上のコードと同じです（[接続と認証](/clients/typescript/guide/connect/)）。
 
 ```ts
 import { KasaneClient } from "@airbee-project/kasane-client";
@@ -76,5 +76,5 @@ TypeScript で型チェックをするときは、`tsconfig.json` の `moduleRes
 ## 次に読むもの
 
 - [チュートリアル：町の危険度マップ](/tutorial/)：Kasane で小さな地図アプリのデータを作ります。
-- [ガイド](/guide/install/)：クライアントの機能を 1 つずつ詳しく知ります。
+- [ガイド](/clients/typescript/guide/install/)：クライアントの機能を 1 つずつ詳しく知ります。
 - [時空間ID の基礎](/concepts/spatial-id/)：空間ID の仕組みを知ります。

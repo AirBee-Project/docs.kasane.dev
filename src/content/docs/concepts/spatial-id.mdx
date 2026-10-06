@@ -15,7 +15,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 - Kasane で空間ID を表す 3 つの形
 :::
 
-このページは、Kasane を使うための背景知識です。クライアントの使い方は[ガイド](/guide/install/)で説明しています。
+このページは、Kasane を使うための背景知識です。クライアントの使い方は[ガイド](/clients/typescript/guide/install/)で説明しています。
 
 このページの図の一部は、経済産業省・国土交通省・国土地理院・NEDO・IPA が公開している「4 次元時空間情報利活用のための空間 ID ガイドライン（1.2 版）」から引用しています。詳しい仕様はガイドライン本文を参照してください。
 
@@ -129,7 +129,7 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 - <TablerIcon name="pointer" />：ボクセルにカーソルを合わせると、その空間ID が表示されます。
 - <TablerIcon name="view-360-number" />：地図を自動で回転させます。
 
-ほかに、<TablerIcon name="plus" /> .txtを追加 で空間ID を並べたテキストファイル（[Nazori](/docs/plateau/) の出力など）を読み込むこともできます。
+ほかに、<TablerIcon name="plus" /> .txtを追加 で空間ID を並べたテキストファイル（[Nazori](/tools/plateau/) の出力など）を読み込むこともできます。
 
 ## 時空間ID
 
@@ -190,7 +190,7 @@ RangeId.create(20, [0, 7], [931389, 931394], [412900, 412901]); // "20/0:7/93138
 
 FlexId は、軸ごとに違うズームレベルを持てる形で、Kasane の内部の保存単位です。`20/0|20/931389|19/206450` は、y 方向だけズームレベル 19（= ズームレベル 20 の 2 ボクセル分）のボクセルを表します。
 
-クライアントでの作り方は、ガイドの[空間ID を作る](/guide/spatial-ids/)で説明しています。
+クライアントでの作り方は、ガイドの[空間ID を作る](/clients/typescript/guide/spatial-ids/)で説明しています。
 
 ## まとめ
 

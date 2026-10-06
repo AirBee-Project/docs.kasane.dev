@@ -4,9 +4,9 @@ sidebar:
   order: 10
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/errors.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 
 :::note[このページで学ぶこと]
 - サーバーから返るエラーと、その見分け方
@@ -49,7 +49,7 @@ import c0 from '../../../tutorial/steps/guide/errors.ts?raw';
 
 `isKasaneError(e)` は TypeScript の型ガードなので、`if (isKasaneError(e))` の中では `e.message` などをそのまま使えます。
 
-ログインのときにユーザー名やパスワードが間違っていると、v0.0.3 ではエラーにならず、`connect` が終わりません（[接続と認証](/guide/connect/)）。
+ログインのときにユーザー名やパスワードが間違っていると、v0.0.3 ではエラーにならず、`connect` が終わりません（[接続と認証](/clients/typescript/guide/connect/)）。
 
 ## SpatialIdError
 
@@ -67,4 +67,4 @@ import c0 from '../../../tutorial/steps/guide/errors.ts?raw';
 - サーバーのエラーは `isKasaneError(e)` で見分け、`e.message` の `[種類]` で原因が分かる
 - 空間ID の値の誤りは、通信する前に `SpatialIdError` になる
 
-関連する API：[isKasaneError](/api/functions/iskasaneerror/)、[SpatialIdError](/api/classes/spatialiderror/)
+関連する API：[isKasaneError](/clients/typescript/api/functions/iskasaneerror/)、[SpatialIdError](/clients/typescript/api/classes/spatialiderror/)

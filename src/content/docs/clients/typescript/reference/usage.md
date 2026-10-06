@@ -4,7 +4,7 @@ sidebar:
   order: 2
 ---
 
-よく使う書き方を 1 ページにまとめています。それぞれの意味は[ガイド](/guide/install/)の各ページで説明しています。
+よく使う書き方を 1 ページにまとめています。それぞれの意味は[ガイド](/clients/typescript/guide/install/)の各ページで説明しています。
 
 ## テーブル
 
@@ -80,4 +80,4 @@ await weather.search(place.withTime(Interval.DAY, day)).toArray(); // その日�
 | `unknown` | サーバーにつながらない |
 | `internal` | サーバー内部のエラー。Kasane の不具合の可能性があります |
 
-`isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。詳しくは[エラー処理](/guide/errors/)を見てください。
+`isNotFoundError(e)`、`isAlreadyExistsError(e)`、`isPermissionDeniedError(e)` などで種類を判定できます。詳しくは[エラー処理](/clients/typescript/guide/errors/)を見てください。

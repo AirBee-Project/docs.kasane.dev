@@ -4,9 +4,9 @@ sidebar:
   order: 9
 ---
 
-import StepCode from '../../../components/StepCode.astro';
-import TutorialRunner from '../../../components/TutorialRunner.astro';
-import c0 from '../../../tutorial/steps/guide/query.ts?raw';
+import StepCode from '../../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import c0 from '../../../../../tutorial/steps/guide/query.ts?raw';
 
 :::note[このページで学ぶこと]
 - `query` でクエリを組み立てる方法
@@ -30,7 +30,7 @@ const results = await client.query(q, area, { format: "singleId" }).toArray();
 ```
 
 - `query.source(データベース名, テーブル名)` から始めて、演算をメソッドでつなぎます。演算のメソッドは、新しい `QueryBuilder` を返します。
-- `client.query(クエリ, 取り出す範囲, オプション)` で実行します。戻り値は `table.search` と同じ `ResultStream` です（[検索と結果の受け取り方](/guide/search/)）。
+- `client.query(クエリ, 取り出す範囲, オプション)` で実行します。戻り値は `table.search` と同じ `ResultStream` です（[検索と結果の受け取り方](/clients/typescript/guide/search/)）。
 - オプションの `format` は結果の ID の形、`valueType` は `mapValues` などで値の型が変わるときの結果の型です。
 - 参照するすべてのテーブルに read の権限が必要です。
 - `filter` の条件は `{ min, max }`（どちらか片方でもよい）、`{ equals: 値 }`、`{ notInRange: { min, max } }` の 3 つです。クライアントの説明（JSDoc）にある `{ inRange: { … } }` は、v0.0.3 では使えません。
@@ -83,7 +83,7 @@ shiftX（10 右へ）: 5: 6
 | `"average"` | 55 |
 | `"difference"` | 50 |
 
-すべての演算は[クエリの一覧](/docs/query/)にまとめています。チュートリアルの[町の危険度マップ](/tutorial/)でも、`falloff`・`merge`・`filter` を組み合わせて使っています。
+すべての演算は[クエリの一覧](/clients/typescript/reference/query/)にまとめています。チュートリアルの[町の危険度マップ](/tutorial/)でも、`falloff`・`merge`・`filter` を組み合わせて使っています。
 
 ## まとめ
 
@@ -91,4 +91,4 @@ shiftX（10 右へ）: 5: 6
 - 結果は `ResultStream` で、テーブルは変わらない
 - `policy` を取る演算では、必ず指定する
 
-関連する API：[query](/api/variables/query/)、[QueryBuilder](/api/classes/querybuilder/)、[KasaneClient.query](/api/classes/kasaneclient/#query)
+関連する API：[query](/clients/typescript/api/variables/query/)、[QueryBuilder](/clients/typescript/api/classes/querybuilder/)、[KasaneClient.query](/clients/typescript/api/classes/kasaneclient/#query)
