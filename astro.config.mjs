@@ -16,7 +16,10 @@ function legacyRedirects() {
 				const docs = new URL('./src/content/docs/', import.meta.url);
 				/** @type {Record<string, string>} */
 				const redirects = {
-					'/quickstart': '/clients/typescript/quickstart/',
+					'/quickstart': '/clients/typescript/#クイックスタート',
+					'/clients/typescript/quickstart': '/clients/typescript/#クイックスタート',
+					'/guide/install': '/clients/typescript/guide/environment/',
+					'/clients/typescript/guide/install': '/clients/typescript/guide/environment/',
 					'/docs/usage': '/clients/typescript/reference/usage/',
 					'/docs/query': '/clients/typescript/reference/query/',
 					'/docs/faq': '/clients/typescript/reference/faq/',
@@ -68,7 +71,6 @@ export default defineConfig({
 							collapsed: true,
 							items: [
 								{ label: '概要', slug: 'clients/typescript' },
-								{ label: 'クイックスタート', slug: 'clients/typescript/quickstart' },
 								{ label: 'ガイド', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
 								{ label: 'リファレンス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
 								typeDocSidebarGroup,

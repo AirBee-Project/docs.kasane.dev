@@ -1,29 +1,16 @@
 ---
-title: インストール
+title: 動作環境と設定
 sidebar:
   order: 1
 ---
-
-import InstallTabs from '../../../../../components/InstallTabs.astro';
-
-<InstallTabs pkg="https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz" />
-
-```ts
-import { KasaneClient } from "@airbee-project/kasane-client";
-
-const client = await KasaneClient.connect("https://kasane.example.com", "alice", "alice-pass");
-console.log(await client.listDatabases());
-```
 
 ## 動作環境
 
 | 環境 | 対応 |
 | --- | --- |
-| Node.js | 18 以上（標準の `fetch` を使用。22 で確認） |
+| Node.js | 18 以上 |
 | Bun | 対応 |
 | ブラウザ | 対応 |
-
-ブラウザから直接接続するには、Kasane サーバー側でそのオリジンからの CORS を許可する必要があります。
 
 ## TypeScript の設定
 

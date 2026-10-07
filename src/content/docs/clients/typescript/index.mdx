@@ -2,24 +2,59 @@
 title: TypeScript クライアント
 ---
 
-このドキュメントでは TypeScript を用いて Kasane を操作する方法を学びます。Kasane への接続には `@airbee-project/kasane-client` を用います。
+import { Code } from '@astrojs/starlight/components';
+import InstallTabs from '../../../../components/InstallTabs.astro';
+import StepCode from '../../../../components/StepCode.astro';
+import TutorialRunner from '../../../../components/TutorialRunner.astro';
+import TablerIcon from '../../../../components/TablerIcon.astro';
+import code from '../../../../tutorial/steps/quickstart.ts?raw';
+import output from '../../../../tutorial/steps/quickstart.out.txt?raw';
+
+`@airbee-project/kasane-client` で、TypeScript から Kasane を操作します。Node.js・Bun・ブラウザで動きます。
+
+## インストール
+
+<InstallTabs pkg="https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz" />
+
+`tsconfig.json` の設定は[動作環境と設定](/clients/typescript/guide/environment/#typescript-の設定)にあります。
+
+## クイックスタート
+
+接続してデータベースを選びます。
 
 ```ts
-// 1 時間ごとの雨の強さを入れるテーブルを作る
-await db.createTable("rain", "int", 20, { isTemporal: true });
-const rain = db.table("rain");
+import { KasaneClient } from "@airbee-project/kasane-client";
 
-// 東京駅付近の 1 ボクセルに、2025-01-01 0 時台（UTC）の雨の強さ 60 を書き込む
-await rain.insert(60, SingleId.parse("20/0/931389/412900").withTime(3600, 482136));
-
-// 周辺の範囲を検索する
-const results = await rain.search(RangeId.parse("20/0/931380:931399/412890:412909")).toArray();
+const client = await KasaneClient.connect("https://サーバーのURL", "ユーザー名", "パスワード");
+const db = client.database("データベース名");
 ```
 
-## 構成
+テーブル `hello` を作り、東京駅付近の空間IDに `42` を書き込んで検索します。
 
-- **[クイックスタート](/clients/typescript/quickstart/)**：テーブルを作り、書き込み、地図で確認する
-- **[ガイド](/clients/typescript/guide/install/)**：機能ごとの説明
-- **リファレンス**：[コードの早見表](/clients/typescript/reference/usage/)・[API リファレンス](/clients/typescript/api/readme/)
+<StepCode code={code} title="quickstart.ts" />
 
-通しで使うなら[チュートリアル](/tutorial/)で、言語タブの TypeScript を選んでください。
+<TutorialRunner step="quickstart" />
+
+実行結果の例：
+
+<Code code={output.trimEnd()} lang="text" />
+
+:::note[「実行する」の実行環境]
+共有の体験用データベース `tutorial` で動きます。テーブル名には他の人と衝突しないよう固有の接尾辞が付き、同名のテーブルは作り直されます。データは定期的に消えます。公開できないデータは書き込まないでください。
+:::
+
+### 地図で見る
+
+1. 地図の左上の <TablerIcon name="cube" /> 空間ID を押します。
+2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に `20/0/931389/412900` を貼り付けます。
+3. 入力欄の右の <TablerIcon name="target" /> でその場所へ移動します。
+
+<iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+
+東京駅の丸の内側に、1 辺約 30 m のボクセルが表示されます。
+
+## 次に読むもの
+
+- [チュートリアル](/tutorial/)：危険度マップを作りながら主な機能を使う（言語タブで TypeScript を選ぶ）
+- [ガイド](/clients/typescript/guide/environment/)：機能ごとの説明
+- [コードの早見表](/clients/typescript/reference/usage/)
