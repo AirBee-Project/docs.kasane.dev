@@ -8,7 +8,7 @@ sidebar:
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 
-建物のテーブルを作り、2 つのビルのボクセルに危険度 `100` を書き込みます。ビルは直方体なので、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
+建物のテーブルを作り、2 つのビルの空間IDに危険度 `100` を書き込みます。ビルは直方体なので、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
 
 | ビル | 東西（x） | 南北（y） | 高さ（f） | ボクセル数 |
 | --- | --- | --- | --- | --- |
@@ -21,6 +21,6 @@ import TablerIcon from '../../../components/TablerIcon.astro';
 
 ## 地図で見る
 
-出力された 2 つの ID を、<TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 の入力欄にカンマ区切りで貼り付けます。
+出力された 2 つの 空間ID を、<TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 の入力欄にカンマ区切りで貼り付けます。
 
 <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
