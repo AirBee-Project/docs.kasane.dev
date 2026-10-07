@@ -10,7 +10,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ## 空間ID とは
 
-空間ID は、地球上の空間を格子状に区切ったボクセルのインデックスです。行政の[空間ID ガイドライン](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)で定義されています（このページの図の一部はガイドラインから引用）。
+空間ID は、地球上の空間を格子状に区切ったボクセルのインデックスです。IPAの[空間ID ガイドライン](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)で定義されています。
 
 ```text
 {z}/{f}/{x}/{y}        例：2/0/3/1
@@ -62,7 +62,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 </div>
 </div>
 
-ボクセルの大きさの目安（横幅は高緯度ほど狭い）：
+ボクセルの大きさの目安：
 
 <div class="side-by-side">
 <div>
@@ -85,7 +85,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 インデックスの範囲は、`f` が −2<sup>z</sup> 〜 2<sup>z</sup> − 1、`x`・`y` が 0 〜 2<sup>z</sup> − 1 です。
 
-## 緯度・経度・標高からの変換
+## 緯度・経度・標高から空間IDへの変換
 
 `h` は標高（m）です。
 
