@@ -41,6 +41,7 @@ await db.createTable("weather", "enum", 20, {
 | --- | --- |
 | 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/clients/typescript/guide/types/)） |
 | `isTemporal` | 時空間ID を書き込めるようにする（[時空間ID を使う](/clients/typescript/guide/temporal/)） |
+| `valueIndex` | 値による絞り込み用の索引を持つ |
 | `constraints` | 値の範囲や選択肢 |
 | `description` | 説明文 |
 
