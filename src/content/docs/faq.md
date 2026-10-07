@@ -8,13 +8,13 @@ TypeScript クライアントについては [TypeScript の FAQ](/clients/types
 
 count は内部の保存単位（[FlexId](/concepts/kasane-spatial-id/#flexid)）の数です。隣り合うボクセルはまとめて保存されます。
 
-## 同じ場所に insert してもエラーにならない
+## 同じ場所に書き込んでもエラーにならない
 
-insert は上書きです。既存の値を残すときは upsert を使います。
+書き込み（insert）は上書きです。既存の値を残すときは、空いている部分にだけ書き込む upsert を使います。
 
 ## `policy must be specified` と出る
 
-merge・zoomOut・extrude・falloff には policy が必須です（[policy](/concepts/query/#policy)）。
+クエリの merge・zoom out・extrude・falloff には policy が必須です（[policy](/concepts/query/#policy)）。
 
 ## 30 分単位のデータを扱いたい
 

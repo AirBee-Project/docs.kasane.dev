@@ -10,36 +10,37 @@ sidebar:
 
 | 演算 | 内容 |
 | --- | --- |
-| filter | 値の範囲や特定の値で絞り込む |
-| intersection | 両方にあるボクセルだけ残す（値は左側） |
-| difference | 右側にあるボクセルを除く |
-| merge | 重ね合わせる。片方にしか無いボクセルは、無い側を既定値として計算する |
-| zoomOut | 粗いズームレベルにまとめる |
-| shift | 東西・南北・高さのいずれかの方向に、指定したボクセル数だけ移動する |
-| extrude | 指定した範囲いっぱいに引き延ばす |
-| falloff | 周囲に広げながら、指定したボクセル数の先で 0 になるよう減衰させる |
-| mapValues | 対応表で値を置き換える |
-| 四則演算 | 整数の割り算は切り捨て |
+| `source` | 入力にするテーブルを選ぶ |
+| `filter_values` | 値の範囲や特定の値で絞り込む |
+| `intersection` | 両方にあるボクセルだけ残す（値は左側） |
+| `difference` | 右側にあるボクセルを除く |
+| `merge` | 重ね合わせる。片方にしか無いボクセルは、無い側を `default_value` として計算する |
+| `zoom_out` | 粗いズームレベルにまとめる |
+| `shift_x`・`shift_y`・`shift_f` | 東西・南北・高さの方向に、指定したボクセル数だけ移動する |
+| `extrude_x`・`extrude_y`・`extrude_f` | 指定した範囲いっぱいに引き延ばす |
+| `falloff_x`・`falloff_y`・`falloff_f` | 周囲に広げながら、`radius` ボクセル先で 0 になるよう減衰させる |
+| `map_values` | 対応表で値を置き換える |
+| `math_values` | 四則演算（`ADD`・`SUBTRACT`・`MULTIPLY`・`DIVIDE`）。整数の割り算は切り捨て |
 
 ## policy
 
-merge・zoomOut・extrude・falloff では、同じボクセルで値が重なったときの決め方（policy）が必須です。左 80・右 30 の場合：
+`merge`・`zoom_out`・`extrude_*`・`falloff_*` では、同じボクセルで値が重なったときの決め方（`policy`）が必須です。左 80・右 30 の場合：
 
-| policy | 結果 |
+| `policy` | 結果 |
 | --- | --- |
-| overwrite | 30（右側） |
-| keepExisting | 80（左側） |
-| sum | 110 |
-| max / min | 80 / 30 |
-| average | 55 |
-| difference | 50（左 − 右） |
+| `OVERWRITE` | 30（右側） |
+| `KEEP_EXISTING` | 80（左側） |
+| `SUM` | 110 |
+| `MAX` / `MIN` | 80 / 30 |
+| `AVERAGE` | 55 |
+| `DIFFERENCE` | 50（左 − 右） |
 
 ## falloff の減衰
 
-| pattern | 減り方 |
+| `pattern` | 減り方 |
 | --- | --- |
-| linear | 一定に減る（80 → 40 → 0） |
-| quadraticIn | 近くはゆっくり、遠くで急に減る |
-| quadraticOut | 近くで急に、遠くはゆっくり減る |
+| `LINEAR` | 一定に減る（80 → 40 → 0） |
+| `QUADRATIC_IN` | 近くはゆっくり、遠くで急に減る |
+| `QUADRATIC_OUT` | 近くで急に、遠くはゆっくり減る |
 
-direction に upper か lower を指定すると、インデックスが増える側か減る側だけに広げます。
+`direction` に `UPPER` か `LOWER` を指定すると、インデックスが増える側か減る側だけに広げます。
