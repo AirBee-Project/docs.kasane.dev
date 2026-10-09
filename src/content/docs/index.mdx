@@ -4,7 +4,9 @@ title: Kasane とは
 
 import ClientList from '../../components/ClientList.astro';
 
-Kasane は、時空間ID をキーに値を持つデータベースです。範囲検索と、複数のテーブルを重ね合わせる計算（クエリ）ができます。時空間ID については[時空間ID の基礎](/concepts/spatial-id/)を見てください。
+Kasane は、[時空間ID](/concepts/spatial-id/) をキーに値を持つデータベースです。
+
+書き込んだ値は、場所や時間の範囲を指定して検索できます。クエリを使えば、値による絞り込みや、テーブルどうしの重ね合わせなどの計算もできます。
 
 扱うデータの例：
 
@@ -15,3 +17,4 @@ Kasane は、時空間ID をキーに値を持つデータベースです。範�
 ## クライアントライブラリ
 
 <ClientList />
+
