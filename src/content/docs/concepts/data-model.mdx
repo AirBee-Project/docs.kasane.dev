@@ -4,17 +4,11 @@ sidebar:
   order: 3
 ---
 
+import DataModelFigure from '../../../components/DataModelFigure.astro';
+
 データは、データベース → テーブル → 時空間IDの 3 段で管理します。テーブルは[時空間ID](/concepts/spatial-id/#時空間id) をキーにした値の集まりで、テーブル内の 1 つの時空間IDが持てる値は 1 つのみです。
 
-```text
-Kasane サーバー
-└ データベース（例：city）
-   ├ テーブル（例：building。TEXT型）
-   │  ├ 20/0/931389/412900 → "東京駅"
-   │  └ 20/0/931390/412900 → "丸の内ビル"
-   └ テーブル（例：risk。INT型）
-      └ 20/0/931389/412900 → 80
-```
+<DataModelFigure />
 
 ## テーブルの設定
 

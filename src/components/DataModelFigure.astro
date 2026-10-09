@@ -1,0 +1,107 @@
+---
+// データベース → テーブル → 時空間ID と値、の構造図（Artboard 1.svg をそのまま埋め込んだもの）。
+// ライトモードは元の配色、ダークモードでは背景と文字の色をテーマに合わせる。
+---
+
+<figure class="data-model-figure not-content">
+	<svg viewBox="0 0 515.64 184.38" role="img" aria-labelledby="data-model-figure-title">
+		<title id="data-model-figure-title">
+			データベース City の中にテーブル Building と Risk があり、それぞれが時空間ID をキーに値を持つ図
+		</title>
+		<rect class="outer" x="7.61" y="6.35" width="500" height="168.71" rx="4.88" ry="4.88" />
+		<text class="cls-2" transform="translate(201.69 29.28)"><tspan x="0" y="0">D</tspan><tspan class="cls-15" x="11.39" y="0">a</tspan><tspan class="cls-20" x="20.42" y="0">t</tspan><tspan x="26.53" y="0">a</tspan><tspan class="cls-14" x="35.92" y="0">b</tspan><tspan x="45.87" y="0">ase: City</tspan></text>
+		<rect class="card" x="20.35" y="43.13" width="231.35" height="119.86" rx="4.88" ry="4.88" />
+		<text class="cls-5" transform="translate(43.21 106.53)"><tspan x="0" y="0">20/0/931389/412906</tspan><tspan x="0" y="15">20/0/931380/412905</tspan><tspan x="0" y="30">20/0/931379/412901</tspan><tspan x="0" y="45">20/0/931381/412911</tspan></text>
+		<text class="cls-1" transform="translate(82.46 62.69)"><tspan class="cls-12" x="0" y="0">T</tspan><tspan x="7.96" y="0">able: Building</tspan></text>
+		<rect class="card" x="263.53" y="43.13" width="231.35" height="119.86" rx="4.88" ry="4.88" />
+		<text class="cls-1" transform="translate(340.58 62.69)"><tspan class="cls-12" x="0" y="0">T</tspan><tspan x="7.96" y="0">able: Risk</tspan></text>
+		<line class="rule" x1="40.51" y1="70.69" x2="231.53" y2="70.69" />
+		<text class="cls-7" transform="translate(76.44 85.08)"><tspan class="cls-16" x="0" y="0">K</tspan><tspan x="7.09" y="0">e</tspan><tspan x="13.24" y="0">y</tspan></text>
+		<text class="cls-7" transform="translate(167.16 85.08)"><tspan class="cls-18" x="0" y="0">V</tspan><tspan x="6.12" y="0">alue</tspan></text>
+		<text class="cls-5" transform="translate(163.66 106.53)"><tspan x="0" y="0">"東京駅"</tspan><tspan x=".66" y="15">"</tspan><tspan class="cls-19" x="4.94" y="15">丸</tspan><tspan class="cls-13" x="13.72" y="15">ビ</tspan><tspan class="cls-17" x="21.79" y="15">ル</tspan><tspan x="30.66" y="15">"</tspan><tspan x="-3.85" y="30">"新</tspan><tspan class="cls-19" x="9.44" y="30">丸</tspan><tspan class="cls-13" x="18.23" y="30">ビ</tspan><tspan class="cls-17" x="26.29" y="30">ル</tspan><tspan x="35.17" y="30">"</tspan><tspan x="1.24" y="45">"KITTE"</tspan></text>
+		<line class="rule" x1="283.7" y1="70.69" x2="474.71" y2="70.69" />
+		<text class="cls-7" transform="translate(319.63 85.08)"><tspan class="cls-16" x="0" y="0">K</tspan><tspan x="7.09" y="0">e</tspan><tspan x="13.24" y="0">y</tspan></text>
+		<text class="cls-7" transform="translate(410.35 85.08)"><tspan class="cls-18" x="0" y="0">V</tspan><tspan x="6.12" y="0">alue</tspan></text>
+		<text class="cls-5" transform="translate(286.37 106.54)"><tspan x="0" y="0">20/0/931389/412906</tspan><tspan x="0" y="15">20/0/931380/412905</tspan><tspan x="0" y="30">20/0/931381/412911</tspan><tspan x="0" y="45">20/0/931384/412904</tspan></text>
+		<text class="cls-5" transform="translate(419.63 106.53)"><tspan x="0" y="0">90</tspan><tspan x="0" y="15">80</tspan><tspan x="0" y="30">70</tspan><tspan x="0" y="45">40</tspan></text>
+	</svg>
+</figure>
+
+<style>
+	.data-model-figure {
+		margin-block: 1.5rem;
+	}
+	svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		font-family: var(--sl-font);
+	}
+	text {
+		fill: #000;
+	}
+	/* サイト全体の CSS が tspan に文字サイズを当てるので、親の text から引き継がせる */
+	.data-model-figure :global(tspan) {
+		font-size: inherit;
+		font-weight: inherit;
+	}
+	.outer {
+		fill: #e6e6e6;
+	}
+	.card {
+		fill: #fff;
+	}
+	.rule {
+		stroke: #3a3a3a;
+		stroke-width: 0.5px;
+	}
+	.cls-1 {
+		font-size: 14.82px;
+		font-weight: 600;
+	}
+	.cls-2 {
+		font-size: 16.12px;
+		font-weight: 600;
+	}
+	.cls-5 {
+		font-size: 9.02px;
+		font-weight: 400;
+	}
+	.cls-7 {
+		font-size: 10.92px;
+		font-weight: 500;
+	}
+	.cls-12 {
+		letter-spacing: -0.08em;
+	}
+	.cls-13 {
+		letter-spacing: -0.11em;
+	}
+	.cls-14,
+	.cls-15,
+	.cls-17 {
+		letter-spacing: -0.02em;
+	}
+	.cls-16 {
+		letter-spacing: -0.01em;
+	}
+	.cls-18,
+	.cls-19,
+	.cls-20 {
+		letter-spacing: -0.03em;
+	}
+
+	/* ダークモードでは、明るい箱が浮かないようにテーマの色に合わせる */
+	:global([data-theme='dark']) text {
+		fill: var(--sl-color-white);
+	}
+	:global([data-theme='dark']) .outer {
+		fill: var(--sl-color-gray-6);
+	}
+	:global([data-theme='dark']) .card {
+		fill: var(--sl-color-black);
+	}
+	:global([data-theme='dark']) .rule {
+		stroke: var(--sl-color-gray-4);
+	}
+</style>
