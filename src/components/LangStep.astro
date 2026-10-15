@@ -9,8 +9,10 @@ import { languages, type LanguageId } from '../tutorial/languages';
 interface Props {
 	/** ステップ名。例："map/1-buildings" */
 	step: string;
+	/** false にすると「実行する」ボタンを出さない（コードを見せるだけの手順用） */
+	run?: boolean;
 }
-const { step } = Astro.props;
+const { step, run = true } = Astro.props;
 
 type Files = Record<string, string>;
 /** glob の結果を、ステップ名をキーにした表にする */
@@ -47,15 +49,17 @@ const fileName = step.split('/').pop();
 			<LangTab lang={t.id}>
 				<StepCode code={t.code[step]!} title={`${fileName}${t.ext}`} lang={t.codeLang} />
 				{/* コードの下に、区切り線を挟んで実行ボタンと実行結果の例を並べる（見た目は custom.css） */}
-				<div class="lang-step-result">
-					{t.runnable && <TutorialRunner step={step} />}
-					{t.output[step] && (
-						<>
-							<p>実行結果の例：</p>
-							<Code code={t.output[step].trimEnd()} lang="text" />
-						</>
-					)}
-				</div>
+				{((run && t.runnable) || t.output[step]) && (
+					<div class="lang-step-result">
+						{run && t.runnable && <TutorialRunner step={step} />}
+						{t.output[step] && (
+							<>
+								<p>実行結果の例：</p>
+								<Code code={t.output[step].trimEnd()} lang="text" />
+							</>
+						)}
+					</div>
+				)}
 			</LangTab>
 		))
 	}

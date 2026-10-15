@@ -24,6 +24,7 @@ function legacyRedirects() {
 					'/docs/query': '/clients/typescript/reference/query/',
 					'/docs/faq': '/clients/typescript/reference/faq/',
 					'/docs/plateau': '/tools/plateau/',
+					'/tutorial/5-danger': '/tutorial/4-merge/',
 				};
 				for (const dir of ['guide', 'api']) {
 					const files = readdirSync(new URL(`clients/typescript/${dir}/`, docs), { recursive: true, encoding: 'utf8' });

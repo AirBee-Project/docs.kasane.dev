@@ -1,31 +1,46 @@
 ---
-title: Step 4：危険度を足し合わせる
+title: Step 4：危険度を重ね合わせて地図で見る
 sidebar:
-  label: 4. 足し合わせる
+  label: 4. 重ね合わせて地図で見る
   order: 4
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
+import TablerIcon from '../../../components/TablerIcon.astro';
+import mapJson from '../../../tutorial/steps/map/4-merge/2-json.out.txt?raw';
 
-Step 2 の建物の危険度と、Step 3 の雨の強さを足し合わせます。調べる 2 点（西・東）は Step 3 と同じで、どちらもビルA から 2 ボクセル離れているので、建物の危険度は 50 です。
+Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町全体の危険度マップを Senri で見ます。
 
 <Steps>
 
-1. **0 時台の危険度を足し合わせる**
+1. **重ね合わせる**
 
-   クエリの merge で、建物の危険度と雨を重ね合わせます。policy は sum（合計）で、雨が無い場所は 0 として計算します。
+   クエリの merge で、建物の危険度と雨を重ね合わせます。policy は max で、同じ場所では大きい方をその場所の危険度にします。建物の危険度が無い場所は 0 として扱うので、雨の強さがそのまま危険度になります。
 
-   <LangStep step="map/4-merge/1-hour0" />
+   <LangStep step="map/4-merge/1-merge" run={false} />
 
-   西は 50 + 10 = 60、東は 50 + 30 = 80 です。
+2. **JSON で出力する**
 
-2. **1 時台も確かめる**
+   重ね合わせたクエリで、町全体を 0 時台から 1 時台まで検索します。結果を、Senri が読み込める JSON に変換して出力します。
 
-   同じクエリを、1 時台の時空間ID で実行します。
+   JSON では、危険度の値を `value` に重複なく並べ、各時空間ID の `ref` でそのどれかを指します。
 
-   <LangStep step="map/4-merge/2-hour1" />
+   <LangStep step="map/4-merge/2-json" />
 
-   1 時台は町全体の雨が 60 なので、どちらも 50 + 60 = 110 です。
+3. **Senri で見る**
+
+   出力した JSON を `.json` ファイルとして保存し、[Senri](https://map.airbee.jp/?debug) で読み込みます。Senri は JSON をファイルからしか読み込めないので、別のタブで開いてください。実行できないときは、<a href={`data:application/json;charset=utf-8,${encodeURIComponent(mapJson)}`} download="danger-map.json">実行結果の例</a>をダウンロードして使えます。
+
+   1. 左上の <TablerIcon name="file-description" /> JSON → <TablerIcon name="plus" /> JSONを追加 で、保存したファイルを選びます。
+   2. 追加された `risk` の行の <TablerIcon name="target" /> を押すと、データのある場所と時刻へ移動します。
+   3. ⬜︎ を押すと透明度のバーが出るので、地図が見やすい濃さに調整します。
+
+   Senri は、値の最大を赤、最小を青としたヒートマップで表示します。0 時台は、建物のまわりが赤く、建物から離れた場所は青く表示されます。タイムバーを 1 時台に進めると、町全体に強い雨が降るので、建物から離れた場所も赤に近い色になります。建物のすぐまわりは、雨より建物の危険度の方が大きいので、色が変わりません。
 
 </Steps>
+
+## 次に読むもの
+
+- [クライアント API](/clients/)：各言語の機能ごとの説明
+- [都市データの変換](/tools/plateau/)：実際の建物データを使う

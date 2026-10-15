@@ -9,7 +9,7 @@ import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 
-建物のテーブルを作り、2 つのビルの空間IDに危険度 `100` を書き込みます。
+建物のテーブルを作り、ショッピングモールと倉庫の空間IDに危険度を書き込みます。
 
 <Steps>
 
@@ -19,22 +19,22 @@ import TablerIcon from '../../../components/TablerIcon.astro';
 
    <LangStep step="map/1-buildings/1-table" />
 
-2. **ビルを RangeId で表す**
+2. **建物を RangeId で表す**
 
-   ビルは直方体なので、たくさんのボクセルを 1 つずつ書く代わりに、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
+   建物は直方体なので、たくさんのボクセルを 1 つずつ書く代わりに、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
 
-   | ビル | 東西（x） | 南北（y） | 高さ（f） | ボクセル数 |
-   | --- | --- | --- | --- | --- |
-   | A | 931384〜931386 | 412899〜412901 | 0〜3（約 130 m） | 3 × 3 × 4 = 36 |
-   | B | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） | 2 × 2 × 6 = 24 |
+   | 建物 | 東西（x） | 南北（y） | 高さ（f） |
+   | --- | --- | --- | --- |
+   | ショッピングモール | 931384〜931386 | 412899〜412901 | 0〜5（約 190 m） |
+   | 倉庫 | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） |
 
    <LangStep step="map/1-buildings/2-range" />
 
 3. **危険度を書き込む**
 
-   2 つのビルに危険度 `100` を書き込みます。同じ値なので、2 つの RangeId を配列にして 1 回で書き込めます。
+   建物は物体なので、どちらも危険度を高くします。人の多いショッピングモールは `100`、倉庫は `70` です。
 
-   書き込めたかは、ビルA の中・ビルB の中・ビルの外の 1 ボクセルずつを検索して確かめます。
+   書き込めたかは、ショッピングモールの中・倉庫の中・建物の外の 1 ボクセルずつを検索して確かめます。
 
    <LangStep step="map/1-buildings/3-insert" />
 

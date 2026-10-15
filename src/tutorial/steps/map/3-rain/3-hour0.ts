@@ -7,8 +7,8 @@ export default async function ({ db }: Tutorial) {
   const h = Math.floor(Date.UTC(2025, 0, 1, 0) / 1000 / 3600);
 // @hide-end
   // 0 時台：町全体に小雨（10）を書き込み、東側だけ雨（30）で上書きする
-  const town = RangeId.create(20, [0, 7], [931375, 931402], [412890, 412913]);
-  const east = RangeId.create(20, [0, 7], [931388, 931402], [412890, 412913]);
+  const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
+  const east = RangeId.create(20, [0, 5], [931388, 931402], [412890, 412913]);
   await rain.insert(10, town.withTime(3600, h));
   await rain.insert(30, east.withTime(3600, h));
 

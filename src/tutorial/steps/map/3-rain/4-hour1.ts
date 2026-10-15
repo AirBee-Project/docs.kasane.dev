@@ -5,7 +5,7 @@ import type { Tutorial } from "../../../runner";
 export default async function ({ db }: Tutorial) {
   const rain = db.table("rain");
   const h = Math.floor(Date.UTC(2025, 0, 1, 0) / 1000 / 3600);
-  const town = RangeId.create(20, [0, 7], [931375, 931402], [412890, 412913]);
+  const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
   const westPoint = SingleId.create(20, 0, 931382, 412900);
   const eastPoint = SingleId.create(20, 0, 931388, 412900);
 // @hide-end
