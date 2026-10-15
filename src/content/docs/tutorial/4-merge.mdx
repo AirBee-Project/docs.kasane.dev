@@ -6,9 +6,12 @@ sidebar:
 ---
 
 import { Steps } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 import mapJson from '../../../tutorial/steps/map/4-merge/2-json.out.txt?raw';
+import hour0 from '../../../assets/senri/danger-map-hour0.png';
+import hour1 from '../../../assets/senri/danger-map-hour1.png';
 
 Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町全体の危険度マップを Senri で見ます。
 
@@ -37,6 +40,19 @@ Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町�
    3. ⬜︎ を押すと透明度のバーが出るので、地図が見やすい濃さに調整します。
 
    Senri は、値の最大を赤、最小を青としたヒートマップで表示します。0 時台は、建物のまわりが赤く、建物から離れた場所は青く表示されます。タイムバーを 1 時台に進めると、町全体に強い雨が降るので、建物から離れた場所も赤に近い色になります。建物のすぐまわりは、雨より建物の危険度の方が大きいので、色が変わりません。
+
+   実行結果の例：
+
+   <div class="figure-pair">
+   <div>
+   <Image src={hour0} alt="Senri で、0 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールが赤く、そのまわりは緑、建物から離れた西側は青、東側は水色" />
+   <p class="figure-caption">0 時台</p>
+   </div>
+   <div>
+   <Image src={hour1} alt="Senri で、1 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールのまわりは赤いまま、町全体が緑になっている" />
+   <p class="figure-caption">1 時台</p>
+   </div>
+   </div>
 
 </Steps>
 
