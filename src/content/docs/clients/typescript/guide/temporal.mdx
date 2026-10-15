@@ -35,7 +35,7 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 ```
 
 - 検索は指定した時間と重なるデータを返す。1 日単位で検索すると、その日の 1 時間単位のデータも返る
-- 時間なしの ID で書いた値は全時間の値になり、どの時刻で検索しても返る
+- 時間を付けない ID で書き込んだ値は全時間の値になり、どの時刻で検索しても返る
 - 時間を扱わないテーブルに時空間ID は書き込めない
 
 関連する API：[Interval](/clients/typescript/api/classes/interval/)、[SingleId.withTime](/clients/typescript/api/classes/singleid/#withtime)

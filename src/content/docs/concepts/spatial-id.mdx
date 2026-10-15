@@ -62,7 +62,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 </div>
 </div>
 
-ボクセルの大きさの目安：
+ボクセルの大きさは、おおよそ次のとおりです。
 
 <div class="side-by-side">
 <div>
@@ -87,7 +87,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ## 緯度・経度・標高から空間IDへの変換
 
-`h` は標高（m）です。
+次の関数で、緯度・経度・標高（m）から空間ID を求められます。
 
 ```ts
 function toSpatialId(z: number, lng: number, lat: number, h: number) {
@@ -112,11 +112,11 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
    ```text
    20/0/931389/412906,19/0/465694/206453
    ```
-3. 入力欄の右の <TablerIcon name="target" /> でその場所へ移動、⬜︎ で色の変更、<TablerIcon name="trash" /> で削除です。
+3. 入力欄の右の <TablerIcon name="target" /> でその場所へ移動し、⬜︎ で色を変え、<TablerIcon name="trash" /> で削除します。
 
 <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
 
-画面右側のボタン：
+### 画面右側のボタン
 
 - <TablerIcon name="refresh" />：範囲で書いた空間ID（[RangeId](/concepts/kasane-spatial-id/#rangeid)）を、1 ボクセルずつの表示（[SingleId](/concepts/kasane-spatial-id/#singleid)）に切り替える
 - <TablerIcon name="border-outer" />：ボクセルの枠線を表示する
@@ -127,7 +127,7 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 
 ## 時空間ID
 
-空間ID に時間インデックスを付けたものです。同じ空間IDでも、時間インデックスが違えば別の時空間IDとなります。
+時空間ID は、空間ID に時間インデックスを付けたものです。同じ空間ID でも、時間インデックスが違えば別の時空間ID になります。
 
 ![左に 3 次元の空間ID、右に同じ空間ID を時間ごとに区切った 4 次元の時空間ID を並べた図](../../../assets/ipa/ipa-fig2-21-spatial-vs-temporal.png)
 <p class="figure-caption">図 2-21 空間 ID と時空間 ID の比較イメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>

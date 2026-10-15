@@ -28,7 +28,7 @@ import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 
 ## サーバーのエラー
 
-`e.message` の先頭の `[ ]` が種類です。
+`e.message` の先頭の `[ ]` 内が、エラーの種類です。
 
 | 種類 | 主な原因 | 判定する関数 |
 | --- | --- | --- |
@@ -42,7 +42,7 @@ import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 
 ## SpatialIdError
 
-`e.info.kind` が原因です。
+`e.info.kind` に、何が不正だったかが入ります。
 
 | kind | 内容 |
 | --- | --- |
