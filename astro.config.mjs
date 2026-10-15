@@ -3,11 +3,12 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import mermaid from 'astro-mermaid';
 import lucode from 'lucode-starlight';
-import starlightTypeDoc, { typeDocSidebarGroup } from 'starlight-typedoc';
+import starlightTypeDoc from 'starlight-typedoc';
 import { readdirSync } from 'node:fs';
 
 // 旧 URL（TypeScript の各ページを clients/typescript/ の下へ移す前）から新しい URL へのリダイレクト。
 // API リファレンスは starlight-typedoc が生成するので、生成後に一覧を読む。
+/** @returns {import('astro').AstroIntegration} */
 function legacyRedirects() {
 	return {
 		name: 'legacy-redirects',
@@ -74,7 +75,18 @@ export default defineConfig({
 								{ label: '概要', slug: 'clients/typescript' },
 								{ label: 'ガイド', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/guide' } }] },
 								{ label: 'リファレンス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/reference' } }] },
-								typeDocSidebarGroup,
+								{
+									label: 'API リファレンス',
+									collapsed: true,
+									items: [
+										{ label: '概要', slug: 'clients/typescript/api/readme' },
+										{ label: 'クラス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/api/classes' } }] },
+										{ label: '関数', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/api/functions' } }] },
+										{ label: 'インターフェース', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/api/interfaces' } }] },
+										{ label: '型エイリアス', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/api/type-aliases' } }] },
+										{ label: '変数', collapsed: true, items: [{ autogenerate: { directory: 'clients/typescript/api/variables' } }] },
+									],
+								},
 							],
 						},
 					],
@@ -92,7 +104,6 @@ export default defineConfig({
 					entryPoints: ['node_modules/@airbee-project/kasane-client/dist/index.d.ts'],
 					tsconfig: './tsconfig.typedoc.json',
 					output: 'clients/typescript/api',
-					sidebar: { label: 'API リファレンス', collapsed: true },
 					typeDoc: {
 						excludeInternal: true,
 						excludePrivate: true,
