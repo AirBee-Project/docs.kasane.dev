@@ -17,7 +17,7 @@ await db.listTables();
 await table.info();
 await table.copy("backup");
 await table.delete();
-await client.tableClient.update({ dbName, tableName, newName }); // 改名（内部向け API）
+await client.tableClient.update({ dbName, tableName, newName }); // 改名
 ```
 
 ## 書き込み

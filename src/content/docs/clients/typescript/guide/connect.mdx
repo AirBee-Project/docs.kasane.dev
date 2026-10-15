@@ -20,11 +20,6 @@ const client = await KasaneClient.connect("https://kasane.example.com", "alice",
 
 ログイン状態はクライアントが維持するので、再ログインの処理は要りません。
 
-:::caution[既知の問題]
-- ユーザー名やパスワードが間違っていると、`connect` はエラーを返さずログインを繰り返し、終わりません。
-- `client.logout()` の後も、次の操作で自動的にログインし直します。ログアウトするには、そのクライアントを使わないようにしてください。
-:::
-
 ## 複数のサーバーを指定する
 
 URL を配列で渡すと、サーバーが `[unavailable]` を返したときに次のサーバーへ切り替えます。
@@ -36,10 +31,6 @@ const client = await KasaneClient.connect(
   "alice-pass",
 );
 ```
-
-:::caution
-サーバーが停止しているとエラーが `[unknown]` になり、切り替わりません（Node.js と Bun で確認）。サーバー停止時のフェイルオーバーには使えません。
-:::
 
 ## データベースのハンドル
 

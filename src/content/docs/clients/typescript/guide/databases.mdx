@@ -83,6 +83,4 @@ await db.createTable("weather", "enum", 20, {
 ほかのデータベース: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)
 ```
 
-改名や説明文の変更には専用のメソッドがないため、内部向けの `client.tableClient.update` でサーバーの API を直接呼びます。API リファレンスには載っておらず、将来のバージョンで置き換わる可能性があります。
-
 関連する API：[DatabaseHandle](/clients/typescript/api/classes/databasehandle/)、[TableHandle](/clients/typescript/api/classes/tablehandle/)

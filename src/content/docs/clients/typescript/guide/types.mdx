@@ -30,7 +30,7 @@ INT に小数を渡すと、クライアントで切り捨てられます（`3.9
 | TEXT | `{ kind: { case: "text", value: { minLength: 1n, maxLength: 20n } } }` |
 | ENUM | `{ kind: { case: "enumConstraint", value: { choices: ["晴れ", "曇り", "雨"] } } }` |
 
-数値は `bigint` で書きます。制約の型はサーバー API の型そのままなので、`as never` が必要です。
+数値は `bigint` で書きます。
 
 <StepCode code={c0} title="types.ts" />
 
@@ -62,6 +62,5 @@ const value = (await risk.search(id).toArray())[0]?.value; // bigint | undefined
 if (value !== undefined) console.log(value + 1n);           // 81n
 ```
 
-`<number>` にすると型の上では `value + 1` が通りますが、実際の値は bigint なので実行時に `Cannot mix BigInt and other types` になります。
 
 関連する API：[TableDataType](/clients/typescript/api/type-aliases/tabledatatype/)、[PrimitiveValue](/clients/typescript/api/type-aliases/primitivevalue/)

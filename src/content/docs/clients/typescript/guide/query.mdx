@@ -24,8 +24,8 @@ const results = await client.query(q, area, { format: "singleId" }).toArray();
 - `query.source(データベース名, テーブル名)` から演算をメソッドチェーンでつなぐ。各メソッドは新しい `QueryBuilder` を返す
 - `client.query(クエリ, 検索する範囲, オプション)` で実行する。戻り値は `table.search` と同じ `ResultStream`
 - オプションの `valueType` は、`mapValues` などで値の型が変わるときに指定する
-- `filter` の条件は `{ min, max }`（片方でもよい）・`{ equals: 値 }`・`{ notInRange: { min, max } }`。JSDoc にある `{ inRange: { … } }` は使えない
-- `policy` は型の上では省略できるが、省略するとサーバーが `policy must be specified` を返す。`merge` の `defaultValue` も必須
+- `filter` の条件は `{ min, max }`（片方でもよい）・`{ equals: 値 }`・`{ notInRange: { min, max } }`
+- `policy` を取る演算では `policy` を、`merge` では `defaultValue` も指定する
 
 ## 試してみる
 
