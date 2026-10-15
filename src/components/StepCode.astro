@@ -3,11 +3,26 @@ import { Code } from '@astrojs/starlight/components';
 
 interface Props {
 	code: string;
-	title: string;
+	title?: string;
 	lang?: string;
 }
 const { code, title, lang = 'ts' } = Astro.props;
-const shown = code.replace(/^import type \{ Tutorial \} from "(\.\.\/)+runner";\n/m, '').replace(/\}: Tutorial\)/, '})');
+
+/**
+ * 表示用にコードを整える。
+ * - `// @hide-start` 〜 `// @hide-end` の範囲（import や前の手順のコードなど）は表示しない
+ * - 隠した結果、共通のインデントが残る場合は外す
+ * - それ以外のコードでは、実行環境用の型注釈（Tutorial）だけを外す
+ */
+function display(source: string): string {
+	if (!source.includes('@hide-start')) {
+		return source.replace(/^import type \{ Tutorial \} from "(\.\.\/)+runner";\n/m, '').replace(/\}: Tutorial\)/, '})');
+	}
+	const visible = source.replace(/^[ \t]*\/\/ @hide-start\n[\s\S]*?^[ \t]*\/\/ @hide-end\n?/gm, '');
+	const lines = visible.replace(/^\n+|\n+$/g, '').split('\n');
+	const indent = Math.min(...lines.filter((l) => l.trim()).map((l) => l.match(/^ */)![0].length));
+	return lines.map((l) => l.slice(indent)).join('\n');
+}
 ---
 
-<Code code={shown} lang={lang} title={title} />
+<Code code={display(code)} lang={lang} title={title} />

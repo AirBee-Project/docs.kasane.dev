@@ -207,3 +207,8 @@ mobile-starlight-toc a[aria-current] {
 	border: 0;
 	box-shadow: none;
 }
+
+/* 手順（Steps）の見出し。テーマは手順内の段落を薄い色にするので、各手順の最初の段落だけ本文と同じ色に戻す */
+.sl-markdown-content .sl-steps > li > p:first-child {
+	color: var(--sl-color-white);
+}

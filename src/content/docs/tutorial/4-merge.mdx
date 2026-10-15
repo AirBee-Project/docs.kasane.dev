@@ -5,15 +5,27 @@ sidebar:
   order: 4
 ---
 
+import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 
-Step 2 の建物の危険度と Step 3 の雨を merge で重ね合わせます。policy は sum（合計）、雨が無い場所は 0 として計算します。
+Step 2 の建物の危険度と、Step 3 の雨の強さを足し合わせます。調べる 2 点（西・東）は Step 3 と同じで、どちらもビルA から 2 ボクセル離れているので、建物の危険度は 50 です。
 
-<LangStep step="map/4-merge" />
+<Steps>
 
-どちらの点もビルA から 2 ボクセルなので、建物の危険度は 50 です。
+1. **0 時台の危険度を足し合わせる**
 
-| | 0 時台 | 1 時台 |
-| --- | --- | --- |
-| 西 | 50 + 10 = 60 | 50 + 60 = 110 |
-| 東 | 50 + 30 = 80 | 50 + 60 = 110 |
+   クエリの merge で、建物の危険度と雨を重ね合わせます。policy は sum（合計）で、雨が無い場所は 0 として計算します。
+
+   <LangStep step="map/4-merge/1-hour0" />
+
+   西は 50 + 10 = 60、東は 50 + 30 = 80 です。
+
+2. **1 時台も確かめる**
+
+   同じクエリを、1 時台の時空間ID で実行します。
+
+   <LangStep step="map/4-merge/2-hour1" />
+
+   1 時台は町全体の雨が 60 なので、どちらも 50 + 60 = 110 です。
+
+</Steps>

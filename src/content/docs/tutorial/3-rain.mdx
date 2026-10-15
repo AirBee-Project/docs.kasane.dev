@@ -5,10 +5,37 @@ sidebar:
   order: 3
 ---
 
+import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 
-時間とともに変わる雨のデータを書き込みます。テーブルを「時間を扱う」設定で作り、空間ID に時間を付けた[時空間ID](/concepts/spatial-id/#時空間id) で書き込みます。時間間隔は 3600 秒（1 時間）で、2025-01-01 の 0 時台と 1 時台（UTC）を使います。
+時間とともに変わる雨のデータを、[時空間ID](/concepts/spatial-id/#時空間id) で書き込みます。
 
-<LangStep step="map/3-rain" />
+<Steps>
 
-0 時台は、町全体の小雨（10）のうち東側を 30 で上書きしています（書き込みは上書き）。
+1. **時間を扱うテーブルを作る**
+
+   時空間ID を書き込むには、テーブルを「時間を扱う」設定で作ります。
+
+   <LangStep step="map/3-rain/1-table" />
+
+2. **時間インデックスを求める**
+
+   時間間隔は 3600 秒（1 時間）にします。2025-01-01 0 時（UTC）の時間インデックスは、UNIX 時間を 3600 で割って切り捨てた値です。空間ID にこの時間を付けると、時空間ID になります。
+
+   <LangStep step="map/3-rain/2-time" />
+
+3. **0 時台の雨を書き込む**
+
+   町全体に小雨（10）を書き込み、東側だけを雨（30）で上書きします。書き込みは、すでに値がある場所を上書きします。
+
+   <LangStep step="map/3-rain/3-hour0" />
+
+4. **1 時台の雨を書き込む**
+
+   1 時台は町全体に強い雨（60）を書き込みます。
+
+   <LangStep step="map/3-rain/4-hour1" />
+
+   同じ場所でも、時間を変えて検索すると違う値が返ります。
+
+</Steps>

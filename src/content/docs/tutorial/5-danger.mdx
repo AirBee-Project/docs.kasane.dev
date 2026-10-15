@@ -5,22 +5,37 @@ sidebar:
   order: 5
 ---
 
+import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 
-filter で危険度 80 以上のボクセルだけを残し、町全体を時間ごとに検索します。
+危険度が 80 以上の場所だけを取り出して、地図で見比べます。
 
-<LangStep step="map/5-danger" />
+<Steps>
 
-## 地図で見比べる
+1. **80 以上だけを残す**
 
-1. <TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 で、0 時台の行を貼り付けます。
-2. もう 1 つ入力欄を作り、1 時台の行を貼り付けます。⬜︎ で色を変えると比べやすくなります。
-3. 地図の下のタイムバーで時刻を選びます。Senri は、タイムバーの時刻を含む時空間ID だけを表示します。初期値の 2025/01/01 09:00（日本時間）は 0 時台（UTC）、10:00 以降は 1 時台です。
+   Step 4 のクエリに filter をかけ、危険度が 80 以上のボクセルだけを残します。0 時台の西（60）は消え、東（80）は残ります。
 
-<iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+   <LangStep step="map/5-danger/1-filter" />
 
-危険な場所は、0 時台にはビルのすぐそばと雨の強い東側だけに出ます。1 時台には町全体に強い雨が降るので、ビルのまわりの広い範囲に出ます。
+2. **町全体を時間ごとに検索する**
+
+   町全体を 0 時台と 1 時台で検索し、危ない場所の時空間ID を出力します。
+
+   <LangStep step="map/5-danger/2-search" />
+
+3. **地図で見比べる**
+
+   出力された 2 つの行を、Senri のそれぞれ別の入力欄に貼り付けます。<TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 で入力欄を作り、⬜︎ で色を変えると比べやすくなります。
+
+   地図の下のタイムバーで時刻を選びます。Senri は、タイムバーの時刻を含む時空間ID だけを表示します。初期値の 2025/01/01 09:00（日本時間）は 0 時台（UTC）、10:00 以降は 1 時台です。
+
+   <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+
+   危険な場所は、0 時台にはビルのすぐそばと雨の強い東側だけに出ます。1 時台には町全体に強い雨が降るので、ビルのまわりの広い範囲に出ます。
+
+</Steps>
 
 ## 次に読むもの
 

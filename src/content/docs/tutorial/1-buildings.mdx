@@ -5,22 +5,43 @@ sidebar:
   order: 1
 ---
 
+import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 
-建物のテーブルを作り、2 つのビルの空間IDに危険度 `100` を書き込みます。ビルは直方体なので、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
+建物のテーブルを作り、2 つのビルの空間IDに危険度 `100` を書き込みます。
 
-| ビル | 東西（x） | 南北（y） | 高さ（f） | ボクセル数 |
-| --- | --- | --- | --- | --- |
-| A | 931384〜931386 | 412899〜412901 | 0〜3（約 130 m） | 3 × 3 × 4 = 36 |
-| B | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） | 2 × 2 × 6 = 24 |
+<Steps>
 
-<LangStep step="map/1-buildings" />
+1. **テーブルを作る**
 
-同じ値は、複数の空間ID を 1 回で書き込めます。count は [FlexId](/concepts/kasane-spatial-id/#flexid) の数なので、ボクセル数（60）とは一致しません。
+   値の型を整数（INT）、最大ズームレベルを 20 にして、テーブル `buildings` を作ります。
 
-## 地図で見る
+   <LangStep step="map/1-buildings/1-table" />
 
-出力された 2 つの空間ID を、<TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 の入力欄にカンマ区切りで貼り付けます。
+2. **ビルを RangeId で表す**
 
-<iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+   ビルは直方体なので、たくさんのボクセルを 1 つずつ書く代わりに、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
+
+   | ビル | 東西（x） | 南北（y） | 高さ（f） | ボクセル数 |
+   | --- | --- | --- | --- | --- |
+   | A | 931384〜931386 | 412899〜412901 | 0〜3（約 130 m） | 3 × 3 × 4 = 36 |
+   | B | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） | 2 × 2 × 6 = 24 |
+
+   <LangStep step="map/1-buildings/2-range" />
+
+3. **危険度を書き込む**
+
+   2 つのビルに危険度 `100` を書き込みます。同じ値なので、2 つの RangeId を配列にして 1 回で書き込めます。
+
+   書き込めたかは、ビルA の中・ビルB の中・ビルの外の 1 ボクセルずつを検索して確かめます。
+
+   <LangStep step="map/1-buildings/3-insert" />
+
+4. **地図で見る**
+
+   手順 2 で出力された 2 つの空間ID を、<TablerIcon name="cube" /> 空間ID → <TablerIcon name="plus" /> IDを追加 の入力欄にカンマ区切りで貼り付けます。
+
+   <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+
+</Steps>
