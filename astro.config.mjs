@@ -67,7 +67,6 @@ export default defineConfig({
 					label: 'クライアント API',
 					collapsed: true,
 					items: [
-						{ label: '概要', slug: 'clients' },
 						{
 							label: 'TypeScript',
 							collapsed: true,
