@@ -10,11 +10,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ## 空間ID とは
 
-空間ID は、地球上の空間を格子状に区切ったボクセルのインデックスです。IPAの[空間ID ガイドライン](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)で定義されています。
-
-```text
-{z}/{f}/{x}/{y}        例：2/0/3/1
-```
+空間ID は、地球上の空間を格子状に区切ったボクセルのインデックスです。IPAの[空間ID ガイドライン](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)で定義されています。書式は `{z}/{f}/{x}/{y}` で、例えば `2/0/3/1` のように書きます。
 
 <div class="side-by-side">
 <div>
@@ -38,12 +34,7 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ## ズームレベルと親子関係
 
-ズームレベルが 1 上がると、ボクセルは各辺が半分になり 8 分割されます。`f`・`x`・`y` を 2 で割って切り捨てると、1 つ粗いズームレベルの親になります。
-
-```text
-3/0/7/2 の親 → 2/0/3/1
-20/0/931389/412900 の親 → 19/0/465694/206450
-```
+ズームレベルが 1 上がると、ボクセルは各辺が半分になり 8 分割されます。`f`・`x`・`y` を 2 で割って切り捨てると、1 つ粗いズームレベルの親になります。例えば、`3/0/7/2` の親は `2/0/3/1` となり、`20/0/931389/412900` の親は `19/0/465694/206450` です。
 
 <div class="figure-pair">
 <div>
@@ -107,11 +98,7 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 地図ツール [Senri](https://map.airbee.jp/?debug) で、空間ID の場所を表示できます。
 
 1. 左上の <TablerIcon name="cube" /> 空間ID を押します。
-2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に、空間ID を貼り付けます。カンマ区切りで複数指定できます。
-
-   ```text
-   20/0/931389/412906,19/0/465694/206453
-   ```
+2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に、空間ID を貼り付けます。カンマ区切りで `20/0/931389/412906,19/0/465694/206453` のように複数指定できます。
 3. 入力欄の右の <TablerIcon name="target" /> でその場所へ移動し、⬜︎ で色を変え、<TablerIcon name="trash" /> で削除します。
 
 <iframe src="https://map.airbee.jp/?debug" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
@@ -132,11 +119,7 @@ toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
 ![左に 3 次元の空間ID、右に同じ空間ID を時間ごとに区切った 4 次元の時空間ID を並べた図](../../../assets/ipa/ipa-fig2-21-spatial-vs-temporal.png)
 <p class="figure-caption">図 2-21 空間 ID と時空間 ID の比較イメージ（出典：[空間 ID ガイドライン 1.2 版](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)）</p>
 
-時間軸を UNIX エポックから時間間隔 `i`（秒）ごとに区切り、UNIX 時間 `u` が入る区間の番号を `t = floor(u / i)` とします。
-
-```text
-{z}/{f}/{x}/{y}_{i}/{t}    例：20/0/931389/412900_3600/489768
-```
+時間軸を UNIX エポックから時間間隔 `i`（秒）ごとに区切り、UNIX 時間 `u` が入る区間の番号を `t = floor(u / i)` とします。書式は `{z}/{f}/{x}/{y}_{i}/{t}` で、例えば `20/0/931389/412900_3600/489768` のように書きます。
 
 ![時間軸の起点から時間間隔 i ごとに区切り、UNIX 時間 u が入る区間の番号を時間インデックス t とする図](../../../assets/ipa/ipa-fig2-23-time-elements.png)
 
