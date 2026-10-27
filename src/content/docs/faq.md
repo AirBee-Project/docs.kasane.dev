@@ -2,8 +2,6 @@
 title: よくある質問
 ---
 
-TypeScript クライアントについては [TypeScript の FAQ](/clients/typescript/reference/faq/) を見てください。
-
 ## テーブルの count が、書き込んだ空間ID の数と合わない
 
 count は内部の保存単位（[FlexId](/concepts/kasane-spatial-id/#flexid)）の数です。隣り合うボクセルはまとめて保存されます。

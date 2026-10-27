@@ -23,7 +23,8 @@ function legacyRedirects() {
 					'/clients/typescript/guide/install': '/clients/typescript/guide/environment/',
 					'/docs/usage': '/clients/typescript/reference/usage/',
 					'/docs/query': '/clients/typescript/reference/query/',
-					'/docs/faq': '/clients/typescript/reference/faq/',
+					'/docs/faq': '/faq/',
+					'/clients/typescript/reference/faq': '/faq/',
 					'/docs/plateau': '/tools/plateau/',
 					'/tutorial/5-danger': '/tutorial/4-merge/',
 				};
