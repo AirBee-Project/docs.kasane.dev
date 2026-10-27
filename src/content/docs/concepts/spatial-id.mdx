@@ -76,22 +76,9 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 インデックスの範囲は、`f` が −2<sup>z</sup> 〜 2<sup>z</sup> − 1、`x`・`y` が 0 〜 2<sup>z</sup> − 1 です。
 
-## 緯度・経度・標高から空間IDへの変換
+## 緯度・経度・標高との変換
 
-次の関数で、緯度・経度・標高（m）から空間ID を求められます。
-
-```ts
-function toSpatialId(z: number, lng: number, lat: number, h: number) {
-  const n = 2 ** z;
-  const latRad = (lat * Math.PI) / 180;
-  const f = Math.floor((n * h) / 2 ** 25);
-  const x = Math.floor((n * (lng + 180)) / 360);
-  const y = Math.floor((n / 2) * (1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI));
-  return `${z}/${f}/${x}/${y}`;
-}
-
-toSpatialId(20, 139.7671, 35.6812, 10); // "20/0/931389/412906"（東京駅）
-```
+緯度・経度・標高（m）と空間ID は、相互に変換できます。変換は[空間ID ガイドライン](https://www.ipa.go.jp/digital/architecture/Individual-link/rcu1hd000000upgf-att/4dspatio-temporal-id-guideline-v1_2.pdf)の定義に従います。
 
 ## 空間ID を地図で見る
 

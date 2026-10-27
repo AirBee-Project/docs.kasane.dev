@@ -12,6 +12,7 @@ import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 | --- | --- | --- |
 | `ConnectError` | サーバーがリクエストを拒否したとき | `isKasaneError(e)` |
 | `SpatialIdError` | 空間ID の値や書式が不正なとき（通信前にクライアントが投げる） | `e instanceof SpatialIdError` |
+| `GeometryError` | `Coordinate` の緯度・経度・高度が範囲外のとき（通信前にクライアントが投げる） | `e instanceof GeometryError` |
 
 <StepCode code={c0} title="errors.ts" />
 
@@ -51,4 +52,14 @@ import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 | `TOutOfRange` / `TIntervalError` | 時間インデックスや時間間隔が不正 |
 | `ParseSpatialIdFormat` | `parse` の文字列の書式が不正 |
 
-関連する API：[isKasaneError](/clients/typescript/api/functions/iskasaneerror/)、[SpatialIdError](/clients/typescript/api/classes/spatialiderror/)
+## GeometryError
+
+`e.info.kind` に、範囲外だった値が入ります。
+
+| kind | 内容 |
+| --- | --- |
+| `LatitudeOutOfRange` | 緯度が ±85.0511 度の範囲外 |
+| `LongitudeOutOfRange` | 経度が ±180 度の範囲外 |
+| `AltitudeOutOfRange` | 高度が ±2<sup>25</sup> m の範囲外 |
+
+関連する API：[isKasaneError](/clients/typescript/api/functions/iskasaneerror/)、[SpatialIdError](/clients/typescript/api/classes/spatialiderror/)、[GeometryError](/clients/typescript/api/classes/geometryerror/)

@@ -37,6 +37,19 @@ FlexId: 20/0|20/931389|19/206450
 
 `toString()` で文字列に、`SingleId.parse()`・`RangeId.parse()`・`FlexId.parse()` で文字列から変換します。書式の誤りや範囲外の値は `SpatialIdError` になります（[エラー処理](/clients/typescript/guide/errors/)）。
 
+## 緯度・経度・高度との変換
+
+`Coordinate.create(緯度, 経度, 高度)` で座標を作り、`toSingleId(z)` でその座標を含むボクセルの `SingleId` にします。緯度・経度は度、高度は m で渡します。逆に `SingleId` からは、`toCenterCoordinate()` でボクセルの中心の座標を、`toCoordinateRange()` でボクセルの範囲を求められます。
+
+```ts
+const id = Coordinate.create(35.6812, 139.7671, 10).toSingleId(20); // 20/0/931389/412906（東京駅）
+
+const center = id.toCenterCoordinate(); // latitude: 35.6811…, longitude: 139.7672…, altitude: 16
+const range = id.toCoordinateRange();   // { latitude: [南端, 北端], longitude: [西端, 東端], altitude: [下端, 上端] }
+```
+
+緯度は ±85.0511 度、経度は ±180 度、高度は ±2<sup>25</sup> m の範囲で渡します。範囲外の値は `GeometryError` になります。変換は[空間ID ガイドライン](/concepts/spatial-id/#緯度経度標高との変換)の定義に従います。
+
 ## 時間を付ける
 
 `SingleId` と `RangeId` は `withTime(時間間隔, 時間インデックス)` で時空間ID になります。時間間隔には秒数か `Interval.SECOND`・`MINUTE`・`HOUR`・`DAY` を渡します。`RangeId` は時間インデックスに `[最小, 最大]` も渡せます。
@@ -52,4 +65,4 @@ FlexId: 20/0|20/931389|19/206450
 | `id.isWholeTime()` | 全時間の ID か |
 | `SingleId.createUnchecked(...)` | 範囲検証を省いて作る。不正な値での動作は未定義 |
 
-関連する API：[SingleId](/clients/typescript/api/classes/singleid/)、[RangeId](/clients/typescript/api/classes/rangeid/)、[FlexId](/clients/typescript/api/classes/flexid/)、[Interval](/clients/typescript/api/classes/interval/)
+関連する API：[SingleId](/clients/typescript/api/classes/singleid/)、[Coordinate](/clients/typescript/api/classes/coordinate/)、[RangeId](/clients/typescript/api/classes/rangeid/)、[FlexId](/clients/typescript/api/classes/flexid/)、[Interval](/clients/typescript/api/classes/interval/)
