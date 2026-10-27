@@ -39,7 +39,7 @@ FlexId: 20/0|20/931389|19/206450
 
 ## 緯度・経度・高度との変換
 
-`Coordinate.create(緯度, 経度, 高度)` で座標を作り、`toSingleId(z)` でその座標を含むボクセルの `SingleId` にします。緯度・経度は度、高度は m で渡します。逆に `SingleId` からは、`toCenterCoordinate()` でボクセルの中心の座標を、`toCoordinateRange()` でボクセルの範囲を求められます。
+`Coordinate.create(緯度, 経度, 高度)` で座標を作り、`toSingleId(z)` でその座標を含むボクセルの `SingleId` にします。緯度・経度は度、高度は m で渡します。逆に `SingleId`・`RangeId` からは、`toCenterCoordinate()` で中心の座標を、`toCoordinateRange()` で範囲を求められます。
 
 ```ts
 const id = Coordinate.create(35.6812, 139.7671, 10).toSingleId(20); // 20/0/931389/412906（東京駅）
