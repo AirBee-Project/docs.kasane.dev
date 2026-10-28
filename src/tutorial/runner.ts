@@ -13,24 +13,27 @@ export type StepLoaders = Record<string, () => Promise<{ default: Step }>>;
 const DB = "tutorial";
 
 // ブラウザの中で動く Kasane（Wasm）。データはこのページの中だけにあり、ページを移動すると消える
-let clientPromise: Promise<KasaneClient> | undefined;
-function getClient(): Promise<KasaneClient> {
-  clientPromise ??= (async () => {
-    const client = await KasaneClient.inMemory();
-    await client.createDatabase(DB);
-    return client;
-  })();
-  return clientPromise;
+async function newClient(): Promise<KasaneClient> {
+  const client = await KasaneClient.inMemory();
+  await client.createDatabase(DB);
+  return client;
+}
+
+// 地図のチュートリアルは前の Step のテーブルを使うので、ページの中で同じ Kasane を使い続ける。
+// ほかのステップは互いに独立しているので、毎回新しい Kasane で動かす
+let mapClient: Promise<KasaneClient> | undefined;
+function getClient(name: string): Promise<KasaneClient> {
+  if (!name.startsWith("map/")) return newClient();
+  mapClient ??= newClient();
+  return mapClient;
 }
 
 function format(value: unknown): string {
   if (typeof value === "string") return value;
-  if (typeof value === "bigint") return `${value}n`;
   if (Array.isArray(value)) return `[ ${value.map((v) => (typeof v === "string" ? `'${v}'` : format(v))).join(", ")} ]`;
-  if (value instanceof Error) return value.message;
   if (value !== null && typeof value === "object") {
     if (value.toString !== Object.prototype.toString) return String(value);
-    return JSON.stringify(value, (k, v) => (k === "$typeName" ? undefined : typeof v === "bigint" ? `${v}n` : v));
+    return JSON.stringify(value, (k, v) => (k === "$typeName" ? undefined : v));
   }
   return String(value);
 }
@@ -54,10 +57,7 @@ function tutorial(client: KasaneClient): Tutorial {
       return (realDb.createTable as (...a: unknown[]) => Promise<unknown>)(name, ...rest);
     },
   });
-  const wrapped = bind(client, {
-    database: (name: string) => (name === DB ? db : client.database(name)),
-  });
-  return { client: wrapped, db };
+  return { client, db };
 }
 
 /**
@@ -83,7 +83,7 @@ export async function runStep(name: string, loaders: StepLoaders, write: (line: 
     original(...values);
   };
   try {
-    const client = await getClient();
+    const client = await getClient(name);
     const before = prerequisites(name, loaders);
     if (before.length > 0) {
       write({ kind: "log", text: `（前の Step を実行しています：${before.join("、")}）` });
