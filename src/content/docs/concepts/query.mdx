@@ -4,7 +4,19 @@ sidebar:
   order: 4
 ---
 
-クエリは、テーブルを入力にした計算をサーバー側で実行します。テーブルの中身は変わりません。参照する全テーブルに read 権限が必要です。
+import StepCode from '../../../components/StepCode.astro';
+import TutorialRunner from '../../../components/TutorialRunner.astro';
+import c0 from '../../../tutorial/steps/concepts/query.ts?raw';
+
+クエリは、テーブルを入力にした計算をサーバー側で実行し、空間ID と値の組を出力します。出力は保存されずにそのまま返り、入力のテーブルの中身は変わりません。参照する全テーブルに read 権限が必要です。
+
+## 例
+
+テーブル `risk` から、値が 50 以上のボクセルだけを選びます。
+
+<StepCode code={c0} title="query.ts" />
+
+<TutorialRunner step="concepts/query" />
 
 ## 演算
 
