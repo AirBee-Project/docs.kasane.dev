@@ -1,4 +1,4 @@
-import { KasaneClient, QueryBuilder, isKasaneError, type DatabaseHandle, type TableHandle } from "@airbee-project/kasane-client";
+import { KasaneClient, isKasaneError, type DatabaseHandle } from "@airbee-project/kasane-client";
 
 export interface Tutorial {
   client: KasaneClient;
@@ -7,35 +7,20 @@ export interface Tutorial {
 
 export type Step = (tutorial: Tutorial) => Promise<void>;
 export type Line = { kind: "log" | "error"; text: string };
+export type StepLoaders = Record<string, () => Promise<{ default: Step }>>;
 
-const config = {
-  url: import.meta.env.PUBLIC_KASANE_TUTORIAL_URL as string | undefined,
-  user: import.meta.env.PUBLIC_KASANE_TUTORIAL_USER as string | undefined,
-  password: import.meta.env.PUBLIC_KASANE_TUTORIAL_PASSWORD as string | undefined,
-  db: import.meta.env.PUBLIC_KASANE_TUTORIAL_DB as string | undefined,
-};
+/** チュートリアルで使うデータベースの名前。 */
+const DB = "tutorial";
 
-export function isConfigured(): boolean {
-  return Boolean(config.url && config.user && config.password && config.db);
-}
-
+// ブラウザの中で動く Kasane（Wasm）。データはこのページの中だけにあり、ページを移動すると消える
 let clientPromise: Promise<KasaneClient> | undefined;
 function getClient(): Promise<KasaneClient> {
-  clientPromise ??= KasaneClient.connect(config.url!, config.user!, config.password!);
+  clientPromise ??= (async () => {
+    const client = await KasaneClient.inMemory();
+    await client.createDatabase(DB);
+    return client;
+  })();
   return clientPromise;
-}
-
-function sessionSuffix(): string {
-  const key = "kasane-tutorial-suffix";
-  try {
-    const saved = sessionStorage.getItem(key);
-    if (saved) return saved;
-    const created = Math.random().toString(36).slice(2, 6);
-    sessionStorage.setItem(key, created);
-    return created;
-  } catch {
-    return "tmp";
-  }
 }
 
 function format(value: unknown): string {
@@ -60,77 +45,62 @@ function bind<T extends object>(target: T, overrides: Partial<Record<keyof T, un
   });
 }
 
-function sandbox(client: KasaneClient, suffix: string): Tutorial {
-  const own = (name: string) => `${name}_${suffix}`;
-  const bare = (name: string) => (name.endsWith(`_${suffix}`) ? name.slice(0, -suffix.length - 1) : name);
-  const isOwnDb = (name?: string) => name === undefined || name === config.db;
-
-  const wrapTable = (table: TableHandle): TableHandle =>
-    bind(table, {
-      info: async () => {
-        const info = await table.info();
-        return { ...info, name: bare(info.name) };
-      },
-    });
-
-  const realDb = client.database(config.db!);
+/** 「もう一度実行する」で同じテーブルを作り直せるよう、createTable の前に同名のテーブルを消す。 */
+function tutorial(client: KasaneClient): Tutorial {
+  const realDb = client.database(DB);
   const db = bind(realDb, {
-    table: (name: string) => wrapTable(realDb.table(own(name))),
     createTable: async (name: string, ...rest: unknown[]) => {
-      await realDb.table(own(name)).delete().catch(() => {});
-      const info = await (realDb.createTable as (...a: unknown[]) => Promise<{ name: string }>)(own(name), ...rest);
-      return { ...info, name: bare(info.name) };
+      await realDb.table(name).delete().catch(() => {});
+      return (realDb.createTable as (...a: unknown[]) => Promise<unknown>)(name, ...rest);
     },
-    listTables: async () =>
-      (await realDb.listTables()).filter((t) => t.name.endsWith(`_${suffix}`)).map((t) => ({ ...t, name: bare(t.name) })),
   });
-
-  const renameSources = (node: unknown): void => {
-    if (node === null || typeof node !== "object") return;
-    const record = node as Record<string, unknown>;
-    if (record.$typeName === "kasane.QueryNode.Source" && isOwnDb(record.database as string)) {
-      record.table = own(record.table as string);
-    }
-    for (const value of Object.values(record)) renameSources(value);
-  };
-
-  const tableClient = bind(client.tableClient, {
-    update: (req: { dbName: string; tableName: string; newName?: string }) =>
-      client.tableClient.update(
-        isOwnDb(req.dbName)
-          ? { ...req, tableName: own(req.tableName), ...(req.newName ? { newName: own(req.newName) } : {}) }
-          : req,
-      ),
-  });
-
   const wrapped = bind(client, {
-    database: (name: string) => (isOwnDb(name) ? db : client.database(name)),
-    tableClient,
-    query: (q: Parameters<KasaneClient["query"]>[0], ...rest: unknown[]) => {
-      const node = structuredClone(q instanceof QueryBuilder ? q.toProto() : q);
-      renameSources(node);
-      return (client.query as (...a: unknown[]) => unknown)(node, ...rest);
-    },
+    database: (name: string) => (name === DB ? db : client.database(name)),
   });
-
   return { client: wrapped, db };
 }
 
-export async function runStep(step: Step, write: (line: Line) => void): Promise<void> {
-  const suffix = sessionSuffix();
-  const out = (line: Line) => write({ ...line, text: line.text.replaceAll(`_${suffix}`, "") });
+/**
+ * 地図のチュートリアル（`map/`）は、前の Step で作ったテーブルを使う。
+ * データはページを移動すると消えるので、まだ実行していない前の Step を、出力を出さずに先に実行する。
+ */
+const done = new Set<string>();
+function prerequisites(name: string, loaders: StepLoaders): string[] {
+  if (!name.startsWith("map/")) return [];
+  return Object.keys(loaders)
+    .map((path) => path.replace(/^.*\/steps\//, "").replace(/\.ts$/, ""))
+    .filter((other) => other.startsWith("map/") && other < name && !done.has(other))
+    .sort();
+}
+
+const stepPath = (name: string) => `../tutorial/steps/${name}.ts`;
+
+export async function runStep(name: string, loaders: StepLoaders, write: (line: Line) => void): Promise<void> {
   const original = console.log;
+  let silent = false;
   console.log = (...values: unknown[]) => {
-    out({ kind: "log", text: values.map(format).join(" ") });
+    if (!silent) write({ kind: "log", text: values.map(format).join(" ") });
     original(...values);
   };
   try {
     const client = await getClient();
-    await step(sandbox(client, suffix));
+    const before = prerequisites(name, loaders);
+    if (before.length > 0) {
+      write({ kind: "log", text: `（前の Step を実行しています：${before.join("、")}）` });
+      silent = true;
+      for (const other of before) {
+        await (await loaders[stepPath(other)]!()).default(tutorial(client));
+        done.add(other);
+      }
+      silent = false;
+    }
+    const loader = loaders[stepPath(name)];
+    if (!loader) throw new Error(`ステップ ${name} が見つかりません。`);
+    await (await loader()).default(tutorial(client));
+    done.add(name);
   } catch (e) {
-    const message = isKasaneError(e) ? e.message : String(e);
-    out({ kind: "error", text: `エラー: ${message}` });
-    if (message.includes("not_found")) out({ kind: "error", text: "前の Step を先に実行してください。" });
+    silent = false;
+    write({ kind: "error", text: `エラー: ${isKasaneError(e) ? e.message : String(e)}` });
   } finally {
     console.log = original;
   }

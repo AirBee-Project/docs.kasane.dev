@@ -3,38 +3,21 @@ interface Props {
 	step: string;
 }
 const { step } = Astro.props;
-const env = import.meta.env;
-const ready = Boolean(
-	env.PUBLIC_KASANE_TUTORIAL_URL &&
-		env.PUBLIC_KASANE_TUTORIAL_USER &&
-		env.PUBLIC_KASANE_TUTORIAL_PASSWORD &&
-		env.PUBLIC_KASANE_TUTORIAL_DB,
-);
 ---
 
-<div class="tutorial-runner not-content" data-step={step} data-ready={ready ? 'true' : 'false'}>
-	{
-		ready ? (
-			<button type="button" class="tutorial-run">実行する</button>
-		) : (
-			<>
-				<button type="button" class="tutorial-run" disabled>準備中</button>
-				<p class="tutorial-note">チュートリアル用の環境を準備しています。公開まで、上のコードと実行結果の例をご覧ください。</p>
-			</>
-		)
-	}
+<div class="tutorial-runner not-content" data-step={step}>
+	<button type="button" class="tutorial-run">実行する</button>
 	<pre class="tutorial-output" hidden></pre>
 </div>
 
 <script>
-	import { isConfigured, runStep, type Line, type Step } from '../tutorial/runner';
+	import type { Line, Step } from '../tutorial/runner';
 
 	const steps = import.meta.glob<{ default: Step }>('../tutorial/steps/**/*.ts');
 
-	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner[data-ready="true"]')) {
+	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner')) {
 		const button = root.querySelector<HTMLButtonElement>('.tutorial-run')!;
 		const output = root.querySelector<HTMLPreElement>('.tutorial-output')!;
-		const loader = steps[`../tutorial/steps/${root.dataset.step}.ts`];
 
 		button.addEventListener('click', async () => {
 			output.hidden = false;
@@ -45,19 +28,14 @@ const ready = Boolean(
 				span.textContent = `${line.text}\n`;
 				output.append(span);
 			};
-			if (!isConfigured()) {
-				write({ kind: 'error', text: 'チュートリアル用の接続先が設定されていません。' });
-				return;
-			}
-			if (!loader) {
-				write({ kind: 'error', text: `ステップ ${root.dataset.step} が見つかりません。` });
-				return;
-			}
 			button.disabled = true;
 			button.textContent = '実行中…';
 			try {
-				const module = await loader();
-				await runStep(module.default, write);
+				// Kasane（Wasm）は大きいので、ボタンを押したときに読み込む
+				const { runStep } = await import('../tutorial/runner');
+				await runStep(root.dataset.step!, steps, write);
+			} catch (e) {
+				write({ kind: 'error', text: `読み込みに失敗しました。ページを再読み込みしてください。（${e instanceof Error ? e.message : String(e)}）` });
 			} finally {
 				button.disabled = false;
 				button.textContent = 'もう一度実行する';
@@ -83,11 +61,6 @@ const ready = Boolean(
 	.tutorial-run:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
-	}
-	.tutorial-note {
-		margin-top: 0.5rem;
-		font-size: 0.85rem;
-		color: var(--muted-foreground);
 	}
 	.tutorial-output {
 		margin-top: 0.75rem;

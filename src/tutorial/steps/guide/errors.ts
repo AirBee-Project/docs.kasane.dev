@@ -1,7 +1,7 @@
-import { SingleId, SpatialIdError, isKasaneError, isNotFoundError, isPermissionDeniedError } from "@airbee-project/kasane-client";
+import { SingleId, SpatialIdError, isKasaneError, isNotFoundError } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../runner";
 
-export default async function ({ client, db }: Tutorial) {
+export default async function ({ db }: Tutorial) {
   // サーバーから返るエラー（ConnectError）
   try {
     await db.table("no_such_table").info();
@@ -9,10 +9,11 @@ export default async function ({ client, db }: Tutorial) {
     if (isKasaneError(e)) console.log("無いテーブル:", e.message, " isNotFoundError:", isNotFoundError(e));
   }
 
+  await db.createTable("test", "int", 20);
   try {
-    await client.database("other").createTable("test", "int", 20);
+    await db.table("test").insert("文字", SingleId.create(20, 0, 931389, 412900));
   } catch (e) {
-    if (isKasaneError(e)) console.log("権限が無い:", e.message, " isPermissionDeniedError:", isPermissionDeniedError(e));
+    if (isKasaneError(e)) console.log("型の不一致:", e.message);
   }
 
   // 空間ID の値が不正なときは、通信する前にクライアントがエラーを投げる（SpatialIdError）

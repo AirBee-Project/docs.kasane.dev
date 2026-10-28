@@ -1,4 +1,3 @@
-import { isKasaneError } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../runner";
 
 export default async function ({ client, db }: Tutorial) {
@@ -11,11 +10,4 @@ export default async function ({ client, db }: Tutorial) {
   console.log("テーブル:", (await db.listTables()).map((t) => t.name));
   const info = await db.table("shops").info();
   console.log("最大ズームレベル:", info.maxZoomLevel, " 時間を扱うか:", info.isTemporal);
-
-  // 権限の無い操作は断られる
-  try {
-    await client.createDatabase("my_database");
-  } catch (e) {
-    if (isKasaneError(e)) console.log("データベースの作成:", e.message);
-  }
 }

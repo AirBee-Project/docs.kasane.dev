@@ -1,4 +1,4 @@
-import { RangeId, isKasaneError } from "@airbee-project/kasane-client";
+import { RangeId } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../runner";
 
 export default async function ({ client, db }: Tutorial) {
@@ -13,11 +13,4 @@ export default async function ({ client, db }: Tutorial) {
   // 削除
   await db.table("archive").delete();
   console.log("削除後:", (await db.listTables()).map((t) => t.name));
-
-  // 権限の無いデータベースには作れない
-  try {
-    await client.database("other").createTable("test", "int", 20);
-  } catch (e) {
-    if (isKasaneError(e)) console.log("ほかのデータベース:", e.message);
-  }
 }

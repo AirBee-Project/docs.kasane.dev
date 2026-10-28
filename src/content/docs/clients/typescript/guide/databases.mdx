@@ -56,10 +56,9 @@ await db.createTable("weather", "enum", 20, {
 データベース: [ 'tutorial' ]
 テーブル: [ 'shops' ]
 最大ズームレベル: 25  時間を扱うか: false
-データベースの作成: [permission_denied] Authentication error: Requires the global 'Manage' role or higher
 ```
 
-データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは失敗します。
+データベースの作成（`client.createDatabase`）には、global の manage 権限が必要です。権限が無いと `[permission_denied]` になります。
 
 ## 改名・削除
 

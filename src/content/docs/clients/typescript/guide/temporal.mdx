@@ -31,7 +31,7 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 0〜1 時台: [ '晴れ', '雨' ]
 その日: [ '晴れ', '雨' ]
 100 時間後: [ '駅' ]
-1800 秒: [invalid_argument] Invalid spatial ID: interval 1800 is not allowed; i must be one of: 34359738368, 86400, 3600, 60, 1
+1800 秒: [invalid_argument] Invalid argument: interval 1800 is not allowed; i must be one of: 34359738368, 86400, 3600, 60, 1
 ```
 
 - 検索は指定した時間と重なるデータを返す。1 日単位で検索すると、その日の 1 時間単位のデータも返る
