@@ -14,7 +14,7 @@ export default async function ({ client }: Tutorial) {
   const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
   const results = await client.query(danger, town.withTime(3600, [h, h + 1])).toArray();
 
-  // 結果を、Senri が読み込める JSON に変換する
+  // 結果を、Madori が読み込める JSON に変換する
   const values = [...new Set(results.map((r) => Number(r.value)))];
   const json = {
     meta: { version: "1.0", description: "町の危険度マップ" },

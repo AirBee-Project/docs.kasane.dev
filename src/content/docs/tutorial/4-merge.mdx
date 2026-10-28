@@ -10,10 +10,10 @@ import { Image } from 'astro:assets';
 import LangStep from '../../../components/LangStep.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 import mapJson from '../../../tutorial/steps/map/4-merge/2-json.out.txt?raw';
-import hour0 from '../../../assets/senri/danger-map-hour0.png';
-import hour1 from '../../../assets/senri/danger-map-hour1.png';
+import hour0 from '../../../assets/madori/danger-map-hour0.png';
+import hour1 from '../../../assets/madori/danger-map-hour1.png';
 
-Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町全体の危険度マップを Senri で見ます。
+Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町全体の危険度マップを Madori で見ます。
 
 <Steps>
 
@@ -25,31 +25,31 @@ Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町�
 
 2. **JSON で出力する**
 
-   重ね合わせたクエリで、町全体を 0 時台から 1 時台まで検索します。結果を、Senri が読み込める JSON に変換して出力します。
+   重ね合わせたクエリで、町全体を 0 時台から 1 時台まで検索します。結果を、Madori が読み込める JSON に変換して出力します。
 
    JSON では、危険度の値を `value` に重複なく並べ、各時空間ID の `ref` でそのどれかを指します。
 
    <LangStep step="map/4-merge/2-json" />
 
-3. **Senri で見る**
+3. **Madori で見る**
 
-   出力した JSON を `.json` ファイルとして保存し、[Senri](https://map.airbee.jp/?debug) で読み込みます。Senri は JSON をファイルからしか読み込めないので、別のタブで開いてください。実行できないときは、<a href={`data:application/json;charset=utf-8,${encodeURIComponent(mapJson)}`} download="danger-map.json">実行結果の例</a>をダウンロードして使えます。
+   出力した JSON を `.json` ファイルとして保存し、[Madori](https://madori.airbee.jp/) で読み込みます。Madori は JSON をファイルからしか読み込めないので、別のタブで開いてください。実行できないときは、<a href={`data:application/json;charset=utf-8,${encodeURIComponent(mapJson)}`} download="danger-map.json">実行結果の例</a>をダウンロードして使えます。
 
    1. 左上の <TablerIcon name="file-description" /> JSON → <TablerIcon name="plus" /> JSONを追加 で、保存したファイルを選びます。
    2. 追加された `risk` の行の <TablerIcon name="focus-centered" /> を押すと、データのある場所と時刻へ移動します。
    3. ⬜︎ を押すと透明度のバーが出るので、地図が見やすい濃さに調整します。
 
-   Senri は、値の最大を赤、最小を青としたヒートマップで表示します。0 時台は、建物のまわりが赤く、建物から離れた場所は青く表示されます。タイムバーを 1 時台に進めると、町全体に強い雨が降るので、建物から離れた場所も赤に近い色になります。建物のすぐまわりは、雨より建物の危険度の方が大きいので、色が変わりません。
+   Madori は、値の最大を赤、最小を青としたヒートマップで表示します。0 時台は、建物のまわりが赤く、建物から離れた場所は青く表示されます。タイムバーを 1 時台に進めると、町全体に強い雨が降るので、建物から離れた場所も赤に近い色になります。建物のすぐまわりは、雨より建物の危険度の方が大きいので、色が変わりません。
 
    実行結果の例：
 
    <div class="figure-pair">
    <div>
-   <Image src={hour0} alt="Senri で、0 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールが赤く、そのまわりは緑、建物から離れた西側は青、東側は水色" />
+   <Image src={hour0} alt="Madori で、0 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールが赤く、そのまわりは緑、建物から離れた西側は青、東側は水色" />
    <p class="figure-caption">0 時台</p>
    </div>
    <div>
-   <Image src={hour1} alt="Senri で、1 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールのまわりは赤いまま、町全体が緑になっている" />
+   <Image src={hour1} alt="Madori で、1 時台の危険度マップを立体のヒートマップで表示した様子。ショッピングモールのまわりは赤いまま、町全体が緑になっている" />
    <p class="figure-caption">1 時台</p>
    </div>
    </div>
