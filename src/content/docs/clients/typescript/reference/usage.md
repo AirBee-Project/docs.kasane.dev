@@ -15,7 +15,6 @@ await db.createTable("weather", "enum", 18, {
 
 await db.listTables();
 await table.info();
-await table.copy("backup");
 await table.delete();
 await client.tableClient.update({ dbName, tableName, newName }); // 改名
 ```

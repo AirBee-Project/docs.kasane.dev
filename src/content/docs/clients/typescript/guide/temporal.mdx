@@ -17,7 +17,7 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 ```
 
 - 時間間隔は 1（`Interval.SECOND`）・60（`MINUTE`）・3600（`HOUR`）・86400（`DAY`）秒のみ
-- 時間インデックスは `Math.floor(Date.UTC(2025, 0, 1) / 1000 / 3600)` のように求める
+- 時間インデックスは `Math.floor(Date.UTC(2025, 0, 1) / 1000 / 3600)` のように求める。`withTimeAt(時間間隔, UNIX 時間)` なら UNIX 時間から直接付けられる
 - `RangeId` は `withTime(3600, [開始, 終了])` で時間の範囲を指定できる
 
 <StepCode code={c0} title="temporal.ts" />
@@ -38,4 +38,25 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 - 時間を付けない ID で書き込んだ値は全時間の値になり、どの時刻で検索しても返る
 - 時間を扱わないテーブルに時空間ID は書き込めない
 
-関連する API：[Interval](/clients/typescript/api/classes/interval/)、[SingleId.withTime](/clients/typescript/api/classes/singleid/#withtime)
+## UNIX 時間で時間を扱う
+
+時間インデックスを自分で計算せずに、UNIX 時間（秒）で時間を扱うメソッドがあります。
+
+| メソッド | 対象 | 内容 |
+| --- | --- | --- |
+| `withTimeAt(時間間隔, UNIX 時間)` | `SingleId`・`RangeId` | その時刻を含む時間インデックスを付ける |
+| `withTimeSpan(開始, 終了)` | `RangeId` | 区間 `[開始, 終了)` を付ける。時間間隔は、開始と区間の長さの最大公約数で自動的に決まる |
+| `withoutTime()` | `SingleId`・`RangeId` | 時間を外し、全時間に戻す |
+| `secondsRange()` | `SingleId`・`RangeId` | 占める区間 `[開始, 終了)` を UNIX 時間で返す。終了は含まない |
+| `containsTime(UNIX 時間)` | `SingleId`・`RangeId` | その時刻を含むか |
+
+```ts
+const unix = Date.UTC(2025, 0, 1, 0) / 1000;
+const id = place.withTimeAt(Interval.HOUR, unix); // place.withTime(3600, Math.floor(unix / 3600)) と同じ
+id.secondsRange();                                // [unix, unix + 3600]
+id.containsTime(unix + 1800);                     // true
+```
+
+`withTimeSpan` は、区間によって 1・60・3600・86400 秒以外の時間間隔を選びます（例：2 時間ちょうどの区間は 7200 秒）。Kasane はそれ以外の時間間隔を受け付けないので、書き込みや検索に使う ID は `withTime` で時間間隔を指定して作ってください。
+
+関連する API：[Interval](/clients/typescript/api/classes/interval/)、[SingleId.withTime](/clients/typescript/api/classes/singleid/#withtime)、[SingleId.withTimeAt](/clients/typescript/api/classes/singleid/#withtimeat)

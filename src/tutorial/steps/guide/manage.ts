@@ -6,12 +6,8 @@ export default async function ({ client, db }: Tutorial) {
   const table = db.table("original");
   await table.insert(5, RangeId.create(25, 0, [29804448, 29804457], [13212800, 13212809]));
 
-  // コピー
-  await table.copy("backup");
-  console.log("コピー後:", (await db.listTables()).map((t) => t.name));
-
   // 改名（クライアントに専用メソッドが無いので、tableClient.update を使う）
-  await client.tableClient.update({ dbName: "tutorial", tableName: "backup", newName: "archive" });
+  await client.tableClient.update({ dbName: "tutorial", tableName: "original", newName: "archive" });
   console.log("改名後:", (await db.listTables()).map((t) => t.name));
 
   // 削除

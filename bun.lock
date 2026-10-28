@@ -5,7 +5,7 @@
     "": {
       "name": "docs.kasane.dev",
       "dependencies": {
-        "@airbee-project/kasane-client": "https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz",
+        "@airbee-project/kasane-client": "https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.10.0/airbee-project-kasane-client-0.10.0.tgz",
         "@astrojs/starlight": "^0.42.4",
         "@fontsource-variable/noto-sans-jp": "^5.3.0",
         "astro": "^7.2.10",
@@ -24,7 +24,7 @@
     },
   },
   "packages": {
-    "@airbee-project/kasane-client": ["@airbee-project/kasane-client@https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.0.3/airbee-project-kasane-client-0.0.3.tgz", { "dependencies": { "@bufbuild/protobuf": "^2.14.1", "@connectrpc/connect": "^2.1.2", "@connectrpc/connect-web": "^2.1.2" } }],
+    "@airbee-project/kasane-client": ["@airbee-project/kasane-client@https://github.com/AirBee-Project/Kasane-Client-ts/releases/download/v0.10.0/airbee-project-kasane-client-0.10.0.tgz", { "dependencies": { "@bufbuild/protobuf": "^2.14.1", "@connectrpc/connect": "^2.1.2", "@connectrpc/connect-web": "^2.1.2" } }],
 
     "@antfu/install-pkg": ["@antfu/install-pkg@2.1.0", "", { "dependencies": { "package-manager-detector": "^1.8.0", "tinyexec": "^1.3.1" } }, "sha512-sdg9NxU3zR4Mnawfbc/x6GB5Wf17WYud5qOuEuxXjaKpYpMkISSJEjItGebXJ2bQ4DIcly4NYH23mtkGJjvKUw=="],
 

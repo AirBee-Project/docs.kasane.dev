@@ -23,7 +23,7 @@ const buildings = db.table("buildings");  // TableHandle
 | ハンドル | 主なメソッド |
 | --- | --- |
 | `DatabaseHandle` | `createTable`、`listTables`、`table`、`info`、`update` |
-| `TableHandle` | `insert`、`upsert`、`remove`、`search`、`info`、`copy`、`delete` |
+| `TableHandle` | `insert`、`upsert`、`remove`、`search`、`info`、`delete` |
 
 ## テーブルを作る
 
@@ -41,7 +41,6 @@ await db.createTable("weather", "enum", 20, {
 | --- | --- |
 | 値の型 | `"text"`・`"int"`・`"boolean"`・`"enum"`・`"presence"`（[値の型と制約](/clients/typescript/guide/types/)） |
 | `isTemporal` | 時空間ID を書き込めるようにする（[時空間ID を使う](/clients/typescript/guide/temporal/)） |
-| `valueIndex` | 値による絞り込み用の索引を持つ |
 | `constraints` | 値の範囲や選択肢 |
 | `description` | 説明文 |
 
@@ -62,11 +61,10 @@ await db.createTable("weather", "enum", 20, {
 
 データベースの作成には global の manage 権限が必要なので、体験用のユーザーでは失敗します。
 
-## コピー・改名・削除
+## 改名・削除
 
 | 操作 | 書き方 |
 | --- | --- |
-| コピー | `table.copy(新しい名前)`。別のデータベースへは `table.copy(新しい名前, データベース名)` |
 | 改名 | `client.tableClient.update({ dbName, tableName, newName })` |
 | 削除 | `table.delete()` |
 
@@ -77,9 +75,8 @@ await db.createTable("weather", "enum", 20, {
 実行結果の例：
 
 ```text
-コピー後: [ 'backup', 'original' ]
-改名後: [ 'archive', 'original' ]
-削除後: [ 'original' ]
+改名後: [ 'archive' ]
+削除後: [  ]
 ほかのデータベース: [permission_denied] Authentication error: Insufficient privileges for database 'other' (requires Manage)
 ```
 

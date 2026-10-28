@@ -51,7 +51,7 @@ import DataModelFigure from '../../../components/DataModelFigure.astro';
 | --- | --- |
 | read | 検索、[クエリ](/concepts/query/)、[テーブル情報](#テーブルの設定)の取得 |
 | write | 書き込み、削除（`Insert`・`Upsert`・`Remove`） |
-| manage | テーブルの作成・削除・改名・コピー |
+| manage | テーブルの作成・削除・改名 |
 | admin | ユーザーの管理、権限の付与（global のみ） |
 
 たとえば「city への write」を持つユーザーは、city のどのテーブルにも読み書きできますが、テーブルは作れません。権限が無いと `permission_denied` になります。

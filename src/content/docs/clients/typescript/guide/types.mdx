@@ -13,12 +13,12 @@ import c0 from '../../../../../tutorial/steps/guide/types.ts?raw';
 | 型 | 書く値 | 読んだ値 |
 | --- | --- | --- |
 | `"text"` | `string` | `string` |
-| `"int"` | `number` または `bigint` | `bigint` |
+| `"int"` | `number` または `bigint` | `number` |
 | `"boolean"` | `boolean` | `boolean` |
 | `"enum"` | 選択肢の `string` | `string` |
 | `"presence"` | `null` | `null` |
 
-INT に小数を渡すと、クライアントで切り捨てられます（`3.9` → `3`）。
+INT に小数を渡すと、クライアントで切り捨てられます（`3.9` → `3`）。読んだ値は `number` なので、`Number.MAX_SAFE_INTEGER`（2<sup>53</sup> − 1）を超える値は精度が落ちます。
 
 ## 制約
 
@@ -43,7 +43,7 @@ TEXT: 東京駅
 TEXT に数値: [invalid_argument] Value type mismatch: expected String, got Int
 BOOLEAN: true
 PRESENCE: null
-INT: 80n
+INT: 80
 INT に 150: [invalid_argument] Constraint violation: Value 150 is greater than maximum 100
 ENUM: 晴れ
 ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among allowed choices: ["晴れ", "曇り", "雨"]
@@ -53,13 +53,13 @@ ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among 
 
 `db.table<T>(名前)` の `T` が、書く値と読んだ値の型になります。サーバーのテーブル定義とは連動しないので、正しい型を自分で指定します。省略時は `string | number | bigint | boolean | null | undefined` です。
 
-INT のテーブルには `<bigint>` を指定し、書くときも bigint にします。
+INT のテーブルには `<number>` を指定します。
 
 ```ts
-const risk = db.table<bigint>("risk");
-await risk.insert(80n, id);
-const value = (await risk.search(id).toArray())[0]?.value; // bigint | undefined
-if (value !== undefined) console.log(value + 1n);           // 81n
+const risk = db.table<number>("risk");
+await risk.insert(80, id);
+const value = (await risk.search(id).toArray())[0]?.value; // number | undefined
+if (value !== undefined) console.log(value + 1);            // 81
 ```
 
 

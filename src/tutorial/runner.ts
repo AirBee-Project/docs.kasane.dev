@@ -71,7 +71,6 @@ function sandbox(client: KasaneClient, suffix: string): Tutorial {
         const info = await table.info();
         return { ...info, name: bare(info.name) };
       },
-      copy: (name: string, dbName?: string) => table.copy(isOwnDb(dbName) ? own(name) : name, dbName),
     });
 
   const realDb = client.database(config.db!);
