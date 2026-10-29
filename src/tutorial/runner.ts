@@ -75,7 +75,15 @@ function prerequisites(name: string, loaders: StepLoaders): string[] {
 
 const stepPath = (name: string) => `../tutorial/steps/${name}.ts`;
 
-export async function runStep(name: string, loaders: StepLoaders, write: (line: Line) => void): Promise<void> {
+// 実行中に別の Step を始めると console.log の差し替えが重なり、ログが別の出力に混ざるので、1 つずつ実行する
+let queue: Promise<void> = Promise.resolve();
+export function runStep(name: string, loaders: StepLoaders, write: (line: Line) => void): Promise<void> {
+  const run = queue.then(() => runOne(name, loaders, write));
+  queue = run.catch(() => {});
+  return run;
+}
+
+async function runOne(name: string, loaders: StepLoaders, write: (line: Line) => void): Promise<void> {
   const original = console.log;
   let silent = false;
   console.log = (...values: unknown[]) => {
@@ -84,16 +92,12 @@ export async function runStep(name: string, loaders: StepLoaders, write: (line: 
   };
   try {
     const client = await getClient(name);
-    const before = prerequisites(name, loaders);
-    if (before.length > 0) {
-      write({ kind: "log", text: `（前の Step を実行しています：${before.join("、")}）` });
-      silent = true;
-      for (const other of before) {
-        await (await loaders[stepPath(other)]!()).default(tutorial(client));
-        done.add(other);
-      }
-      silent = false;
+    silent = true;
+    for (const other of prerequisites(name, loaders)) {
+      await (await loaders[stepPath(other)]!()).default(tutorial(client));
+      done.add(other);
     }
+    silent = false;
     const loader = loaders[stepPath(name)];
     if (!loader) throw new Error(`ステップ ${name} が見つかりません。`);
     await (await loader()).default(tutorial(client));

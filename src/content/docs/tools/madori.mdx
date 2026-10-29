@@ -1,0 +1,74 @@
+---
+title: Madori の使い方
+sidebar:
+  label: 地図ツール Madori
+  order: 1
+---
+
+import MadoriFrame from '../../../components/MadoriFrame.astro';
+import TablerIcon from '../../../components/TablerIcon.astro';
+
+[Madori](https://madori.airbee.jp/) は、空間ID を地図の上に立体で表示するブラウザアプリです。次の地図で、ここに書いた操作を試せます。表示を崩したときは、地図の右上の <TablerIcon name="restore" /> 画面をリセット を押します。
+
+<MadoriFrame ids={['20/0/931389/412900', '19/0/465694/206450']} />
+
+## 地図の操作
+
+| 操作 | 方法 |
+| --- | --- |
+| 移動 | ドラッグ |
+| 拡大・縮小 | スクロール（トラックパッドではピンチ）。ダブルクリックで拡大 |
+| 回転・傾き | 右ボタンでドラッグ、または Ctrl（Mac は command）を押しながらドラッグ |
+
+## 左上のボタン
+
+押すとパネルが開き、もう一度押すと閉じます。
+
+| ボタン | できること |
+| --- | --- |
+| <TablerIcon name="cube" /> 空間ID | 空間ID を入力して表示する。<TablerIcon name="plus" /> IDを追加 で入力欄、<TablerIcon name="plus" /> .txtを追加 でテキストファイルを読み込む |
+| <TablerIcon name="file-description" /> JSON | 値の付いた空間ID の JSON を読み込み、値ごとに色分けして表示する |
+| <TablerIcon name="point" /> 点 | 緯度・経度・高度で点を置く |
+| <TablerIcon name="line" /> 線 | 2 つの点を結ぶ線を引く |
+| <TablerIcon name="topology-star-3" /> グラフ描画 | ノードとエッジの JSON を読み込んで表示する |
+
+パネルの各行には、次のボタンがあります。
+
+- <TablerIcon name="focus-centered" />：その場所へ移動する。時空間ID なら、その時刻にも移動する
+- ⬜︎：色と透明度を変える
+- <TablerIcon name="refresh" />：ファイルから読み込んだものを、ファイルから読み込み直す
+- <TablerIcon name="trash" />：削除する
+
+## 右側のボタン
+
+- <TablerIcon name="refresh" />：範囲で書いた空間ID（[RangeId](/concepts/kasane-spatial-id/#rangeid)）を、1 ボクセルずつの表示（[SingleId](/concepts/kasane-spatial-id/#singleid)）に切り替える
+- <TablerIcon name="border-outer" />：ボクセルの枠線を表示する
+- <TablerIcon name="pointer" />：カーソル位置のボクセルの空間ID を表示する
+- <TablerIcon name="view-360-number" />：地図を自動で回転させる
+- <TablerIcon name="camera" />：今の表示を画像で保存する
+
+## 下のタイムバー
+
+[時空間ID](/concepts/spatial-id/#時空間id) は、タイムバーの時刻を含むものだけが表示されます。時間を付けない空間ID は、いつでも表示されます。
+
+- タイムラインをドラッグして、時刻を動かす
+- <TablerIcon name="player-play" /> で時刻を進め、もう一度押すと止まる
+- 右の選択欄で、進める速さ（x1・x10・1min/s・1hr/s・1day/s）を選ぶ
+
+## ほかのページに埋め込む
+
+`?ids=` に空間ID を付けると、入力済みの状態で開きます。`ids` を複数付けると、それぞれ別の色のグループになります。`border` を付けると枠線を表示します。`view` を付けると、左上・右側のボタンを隠し、図を見せるだけの表示にします（時間のあるデータなら、タイムバーだけは表示します）。`hover` を付けると、カーソルを乗せたボクセルの空間ID と値を最初から表示します。
+
+```text
+https://madori.airbee.jp/?ids=20/0/931389/412900&ids=19/0/465694/206450&border
+```
+
+JSON は URL に入らないので、iframe で埋め込み、`postMessage` で渡します。Madori は読み込みが終わると、親のページに `{ type: "madori:ready" }` を送ります。
+
+```ts
+window.addEventListener("message", (e) => {
+  if (e.source === iframe.contentWindow && e.data?.type === "madori:ready") {
+    iframe.contentWindow.postMessage({ type: "madori:show", json }, "*");
+  }
+});
+```

@@ -6,7 +6,7 @@ import { Code } from '@astrojs/starlight/components';
 import InstallTabs from '../../../../components/InstallTabs.astro';
 import StepCode from '../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../components/TutorialRunner.astro';
-import TablerIcon from '../../../../components/TablerIcon.astro';
+import MadoriFrame from '../../../../components/MadoriFrame.astro';
 import code from '../../../../tutorial/steps/quickstart.ts?raw';
 import output from '../../../../tutorial/steps/quickstart.out.txt?raw';
 
@@ -45,11 +45,9 @@ const db = client.database("データベース名");
 
 ### 地図で見る
 
-1. 地図の左上の <TablerIcon name="cube" /> 空間ID を押します。
-2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に `20/0/931389/412900` を貼り付けます。
-3. 入力欄の右の <TablerIcon name="focus-centered" /> でその場所へ移動します。
+「実行する」を押すと、出力の下に、結果の空間ID を入力済みの [Madori](/tools/madori/) が表示されます。次の地図は `20/0/931389/412900` を入力済みのものです。
 
-<iframe src="https://madori.airbee.jp/" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+<MadoriFrame ids={['20/0/931389/412900']} view />
 
 東京駅の丸の内側に、1 辺約 30 m のボクセルが表示されます。
 

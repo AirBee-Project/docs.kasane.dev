@@ -1,0 +1,15 @@
+---
+import type { MadoriData } from '../madori';
+
+type Props = MadoriData;
+---
+
+<div class="madori-frame-slot" data-madori={JSON.stringify(Astro.props)}></div>
+
+<script>
+	import { createMadoriFrame } from '../madori';
+
+	for (const slot of document.querySelectorAll<HTMLElement>('.madori-frame-slot')) {
+		slot.replaceWith(createMadoriFrame(JSON.parse(slot.dataset.madori!)));
+	}
+</script>

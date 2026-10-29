@@ -4,6 +4,12 @@ sidebar:
   order: 2
 ---
 
+import { RangeId } from '@airbee-project/kasane-client';
+import MadoriFrame from '../../../components/MadoriFrame.astro';
+
+export const box = '20/0:7/931389:931394/412900:412901';
+export const singleIds = [...RangeId.parse(box).toSingleIds()].join(',');
+
 Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[SingleId](/concepts/kasane-spatial-id/#singleid)）と、それを拡張した 2 種類の時空間ID（[RangeId](/concepts/kasane-spatial-id/#rangeid)、[FlexId](/concepts/kasane-spatial-id/#flexid)）を扱います。書き込み・検索・クエリにはどの種類も使え、検索結果の種類も選べます。
 
 | 種類 | 表すもの | 例 |
@@ -24,7 +30,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 20/7/931394/412901
 ```
 
-![Madori で、東西 6 × 南北 2 × 高さ 8 の 96 ボクセルを SingleId 96 個で表示し、ボクセルの区切りが見えている様子](../../../assets/madori/single-id.png)
+<MadoriFrame ids={[singleIds]} border view />
 
 <p class="figure-caption">SingleId 96 個で表示</p>
 
@@ -32,7 +38,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 
 各軸のインデックスを閉区間 `最小:最大` で書いた時空間ID です。上の 96 ボクセルは `20/0:7/931389:931394/412900:412901` の 1 つで書けます。
 
-![Madori で、同じ 96 ボクセルを RangeId 1 個で表示し、1 つの直方体になっている様子](../../../assets/madori/range-id.png)
+<MadoriFrame ids={[box]} border view />
 
 <p class="figure-caption">RangeId 1 個で表示</p>
 

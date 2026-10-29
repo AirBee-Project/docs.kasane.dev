@@ -4,6 +4,7 @@ sidebar:
   order: 1
 ---
 
+import MadoriFrame from '../../../components/MadoriFrame.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 import voxelFigure from '../../../assets/ipa/ipa-fig2-3-voxel.png';
 import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-index.png';
@@ -36,22 +37,17 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 
 ズームレベルが 1 上がると、ボクセルは各辺が半分になり 8 分割されます。`f`・`x`・`y` を 2 で割って切り捨てると、1 つ粗いズームレベルの親になります。例えば、`3/0/7/2` の親は `2/0/3/1` となり、`20/0/931389/412900` の親は `19/0/465694/206450` です。
 
-<div class="figure-pair">
-<div>
+<MadoriFrame ids={['20/0/931389/412900', '19/0/465694/206450']} view />
 
-![Madori の地図上で、ピンクの親のボクセル 19/0/465694/206450 の中に、青い子のボクセル 20/0/931389/412900 が入っている様子](../../../assets/madori/parent-child.png)
+<p class="figure-caption">20/0/931389/412900（緑）と親の 19/0/465694/206450（ピンク）</p>
 
-<p class="figure-caption">親（ピンク）の中に子（青）が入る様子</p>
+<MadoriFrame ids={['3/0/7/2', '2/0/3/1']} view />
 
-</div>
-<div>
+<p class="figure-caption">3/0/7/2（緑）と親の 2/0/3/1（ピンク）</p>
 
-![Madori の地図上で、ズームレベル 20・19・18・17・16 のボクセルを、西から東へ小さい順に接するように並べた様子](../../../assets/madori/zoom-sizes.png)
+<MadoriFrame ids={['20/0/931393/412900', '19/0/465697/206450', '18/0/232849/103225', '17/0/116425/51612', '16/0/58213/25806']} view />
 
-<p class="figure-caption">ズームレベル 20〜16 のボクセルを並べた様子</p>
-
-</div>
-</div>
+<p class="figure-caption">ズームレベル 20〜16 のボクセルを、西から東へ小さい順に並べた様子</p>
 
 ボクセルの大きさは、おおよそ次のとおりです。
 
@@ -88,16 +84,9 @@ import horizontalIndexFigure from '../../../assets/ipa/ipa-fig2-6-horizontal-ind
 2. <TablerIcon name="plus" /> IDを追加 でできた入力欄に、空間ID を貼り付けます。カンマ区切りで `20/0/931389/412906,19/0/465694/206453` のように複数指定できます。
 3. 入力欄の右の <TablerIcon name="focus-centered" /> でその場所へ移動し、⬜︎ で色を変え、<TablerIcon name="trash" /> で削除します。
 
-<iframe src="https://madori.airbee.jp/" title="空間IDの地図表示" loading="lazy" style="width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--sl-color-gray-5); border-radius: 4px;"></iframe>
+<TablerIcon name="plus" /> .txtを追加 で、空間ID を並べたテキストファイル（[Nazori](/tools/plateau/) の出力など）も読み込めます。ほかの操作は [Madori の使い方](/tools/madori/)にあります。
 
-### 画面右側のボタン
-
-- <TablerIcon name="refresh" />：範囲で書いた空間ID（[RangeId](/concepts/kasane-spatial-id/#rangeid)）を、1 ボクセルずつの表示（[SingleId](/concepts/kasane-spatial-id/#singleid)）に切り替える
-- <TablerIcon name="border-outer" />：ボクセルの枠線を表示する
-- <TablerIcon name="pointer" />：カーソル位置のボクセルの空間ID を表示する
-- <TablerIcon name="view-360-number" />：地図を自動で回転させる
-
-<TablerIcon name="plus" /> .txtを追加 で、空間ID を並べたテキストファイル（[Nazori](/tools/plateau/) の出力など）も読み込めます。
+<MadoriFrame />
 
 ## 時空間ID
 
