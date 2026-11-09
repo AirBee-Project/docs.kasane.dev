@@ -14,15 +14,15 @@ import LangStep from '../../../components/LangStep.astro';
 
 1. **時間を扱うテーブルを作る**
 
-   時空間ID を書き込むには、テーブルを「時間を扱う」設定で作ります。
+   時空間ID を書き込むには、テーブルを `isTemporal: true` で作ります。
 
    <LangStep step="map/3-rain/1-table" />
 
 2. **時間インデックスを求める**
 
-   時間間隔は 3600 秒（1 時間）にします。2025-01-01 0 時（日本時間）の時間インデックスは、UNIX 時間を 3600 で割って切り捨てた値です。空間ID にこの時間を付けると、時空間ID になります。
+   時間間隔は 3600 秒（1 時間）にします。2025-01-01 0 時（日本時間）の時間インデックスは、UNIX 時間を 3600 で割って切り捨てた値です。雨を書き込む町全体の範囲（RangeId）にこの時間を付けると、時空間ID になります。
 
-   <LangStep step="map/3-rain/2-time" madori={{ camera: { zoom: 17 } }} />
+   <LangStep step="map/3-rain/2-time" map={false} />
 
 3. **0 時台の雨を書き込む**
 

@@ -33,13 +33,12 @@ const { step, madori = {} } = Astro.props;
 		const label = root.querySelector<HTMLElement>('.tutorial-run-label')!;
 		const status = root.querySelector<HTMLElement>('.tutorial-status')!;
 		const output = root.querySelector<HTMLPreElement>('.tutorial-output')!;
-		// 地図つきの RunPreview の中なら、右の Madori に結果を出す
+		// 地図つきの RunPreview の中だけ、右の Madori に結果を出す
 		const pane = root.closest('.run-card')?.querySelector<HTMLElement>('.run-card-map');
 
 		button.addEventListener('click', async () => {
 			output.hidden = false;
 			output.replaceChildren();
-			if (!pane) root.querySelector('.madori-frame')?.remove();
 			// Madori には全文を渡し、画面には Madori の JSON（長い）の代わりに success とだけ出す
 			let text = '';
 			const write = (line: Line) => {
@@ -63,12 +62,11 @@ const { step, madori = {} } = Astro.props;
 				label.textContent = 'もう一度実行';
 				status.textContent = output.querySelector('.line-error') ? 'エラー' : '完了';
 			}
-			// 結果に空間ID や JSON があれば、入力済みの Madori を出す
+			// 結果に空間ID や JSON があれば、入力済みの Madori を右に出す
 			const found = findMadoriData(text);
 			const options: MadoriData = JSON.parse(root.dataset.madori ?? '{}');
 			const data = found && { ...found, ...options, camera: { ...found.camera, ...options.camera } };
 			if (pane) pane.replaceChildren(createMadoriFrame(data ?? { view: true }, { fill: true }));
-			else if (data) root.append(createMadoriFrame(data));
 		});
 	}
 </script>

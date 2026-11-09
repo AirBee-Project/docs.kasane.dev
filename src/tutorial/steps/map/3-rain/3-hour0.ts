@@ -5,9 +5,9 @@ import type { Tutorial } from "../../../runner";
 export default async function ({ db, show }: Tutorial) {
   const rain = db.table("rain");
   const h = Math.floor(new Date("2025-01-01T00:00:00+09:00").getTime() / 1000 / 3600);
+  const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
 // @hide-end
   // 0 時台：町全体を曇り（10）にする
-  const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
   await rain.insert(10, town.withTime(3600, h));
 
   // 町の 1 点を検索して、雨の値を出力する
