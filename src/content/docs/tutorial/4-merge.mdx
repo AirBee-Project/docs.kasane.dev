@@ -27,13 +27,13 @@ Step 2 の建物の危険度と Step 3 の雨の強さを重ね合わせ、町�
 
    JSON では、危険度の値を `value` に重複なく並べ、各時空間ID の `ref` でそのどれかを指します。
 
-   <LangStep step="map/4-merge/2-json" />
+   <LangStep step="map/4-merge/2-json" madori={{ camera: { zoom: 14 }, opacity: 0.6 }} />
 
 3. **Madori で見る**
 
    手順 2 の「実行する」を押すと、右の Madori に JSON が表示されます。次の地図は、実行結果の例を読み込んだものです。
 
-   <MadoriFrame json={mapJson} />
+   <MadoriFrame json={mapJson} border={false} opacity={0.6} camera={{ bearing: 45, pitch: 55, zoom: 14.5 }} />
 
    左上の <TablerIcon name="file-description" /> JSON を押すと、読み込んだ `risk` の行が出ます。⬜︎ を押すと透明度のバーが出るので、地図が見やすい濃さに調整します。
 

@@ -27,17 +27,6 @@ Kasane の空間ID の種類は[Kasane で用いる時空間ID](/concepts/kasane
 
 </RunPreview>
 
-実行結果の例：
-
-```text
-SingleId: 20/0/931389/412900
-parse: 20/0/931389/412900
-RangeId: 20/0/931389:931390/412900:412901
-中のボクセル: [ '20/0/931389/412900', '20/0/931389/412901', '20/0/931390/412900', '20/0/931390/412901' ]
-FlexId: 20/0|20/931389|19/206450
-時間つき: 20/0/931389/412900_3600/482136  全時間か: false
-```
-
 ## 文字列との変換
 
 `toString()` で文字列に、`SingleId.parse()`・`RangeId.parse()`・`FlexId.parse()` で文字列から変換します。書式の誤りや範囲外の値は `SpatialIdError` になります（[エラー処理](/clients/typescript/guide/errors/)）。

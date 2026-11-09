@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/connect.ts?raw';
 
 ## 接続する
@@ -36,17 +37,13 @@ const client = await KasaneClient.connect(
 
 `client.database(名前)` で `DatabaseHandle` を取ります。ハンドルの作成では通信しません。
 
+<RunPreview map={false}>
+
 <StepCode code={c0} title="connect.ts" />
 
 <TutorialRunner step="guide/connect" />
 
-実行結果の例：
-
-```text
-データベース: [ 'tutorial' ]
-ハンドルの名前: tutorial
-情報: {"name":"tutorial"}
-```
+</RunPreview>
 
 `listDatabases()` は、権限を持つデータベースだけを返します。
 

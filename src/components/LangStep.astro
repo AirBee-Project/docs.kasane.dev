@@ -1,27 +1,29 @@
 ---
-import { Code } from '@astrojs/starlight/components';
 import LangTab from './LangTab.astro';
 import LangTabs from './LangTabs.astro';
 import RunPreview from './RunPreview.astro';
 import StepCode from './StepCode.astro';
 import TutorialRunner from './TutorialRunner.astro';
 import { languages, type LanguageId } from '../tutorial/languages';
-import { findMadoriData } from '../madori';
+import { findMadoriData, type MadoriData } from '../madori';
 
 interface Props {
 	/** ステップ名。例："map/1-buildings" */
 	step: string;
 	/** false にすると「実行する」ボタンを出さない（コードを見せるだけの手順用） */
 	run?: boolean;
+	/** 結果を表示する Madori への指定（視点・不透明度など）。チュートリアルでは枠線を出さない */
+	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity'>;
 }
-const { step, run = true } = Astro.props;
+const { step, run = true, madori } = Astro.props;
+const madoriOptions = { border: false, ...madori };
 
 type Files = Record<string, string>;
 /** glob の結果を、ステップ名をキーにした表にする */
 const byStep = (files: Files, base: string, ext: string): Files =>
 	Object.fromEntries(Object.entries(files).map(([path, text]) => [path.slice(base.length, -ext.length), text]));
 
-// 言語ごとのコードと実行結果の例の置き場所。import.meta.glob は文字列リテラルしか受け付けないので、言語ごとに書く。
+// 言語ごとのコードと実行結果の例（表示はせず、Madori を並べるかの判定に使う）の置き場所。import.meta.glob は文字列リテラルしか受け付けないので、言語ごとに書く。
 // runnable は、このサイトの「実行する」ボタンで動かせるか。
 const sources: Record<LanguageId, { code: Files; output: Files; runnable: boolean }> = {
 	typescript: {
@@ -47,24 +49,14 @@ const fileName = step.split('/').pop();
 const preview = (output?: string) => output !== undefined && findMadoriData(output) !== undefined;
 ---
 
-<LangTabs>
+{/* 言語が 1 つだけのときは、タブを出さない */}
+<LangTabs plain={tabs.length === 1}>
 	{
 		tabs.map((t) => (
-			<LangTab lang={t.id}>
-				<RunPreview enabled={preview(t.output[step])}>
+			<LangTab lang={t.id} plain={tabs.length === 1}>
+				<RunPreview map={preview(t.output[step])}>
 					<StepCode code={t.code[step]!} title={`${fileName}${t.ext}`} lang={t.codeLang} wrap={preview(t.output[step])} />
-					{/* コードの下に、区切り線を挟んで実行ボタンと実行結果の例を並べる（見た目は custom.css） */}
-					{((run && t.runnable) || t.output[step]) && (
-						<div class="lang-step-result">
-							{run && t.runnable && <TutorialRunner step={step} />}
-							{t.output[step] && (
-								<>
-									<p>実行結果の例：</p>
-									<Code code={t.output[step].trimEnd()} lang="text" wrap={preview(t.output[step])} />
-								</>
-							)}
-						</div>
-					)}
+					{run && t.runnable && <TutorialRunner step={step} madori={madoriOptions} />}
 				</RunPreview>
 			</LangTab>
 		))

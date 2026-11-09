@@ -4,10 +4,18 @@ import { languages, type LanguageId } from '../tutorial/languages';
 
 interface Props {
 	lang: LanguageId;
+	/** タブを出さずに中身だけを出す（LangTabs の plain と合わせる） */
+	plain?: boolean;
 }
 const { label, icon } = languages[Astro.props.lang];
 ---
 
-<TabItem label={label} icon={icon}>
-	<slot />
-</TabItem>
+{
+	Astro.props.plain ? (
+		<slot />
+	) : (
+		<TabItem label={label} icon={icon}>
+			<slot />
+		</TabItem>
+	)
+}

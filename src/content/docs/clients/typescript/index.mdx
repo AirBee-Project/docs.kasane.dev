@@ -2,13 +2,11 @@
 title: TypeScript クライアント
 ---
 
-import { Code } from '@astrojs/starlight/components';
 import InstallTabs from '../../../../components/InstallTabs.astro';
 import StepCode from '../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../components/TutorialRunner.astro';
 import RunPreview from '../../../../components/RunPreview.astro';
 import code from '../../../../tutorial/steps/quickstart.ts?raw';
-import output from '../../../../tutorial/steps/quickstart.out.txt?raw';
 
 `@airbee-project/kasane-client` で、TypeScript から Kasane を操作します。Node.js・Bun・ブラウザで動きます。
 
@@ -36,10 +34,6 @@ const db = client.database("データベース名");
 <StepCode code={code} title="quickstart.ts" wrap />
 
 <TutorialRunner step="quickstart" />
-
-実行結果の例：
-
-<Code code={output.trimEnd()} lang="text" wrap />
 
 </RunPreview>
 

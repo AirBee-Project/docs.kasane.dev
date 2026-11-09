@@ -8,9 +8,9 @@ sidebar:
 import MadoriFrame from '../../../components/MadoriFrame.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 
-[Madori](https://madori.airbee.jp/) は、空間ID を地図の上に立体で表示するブラウザアプリです。次の地図で、ここに書いた操作を試せます。表示を崩したときは、地図の右上の <TablerIcon name="restore" /> 画面をリセット を押します。
+[Madori](https://madori.airbee.jp/) は、空間ID を地図の上に立体で表示するブラウザアプリです。次の地図で、ここに書いた操作を試せます。
 
-<MadoriFrame ids={['20/0/931389/412900', '19/0/465694/206450']} />
+<MadoriFrame ids={['20/0/931389/412900', '19/0/465694/206450']} camera={{ bearing: 45, pitch: 55 }} />
 
 ## 地図の操作
 
@@ -59,8 +59,10 @@ import TablerIcon from '../../../components/TablerIcon.astro';
 
 `?ids=` に空間ID を付けると、入力済みの状態で開きます。`ids` を複数付けると、それぞれ別の色のグループになります。`border` を付けると枠線を表示します。`view` を付けると、左上・右側のボタンを隠して枠線を表示し、図を見せるだけの表示にします（時間のあるデータなら、タイムバーだけは表示します）。`hover` を付けると、カーソルを乗せたボクセルの空間ID と値を最初から表示します。
 
+最初の視点は、`longitude`・`latitude`（中心の経度・緯度）・`bearing`（方位、度。北が 0、東が 90）・`pitch`（傾き、度。真上からが 0）・`zoom`（ズームレベル）で指定できます。指定しないときは、空間ID を中心に、北を上にして真上から見て、ズームは空間ID の大きさに合わせます。
+
 ```text
-https://madori.airbee.jp/?ids=20/0/931389/412900&ids=19/0/465694/206450&border
+https://madori.airbee.jp/?ids=20/0/931389/412900&ids=19/0/465694/206450&border&bearing=0&pitch=60
 ```
 
 JSON は URL に入らないので、iframe で埋め込み、`postMessage` で渡します。Madori は読み込みが終わると、親のページに `{ type: "madori:ready" }` を送ります。

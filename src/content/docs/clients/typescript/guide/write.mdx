@@ -27,29 +27,17 @@ ID の引数には、[どの種類](/concepts/kasane-spatial-id/)の空間ID（`
 
 </RunPreview>
 
-実行結果の例：
-
-```text
-Insert 後: [ '20/0/931389/412900 => 7' ]
-Upsert 後: [ '20/0/931389/412900 => 7', '20/0/931390/412900 => 100' ]
-Remove 後: [ '20/0/931390/412900 => 100' ]
-```
-
 ## まとめて書き込む
 
 1 回の呼び出しで書ける値は 1 つです。同じ値のボクセルは空間ID の配列にするか、隣り合う部分を `RangeId` にまとめて 1 回で送ります。
+
+<RunPreview map={false}>
 
 <StepCode code={c1} title="bulk-write.ts" />
 
 <TutorialRunner step="guide/bulk-write" />
 
-実行結果の例：
-
-```text
-値 2: 100 ボクセル
-値 1: 100 ボクセル
-count: 10
-```
+</RunPreview>
 
 `info()` の `count` は [FlexId](/concepts/kasane-spatial-id/#flexid) の数なので、200 ボクセルが 10 になります。
 
@@ -70,13 +58,5 @@ count: 10
 <TutorialRunner step="guide/zoom" />
 
 </RunPreview>
-
-実行結果の例：
-
-```text
-error: [invalid_argument] Invalid argument: zoom level 22 exceeds the table's max zoom level 20
-ignore: [  ]
-normalize: [ '20/0/931389/412900 => 1' ]
-```
 
 関連する API：[TableHandle](/clients/typescript/api/classes/tablehandle/)、[ZoomLevelPolicy](/clients/typescript/api/type-aliases/zoomlevelpolicy/)

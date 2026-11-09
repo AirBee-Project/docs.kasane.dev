@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/query.ts?raw';
 
 演算と policy の意味は[クエリの考え方](/concepts/query/)にあります。
@@ -36,20 +37,13 @@ risk   Y+1:    80   80   80   80   30   30
 wind   Y  :              5    5    5    5    5    5
 ```
 
+<RunPreview map={false}>
+
 <StepCode code={c0} title="query.ts" />
 
 <TutorialRunner step="guide/query" />
 
-実行結果の例：
-
-```text
-filter（50 以上）: 80: 8
-intersection: 30: 2、80: 2
-difference: 30: 2、80: 6
-merge（合計）: 5: 2、30: 2、35: 2、80: 6、85: 2
-add（+1）: 31: 4、81: 8
-shiftX（10 右へ）: 5: 6
-```
+</RunPreview>
 
 | 演算 | 結果 |
 | --- | --- |

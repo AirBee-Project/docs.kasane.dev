@@ -1,39 +1,56 @@
 ---
+// Tabler Icons（https://tabler.io/icons, MIT License）
+import playIcon from '@tabler/icons/filled/player-play.svg?raw';
+import type { MadoriData } from '../madori';
+
 interface Props {
 	step: string;
+	/** 結果を表示する Madori への指定（視点・枠線・不透明度）。結果から作った指定に上書きする */
+	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity'>;
 }
-const { step } = Astro.props;
+const { step, madori = {} } = Astro.props;
 ---
 
-<div class="tutorial-runner not-content" data-step={step}>
-	<button type="button" class="tutorial-run">実行する</button>
+<div class="tutorial-runner not-content" data-step={step} data-madori={JSON.stringify(madori)}>
+	<div class="tutorial-bar">
+		<button type="button" class="tutorial-run">
+			<Fragment set:html={playIcon} />
+			<span class="tutorial-run-label">実行する</span>
+		</button>
+		<span class="tutorial-status" aria-live="polite"></span>
+	</div>
 	<pre class="tutorial-output" hidden></pre>
 </div>
 
 <script>
-	import { createMadoriFrame, findMadoriData } from '../madori';
+	import { createMadoriFrame, findMadoriData, type MadoriData } from '../madori';
 	import type { Line, Step } from '../tutorial/runner';
 
 	const steps = import.meta.glob<{ default: Step }>('../tutorial/steps/**/*.ts');
 
 	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner')) {
 		const button = root.querySelector<HTMLButtonElement>('.tutorial-run')!;
+		const label = root.querySelector<HTMLElement>('.tutorial-run-label')!;
+		const status = root.querySelector<HTMLElement>('.tutorial-status')!;
 		const output = root.querySelector<HTMLPreElement>('.tutorial-output')!;
-		// RunPreview の中なら、右の Madori に結果を出す
-		const pane = root.closest('.run-preview')?.querySelector<HTMLElement>('.run-preview-map');
+		// 地図つきの RunPreview の中なら、右の Madori に結果を出す
+		const pane = root.closest('.run-card')?.querySelector<HTMLElement>('.run-card-map');
 
 		button.addEventListener('click', async () => {
 			output.hidden = false;
 			output.replaceChildren();
 			if (!pane) root.querySelector('.madori-frame')?.remove();
+			// Madori には全文を渡し、画面には Madori の JSON（長い）の代わりに success とだけ出す
+			let text = '';
 			const write = (line: Line) => {
+				text += `${line.text}\n`;
 				const span = document.createElement('span');
 				span.className = `line-${line.kind}`;
-				span.textContent = `${line.text}\n`;
+				span.textContent = `${line.text.startsWith('{"meta"') ? 'success' : line.text}\n`;
 				output.append(span);
 			};
 			button.disabled = true;
-			button.textContent = '実行中…';
+			status.textContent = '実行中…';
 			try {
 				// Kasane（Wasm）は大きいので、ボタンを押したときに読み込む
 				const { runStep } = await import('../tutorial/runner');
@@ -42,10 +59,13 @@ const { step } = Astro.props;
 				write({ kind: 'error', text: `読み込みに失敗しました。ページを再読み込みしてください。（${e instanceof Error ? e.message : String(e)}）` });
 			} finally {
 				button.disabled = false;
-				button.textContent = 'もう一度実行する';
+				label.textContent = 'もう一度実行';
+				status.textContent = output.querySelector('.line-error') ? 'エラー' : '完了';
 			}
 			// 結果に空間ID や JSON があれば、入力済みの Madori を出す
-			const data = findMadoriData(output.textContent ?? '');
+			const found = findMadoriData(text);
+			const options: MadoriData = JSON.parse(root.dataset.madori ?? '{}');
+			const data = found && { ...found, ...options, camera: { ...found.camera, ...options.camera } };
 			if (pane) pane.replaceChildren(createMadoriFrame(data ?? { view: true }, { fill: true }));
 			else if (data) root.append(createMadoriFrame(data));
 		});
@@ -56,30 +76,57 @@ const { step } = Astro.props;
 	.tutorial-runner {
 		margin-top: 1rem;
 	}
+	.tutorial-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
 	.tutorial-run {
-		padding: 0.4rem 1rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.35rem 1rem 0.35rem 0.8rem;
 		border: 0;
-		border-radius: calc(var(--radius) - 2px);
+		border-radius: 999px;
 		background: var(--brand);
 		color: var(--brand-contrast);
 		font: inherit;
+		font-size: 0.85rem;
 		font-weight: 600;
+		line-height: 1.4;
 		cursor: pointer;
+		transition: filter 0.15s;
+	}
+	.tutorial-run:hover {
+		filter: brightness(1.1);
+	}
+	.tutorial-run :global(svg) {
+		width: 0.9em;
+		height: 0.9em;
 	}
 	.tutorial-run:disabled {
 		opacity: 0.6;
 		cursor: not-allowed;
 	}
+	.tutorial-status {
+		font-size: 0.8rem;
+		color: var(--sl-color-gray-3);
+	}
 	.tutorial-output {
-		margin-top: 0.75rem;
-		padding: 1rem;
-		border-radius: calc(var(--radius) - 2px);
+		margin: 0.75rem 0 0;
+		padding: 0.75rem 1rem;
+		max-height: 16rem;
+		overflow: auto;
+		border-radius: 0.375rem;
 		background: var(--secondary);
 		font-family: var(--__sl-font-mono);
-		font-size: 0.85rem;
+		font-size: 0.8rem;
 		line-height: 1.6;
 		white-space: pre-wrap;
-		overflow-x: auto;
+	}
+	/* テーマが本文の全要素に 15px を付けるので、中の行は欄の大きさを受け継ぐ */
+	.tutorial-output :global(*) {
+		font-size: inherit;
 	}
 	.tutorial-output :global(.line-error) {
 		color: #f85149;

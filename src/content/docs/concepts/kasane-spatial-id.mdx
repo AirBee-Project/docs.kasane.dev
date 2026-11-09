@@ -30,7 +30,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 20/7/931394/412901
 ```
 
-<MadoriFrame ids={[singleIds]} border view />
+<MadoriFrame ids={[singleIds]} border view camera={{ bearing: 45, pitch: 55 }} />
 
 <p class="figure-caption">SingleId 96 個で表示</p>
 
@@ -38,7 +38,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 
 各軸のインデックスを閉区間 `最小:最大` で書いた時空間ID です。上の 96 ボクセルは `20/0:7/931389:931394/412900:412901` の 1 つで書けます。
 
-<MadoriFrame ids={[box]} border view />
+<MadoriFrame ids={[box]} border view camera={{ bearing: 45, pitch: 55 }} />
 
 <p class="figure-caption">RangeId 1 個で表示</p>
 

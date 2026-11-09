@@ -1,10 +1,22 @@
 ---
 import { Tabs } from '@astrojs/starlight/components';
+
+interface Props {
+	/** 言語が 1 つだけのときは、タブを出さずに中身だけを出す（LangTab にも渡す） */
+	plain?: boolean;
+}
+const { plain = false } = Astro.props;
 ---
 
 {/* 選んだ言語は、ページをまたいで保たれる */}
-<div class="lang-tabs">
-	<Tabs syncKey="lang">
+{
+	plain ? (
 		<slot />
-	</Tabs>
-</div>
+	) : (
+		<div class="lang-tabs">
+			<Tabs syncKey="lang">
+				<slot />
+			</Tabs>
+		</div>
+	)
+}

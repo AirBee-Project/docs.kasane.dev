@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/types.ts?raw';
 
 ## 値の型
@@ -32,22 +33,13 @@ INT に小数を渡すと、クライアントで切り捨てられます（`3.9
 
 数値は `bigint` で書きます。
 
+<RunPreview map={false}>
+
 <StepCode code={c0} title="types.ts" />
 
 <TutorialRunner step="guide/types" />
 
-実行結果の例：
-
-```text
-TEXT: 東京駅
-TEXT に数値: [invalid_argument] Constraint violation: value type mismatch: expected String, got Int
-BOOLEAN: true
-PRESENCE: null
-INT: 80
-INT に 150: [invalid_argument] Constraint violation: Value 150 is greater than maximum 100
-ENUM: 晴れ
-ENUM に 雪: [invalid_argument] Constraint violation: Value '雪' is not among allowed choices: ["晴れ", "曇り", "雨"]
-```
+</RunPreview>
 
 ## 型パラメーター
 

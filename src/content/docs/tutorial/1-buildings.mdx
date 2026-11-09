@@ -28,7 +28,7 @@ import MadoriFrame from '../../../components/MadoriFrame.astro';
    | ショッピングモール | 931384〜931386 | 412899〜412901 | 0〜5（約 190 m） |
    | 倉庫 | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） |
 
-   <LangStep step="map/1-buildings/2-range" />
+   <LangStep step="map/1-buildings/2-range" madori={{ camera: { zoom: 15.25 } }} />
 
 3. **危険度を書き込む**
 
@@ -36,12 +36,12 @@ import MadoriFrame from '../../../components/MadoriFrame.astro';
 
    書き込めたかは、ショッピングモールの中・倉庫の中・建物の外の 1 ボクセルずつを検索して確かめます。
 
-   <LangStep step="map/1-buildings/3-insert" />
+   <LangStep step="map/1-buildings/3-insert" madori={{ camera: { zoom: 16 } }} />
 
 4. **地図で見る**
 
    手順 2 の「実行する」を押すと、右の Madori に 2 つの空間ID が表示されます。実行しなくても、次の地図でショッピングモール（緑）と倉庫（ピンク）を確かめられます。
 
-   <MadoriFrame ids={['20/0:5/931384:931386/412899:412901', '20/0:5/931392:931393/412903:412904']} view />
+   <MadoriFrame ids={['20/0:5/931384:931386/412899:412901', '20/0:5/931392:931393/412903:412904']} view border={false} camera={{ bearing: 45, pitch: 55, zoom: 15.25 }} />
 
 </Steps>

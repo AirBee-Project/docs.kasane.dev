@@ -1,6 +1,3 @@
-// Tabler Icons（https://tabler.io/icons, MIT License）
-import restoreIcon from "@tabler/icons/outline/restore.svg?raw";
-
 /** 埋め込む Madori。ローカルで試すときは PUBLIC_MADORI_URL で差し替える */
 const MADORI_URL: string = import.meta.env.PUBLIC_MADORI_URL ?? "https://madori.airbee.jp/";
 
@@ -9,58 +6,51 @@ export type MadoriData = {
   ids?: string[];
   /** Madori の JSON。URL に入らないので postMessage で渡す */
   json?: string;
-  /** ボクセルの枠線を表示する */
+  /** ボクセルの枠線。true で表示、false で非表示。指定しないときは view なら表示 */
   border?: boolean;
+  /** JSON の不透明度（0〜1） */
+  opacity?: number;
   /** 図を見せるだけの埋め込み。Madori のボタン類を隠す */
   view?: boolean;
+  /**
+   * 最初の視点。longitude・latitude は中心、bearing は方位、pitch は傾き（どちらも度）、zoom はズームレベル。
+   * 指定しないときは、中心とズームは表示する ID から、方位・傾きは 0
+   */
+  camera?: { longitude?: number; latitude?: number; bearing?: number; pitch?: number; zoom?: number };
 };
 
 /**
- * ID などを入力済みの Madori と、画面をリセットするボタンを作る。
+ * ID などを入力済みの Madori を作る。
  * fill にすると、縦横比を固定せず、親の高さいっぱいに広げる
  */
-export function createMadoriFrame({ ids = [], json, border, view }: MadoriData, { fill = false } = {}): HTMLElement {
+export function createMadoriFrame({ ids = [], json, border, opacity, view, camera }: MadoriData, { fill = false } = {}): HTMLElement {
   const params = new URLSearchParams();
   for (const group of ids) params.append("ids", group);
   if (border) params.append("border", "");
   if (view) params.append("view", "");
+  for (const [key, value] of Object.entries(camera ?? {})) params.append(key, String(value));
   // docs では、カーソルを乗せたボクセルの ID と値を最初から表示する
   params.append("hover", "");
-  const src = `${MADORI_URL}?${params}`;
-
   const iframe = document.createElement("iframe");
-  iframe.src = src;
+  iframe.src = `${MADORI_URL}?${params}`;
   iframe.title = "Madori で空間ID を表示";
   iframe.loading = "lazy";
-  iframe.style.cssText = `display:block;width:100%;${fill ? "flex:1;min-height:0;" : "aspect-ratio:16/10;"}border:1px solid var(--sl-color-gray-5);border-radius:4px;`;
+  iframe.style.cssText = `display:block;width:100%;${fill ? "flex:1;min-height:0;" : "aspect-ratio:16/10;border-radius:4px;"}border:0;`;
 
-  if (json) {
+  // JSON・枠線を消す指定・不透明度は URL で渡せないので、読み込み後に postMessage で渡す
+  if (json || border === false || opacity !== undefined) {
     window.addEventListener("message", (e) => {
       if (e.source === iframe.contentWindow && e.data?.type === "madori:ready") {
-        // show は表示中のものを置き換えるので、値なしの ID も一緒に渡す
-        iframe.contentWindow?.postMessage({ type: "madori:show", json, ids, border }, "*");
+        // show は表示中のものを置き換えるので、ID も一緒に渡す
+        iframe.contentWindow?.postMessage({ type: "madori:show", json, ids, border, opacity, camera }, "*");
       }
     });
   }
 
-  // 地図の右上、枠のすぐ上に置く
-  const reset = document.createElement("button");
-  reset.type = "button";
-  reset.innerHTML = `${restoreIcon.replace(/\swidth="24"/, ' width="1.1em"').replace(/\sheight="24"/, ' height="1.1em"')}<span>画面をリセット</span>`;
-  reset.style.cssText =
-    "display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.65rem;border:1px solid var(--sl-color-gray-5);border-radius:4px;background:var(--sl-color-bg);color:inherit;font-size:0.8rem;cursor:pointer;";
-  reset.addEventListener("click", () => {
-    iframe.src = src;
-  });
-
-  const bar = document.createElement("div");
-  bar.style.cssText = "display:flex;justify-content:flex-end;margin-bottom:0.3rem;";
-  bar.append(reset);
-
   const root = document.createElement("div");
   root.className = "madori-frame not-content";
   root.style.cssText = fill ? "display:flex;flex-direction:column;height:100%;" : "margin-top:1rem;";
-  root.append(bar, iframe);
+  root.append(iframe);
   return root;
 }
 
@@ -122,16 +112,19 @@ function idValuesToMadori(lines: string[]): MadoriData | undefined {
     jsonIds.length > 0
       ? JSON.stringify({ meta: { version: "1.0" }, data: [{ name: "value", value: values, ids: jsonIds }] })
       : undefined;
-  return { json, ids: noValue.length > 0 ? [noValue.join(",")] : [], view: true };
+  return { json, ids: noValue.length > 0 ? [noValue.join(",")] : [], view: true, camera: RESULT_CAMERA };
 }
+
+/** 実行結果を表示するときの視点（南西から北東を見下ろす） */
+const RESULT_CAMERA = { bearing: 45, pitch: 55 };
 
 /** 実行結果の文字列から、Madori で表示できる空間ID と JSON を取り出す */
 export function findMadoriData(text: string): MadoriData | undefined {
   const lines = text.split("\n");
   const json = lines.find((line) => line.startsWith('{"meta"'));
-  if (json) return { json, view: true };
+  if (json) return { json, view: true, camera: RESULT_CAMERA };
   const withValues = idValuesToMadori(lines);
   if (withValues) return withValues;
   const ids = [...new Set(text.match(SPATIAL_ID))];
-  return ids.length > 0 ? { ids: [ids.join(",")], view: true } : undefined;
+  return ids.length > 0 ? { ids: [ids.join(",")], view: true, camera: RESULT_CAMERA } : undefined;
 }

@@ -1,65 +1,102 @@
 ---
 /**
- * 左にコードと実行結果（slot）、右に Madori を並べる。
- * 最初は空の Madori を置き、「実行する」を押すと結果を表示する（TutorialRunner）。
- * enabled が false のときは、slot をそのまま出す
+ * 実行できるコードのカード。slot にコード（StepCode）と実行ボタン（TutorialRunner）を入れる。
+ * map にすると右に Madori を並べ、「実行する」を押すと結果を表示する。左右の高さは常にそろう
  */
 interface Props {
-	enabled?: boolean;
+	map?: boolean;
 }
-const { enabled = true } = Astro.props;
+const { map = true } = Astro.props;
 ---
 
-{
-	enabled ? (
-		<div class="run-preview-container">
-			<div class="run-preview">
-				<div class="run-preview-main">
-					<slot />
-				</div>
-				<div class="run-preview-map not-content" />
-			</div>
+<div class="run-card-container">
+	<div class:list={['run-card', { 'has-map': map }]}>
+		<div class="run-card-main">
+			<slot />
 		</div>
-	) : (
-		<slot />
-	)
-}
+		{map && <div class="run-card-map not-content" />}
+	</div>
+</div>
 
 <script>
 	import { createMadoriFrame } from '../madori';
 
-	for (const pane of document.querySelectorAll<HTMLElement>('.run-preview-map')) {
+	for (const pane of document.querySelectorAll<HTMLElement>('.run-card-map')) {
 		pane.replaceChildren(createMadoriFrame({ view: true }, { fill: true }));
 	}
 </script>
 
 <style>
-	.run-preview-container {
+	.run-card-container {
 		container-type: inline-size;
 	}
-	.run-preview {
+	.run-card {
 		display: grid;
-		gap: 1rem;
+		overflow: hidden;
+		border-radius: 0.5rem;
 	}
-	.run-preview-main {
+	/* 左の列はコードと同じ背景にして、コードと実行ボタンの帯をひと続きに見せる */
+	.run-card-main {
+		display: flex;
+		flex-direction: column;
 		min-width: 0;
+		background: var(--sl-color-gray-7);
 	}
-	.run-preview-main > :global(:first-child) {
-		margin-top: 0;
+
+	/* コードの枠・角丸・影は消す。短いときは背景を下まで伸ばす */
+	.run-card-main > :global(.expressive-code) {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		margin: 0;
 	}
-	.run-preview-map {
+	.run-card-main > :global(.expressive-code .frame) {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.run-card-main > :global(.expressive-code .frame pre) {
+		flex: 1;
+		border: 0;
+		border-radius: 0;
+	}
+	.run-card-main > :global(.expressive-code .frame .header) {
+		border: 0;
+		border-radius: 0;
+	}
+
+	/* 実行ボタンと結果は、コードの下の帯に置く。結果の欄だけ、ページの背景色で浮かせる */
+	.run-card-main > :global(.tutorial-runner) {
+		margin: 0;
+		padding: 0.25rem 1rem 1rem;
+	}
+	.run-card-main > :global(.tutorial-runner .tutorial-output) {
+		background: var(--sl-color-bg);
+	}
+
+	/* 右に地図があるときは列が狭いので、コードを小さくする。テーマが本文の全要素に 15px を付けるので、中の要素にも付け直す */
+	.run-card.has-map > .run-card-main > :global(.expressive-code pre),
+	.run-card.has-map > .run-card-main > :global(.expressive-code pre *) {
+		font-size: 0.8rem;
+	}
+
+	.run-card-map {
+		/* 本文の要素の間の余白（上）が付くので消す。付くと左右の高さがずれる */
+		margin: 0;
 		height: 20rem;
 	}
-	/* 幅が足りるときは左右に並べる。コードが長くても、Madori はスクロールについてくる */
+
+	/* 幅が足りるときは左右に並べ、左右の高さをそろえる（短いほうが長いほうに合わせて伸びる） */
 	@container (min-width: 36rem) {
-		.run-preview {
+		.run-card.has-map {
 			grid-template-columns: 1fr 1fr;
-			align-items: start;
 		}
-		.run-preview-map {
-			position: sticky;
-			top: calc(var(--sl-nav-height) + 1rem);
-			height: min(28rem, 100dvh - var(--sl-nav-height) - 2rem);
+		.run-card-map {
+			height: auto;
+			min-height: 20rem;
 		}
 	}
 </style>

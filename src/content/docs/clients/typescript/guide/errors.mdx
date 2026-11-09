@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 
 | エラー | 発生する場面 | 判定 |
@@ -14,18 +15,13 @@ import c0 from '../../../../../tutorial/steps/guide/errors.ts?raw';
 | `SpatialIdError` | 空間ID の値や書式が不正なとき（通信前にクライアントが投げる） | `e instanceof SpatialIdError` |
 | `GeometryError` | `Coordinate` の緯度・経度・高度が範囲外のとき（通信前にクライアントが投げる） | `e instanceof GeometryError` |
 
+<RunPreview map={false}>
+
 <StepCode code={c0} title="errors.ts" />
 
 <TutorialRunner step="guide/errors" />
 
-実行結果の例：
-
-```text
-無いテーブル: [not_found] Table 'no_such_table' not found  isNotFoundError: true
-型の不一致: [invalid_argument] Constraint violation: value type mismatch: expected Int, got String
-範囲外の x: X coordinate '1048576' is out of range for ZoomLevel '20'  kind: XOutOfRange
-書式の誤り: Failed to parse SingleId from '20/0/931389'  kind: ParseSpatialIdFormat
-```
+</RunPreview>
 
 ## サーバーのエラー
 

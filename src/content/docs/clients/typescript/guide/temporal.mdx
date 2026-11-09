@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/temporal.ts?raw';
 
 時空間ID の定義は[時空間ID の基礎](/concepts/spatial-id/#時空間id)にあります。
@@ -20,19 +21,13 @@ await db.createTable("weather", "text", 25, { isTemporal: true });
 - 時間インデックスは `Math.floor(Date.UTC(2025, 0, 1) / 1000 / 3600)` のように求める。`withTimeAt(時間間隔, UNIX 時間)` なら UNIX 時間から直接付けられる
 - `RangeId` は `withTime(3600, [開始, 終了])` で時間の範囲を指定できる
 
+<RunPreview map={false}>
+
 <StepCode code={c0} title="temporal.ts" />
 
 <TutorialRunner step="guide/temporal" />
 
-実行結果の例：
-
-```text
-0 時台: [ '晴れ' ]
-0〜1 時台: [ '晴れ', '雨' ]
-その日: [ '晴れ', '雨' ]
-100 時間後: [ '駅' ]
-1800 秒: [invalid_argument] Invalid argument: interval 1800 is not allowed; i must be one of: 34359738368, 86400, 3600, 60, 1
-```
+</RunPreview>
 
 - 検索は指定した時間と重なるデータを返す。1 日単位で検索すると、その日の 1 時間単位のデータも返る
 - 時間を付けない ID で書き込んだ値は全時間の値になり、どの時刻で検索しても返る
