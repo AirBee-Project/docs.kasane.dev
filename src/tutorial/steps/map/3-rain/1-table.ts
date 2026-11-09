@@ -3,10 +3,11 @@ import type { Tutorial } from "../../../runner";
 
 export default async function ({ db }: Tutorial) {
 // @hide-end
-  // 時間を扱うテーブルを作る（値は雨の強さ）
-  await db.createTable("rain", "int", 20, { isTemporal: true });
+  // 時間を扱うテーブルを作る（値は天気のリスク）
+  await db.createTable("weather", "int", 20, { isTemporal: true });
 
-  console.log("時間を扱うか:", (await db.table("rain").info()).isTemporal);
+  // データベースにあるテーブルの一覧を出力する
+  console.log((await db.listTables()).map((t) => t.name));
 // @hide-start
 }
 // @hide-end

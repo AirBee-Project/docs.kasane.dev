@@ -8,9 +8,9 @@ export default async function (_: Tutorial) {
     .falloffX(20, 8, { pattern: "linear", policy: "max" })
     .falloffY(20, 8, { pattern: "linear", policy: "max" });
 // @hide-end
-  // 建物のリスクと雨の強さを重ね合わせ、同じ場所では大きい方を取る
+  // 建物のリスクと天気を重ね合わせ、同じ場所では大きい方を取る
   // （建物のリスクが無い場所は 0 として扱う）
-  const danger = buildingRisk.merge(query.source("tutorial", "rain"), { policy: "max", defaultValue: 0 });
+  const danger = buildingRisk.merge(query.source("tutorial", "weather"), { policy: "max", defaultValue: 0 });
 // @hide-start
   void danger;
 }

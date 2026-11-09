@@ -20,11 +20,11 @@ import LangStep from '../../../components/LangStep.astro';
 
 2. **東西に広げる**
 
-   falloff を東西（X）方向にかけ、半径 8 ボクセルで 0 になるよう線形に減らしながら広げます。重なった部分は大きい方（policy は max）を取ります。
+   falloff を東西（X）方向にかけ、半径 8 ボクセルで 0 になるよう線形に減らしながら広げます。
 
    <LangStep step="map/2-falloff/2-falloff-x" madori={{ camera: { zoom: 14.5 }, opacity: 0.6 }} />
 
-   1 ボクセル離れるごとに 12.5 ずつ下がります（小数は切り捨て）。
+   建物から 1 ボクセル離れるごとに 12.5 ずつ下がります（小数は切り捨て）。建物から東西へ、赤から青へ色が変わります。
 
 3. **南北にも広げる**
 
@@ -32,8 +32,7 @@ import LangStep from '../../../components/LangStep.astro';
 
    <LangStep step="map/2-falloff/3-falloff-y" madori={{ camera: { zoom: 14.25 }, opacity: 0.6 }} />
 
-   5 ボクセル以上離れると、ショッピングモールより近い倉庫の影響の方が大きくなり、6 ボクセル先では 43 に上がります。
-
+   建物のまわりが、四方に広がったリスクで囲まれます。
 </Steps>
 
 クエリは計算した結果を返すだけで、`buildings` テーブルの中身は変わりません。

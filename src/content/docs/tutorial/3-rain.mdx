@@ -1,14 +1,14 @@
 ---
-title: Step 3：雨を書き込む
+title: Step 3：天気を書き込む
 sidebar:
-  label: 3. 雨を書き込む
+  label: 3. 天気を書き込む
   order: 3
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 
-時間とともに変わる雨のデータを、[時空間ID](/concepts/spatial-id/#時空間id) で書き込みます。
+時間とともに変わる天気のデータを、[時空間ID](/concepts/spatial-id/#時空間id) で書き込みます。
 
 <Steps>
 
@@ -20,22 +20,22 @@ import LangStep from '../../../components/LangStep.astro';
 
 2. **時間インデックスを求める**
 
-   時間間隔は 3600 秒（1 時間）にします。2025-01-01 0 時（日本時間）の時間インデックスは、UNIX 時間を 3600 で割って切り捨てた値です。雨を書き込む町全体の範囲（RangeId）にこの時間を付けると、時空間ID になります。
+   時間間隔は 3600 秒（1 時間）にします。2025-01-01 0 時（日本時間）の時間インデックスは、UNIX 時間を 3600 で割って切り捨てた値です。天気を書き込む町全体の範囲（RangeId）にこの時間を付けると、時空間ID になります。
 
    <LangStep step="map/3-rain/2-time" map={false} />
 
-3. **0 時台の雨を書き込む**
+3. **0 時台の天気を書き込む**
 
    0 時台は、町全体を曇り（10）にします。
 
    <LangStep step="map/3-rain/3-hour0" madori={{ camera: { zoom: 14 }, opacity: 0.6 }} />
 
-4. **1 時台の雨を書き込む**
+4. **1 時台の天気を書き込む**
 
    1 時台は町全体に強い雨（60）を書き込みます。
 
    <LangStep step="map/3-rain/4-hour1" madori={{ camera: { zoom: 14 }, opacity: 0.6 }} />
 
-   同じ場所でも、時間を変えて検索すると違う値が返ります。右の Madori も、手順 3 の曇り（10、青）から強い雨（60、緑）に変わります。
+   同じ場所でも、時間が違えば別の値を持ちます。
 
 </Steps>

@@ -11,13 +11,13 @@ import MadoriFrame from '../../../components/MadoriFrame.astro';
 import TablerIcon from '../../../components/TablerIcon.astro';
 import mapJson from '../../../tutorial/steps/map/4-merge/2-json.out.txt?raw';
 
-Step 2 の建物のリスクと Step 3 の雨の強さを重ね合わせ、町全体のリスクマップを Madori で見ます。
+Step 2 の建物のリスクと Step 3 の天気を重ね合わせ、町全体のリスクマップを Madori で見ます。
 
 <Steps>
 
 1. **重ね合わせる**
 
-   クエリの merge で、建物のリスクと雨を重ね合わせます。policy は max で、同じ場所では大きい方をその場所のリスクにします。
+   クエリの merge で、建物のリスクと天気を重ね合わせます。policy は max で、同じ場所では大きい方をその場所のリスクにします。
    <LangStep step="map/4-merge/1-merge" run={false} />
 
 2. **JSON で出力する**

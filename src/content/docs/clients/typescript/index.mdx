@@ -8,7 +8,7 @@ import TutorialRunner from '../../../../components/TutorialRunner.astro';
 import RunPreview from '../../../../components/RunPreview.astro';
 import code from '../../../../tutorial/steps/quickstart.ts?raw';
 
-`@airbee-project/kasane-client` で、TypeScript から Kasane を操作します。Node.js・Bun・ブラウザで動きます。
+`@airbee-project/kasane-client` で、TypeScript から Kasane を操作します。
 
 ## インストール
 
@@ -36,17 +36,3 @@ const db = client.database("データベース名");
 <TutorialRunner step="quickstart" />
 
 </RunPreview>
-
-:::note[「実行する」の実行環境]
-ブラウザの中で動く Kasane（`KasaneClient.inMemory()`）で動きます。サーバーには接続しないので、書き込んだデータは外に送られません。データはページの中だけにあり、ページを移動したり再読み込みしたりすると消えます。同名のテーブルは作り直されます。
-:::
-
-### 地図で見る
-
-「実行する」を押すと、右の [Madori](/tools/madori/) に結果の空間ID が表示されます。東京駅の丸の内側に、1 辺約 30 m のボクセルが出ます。
-
-## 次に読むもの
-
-- [チュートリアル](/tutorial/)：リスクマップを作りながら主な機能を使う（言語タブで TypeScript を選ぶ）
-- [ガイド](/clients/typescript/guide/environment/)：機能ごとの説明
-- [コードの早見表](/clients/typescript/reference/usage/)

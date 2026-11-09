@@ -1,20 +1,12 @@
 // @hide-start
-import { RangeId, SingleId, query } from "@airbee-project/kasane-client";
+import { RangeId, query } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
 
 export default async function ({ client, show }: Tutorial) {
 // @hide-end
   // 建物のテーブルをもとに、クエリを作る（まだ計算はしない）
   const buildings = query.source("tutorial", "buildings");
-
-  // ショッピングモールの東の端から、東へ 1 ボクセルずつ離れた場所を見る
-  for (let dx = 0; dx <= 2; dx++) {
-    const place = SingleId.create(20, 0, 931386 + dx, 412900);
-    const [result] = await client.query(buildings, place).toArray();
-    console.log(`ショッピングモールから ${dx} ボクセル =>`, result ? `${result.value}` : "値なし");
-  }
 // @hide-start
-  // 建物のまわりの結果を、右の Madori にだけ渡す
-  show(await client.query(buildings, RangeId.create(20, [0, 5], [931376, 931401], [412891, 412912])).toArray());
+  show(await client.query(buildings, RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913])).toArray());
 }
 // @hide-end

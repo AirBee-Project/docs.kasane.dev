@@ -61,6 +61,8 @@ const { step, madori = {} } = Astro.props;
 				button.disabled = false;
 				label.textContent = 'もう一度実行';
 				status.textContent = output.querySelector('.line-error') ? 'エラー' : '完了';
+				// 何も出力しない手順では、空の結果欄を出さない
+				output.hidden = !output.hasChildNodes();
 			}
 			// 結果に空間ID や JSON があれば、入力済みの Madori を右に出す
 			const found = findMadoriData(text);

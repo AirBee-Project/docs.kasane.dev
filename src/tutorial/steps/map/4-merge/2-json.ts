@@ -1,6 +1,7 @@
 // @hide-start
 import { RangeId, query } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
+import { toJson } from "../../../to-json";
 
 export default async function ({ client }: Tutorial) {
   const buildingRisk = query
@@ -8,32 +9,14 @@ export default async function ({ client }: Tutorial) {
     .falloffX(20, 8, { pattern: "linear", policy: "max" })
     .falloffY(20, 8, { pattern: "linear", policy: "max" });
   const h = Math.floor(new Date("2025-01-01T00:00:00+09:00").getTime() / 1000 / 3600);
-  const danger = buildingRisk.merge(query.source("tutorial", "rain"), { policy: "max", defaultValue: 0 });
+  const danger = buildingRisk.merge(query.source("tutorial", "weather"), { policy: "max", defaultValue: 0 });
 // @hide-end
   // 町全体を、0 時台から 1 時台まで検索する
   const town = RangeId.create(20, [0, 5], [931375, 931402], [412890, 412913]);
   const results = await client.query(danger, town.withTime(3600, [h, h + 1])).toArray();
 
-  // 結果を、Madori が読み込める JSON に変換する
-  const values = [...new Set(results.map((r) => Number(r.value)))];
-  const json = {
-    meta: { version: "1.0", description: "町のリスクマップ" },
-    data: [
-      {
-        name: "risk",
-        value: values,
-        ids: results.map((r) => {
-          const id = r.id as RangeId; // 結果の形式は既定の RangeId
-          return {
-            z: id.z, f: id.f, x: id.x, y: id.y,
-            i: id.interval.seconds(), t: id.t,
-            ref: values.indexOf(Number(r.value)),
-          };
-        }),
-      },
-    ],
-  };
-  console.log(JSON.stringify(json));
+  // 結果を、Madori が読み込める JSON に変換して出力する
+  console.log(toJson(results, "町のリスクマップ"));
 // @hide-start
 }
 // @hide-end

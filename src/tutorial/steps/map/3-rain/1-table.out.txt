@@ -1,1 +1,1 @@
-時間を扱うか: true
+[ 'buildings', 'weather' ]
