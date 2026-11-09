@@ -1,0 +1,65 @@
+---
+/**
+ * 左にコードと実行結果（slot）、右に Madori を並べる。
+ * 最初は空の Madori を置き、「実行する」を押すと結果を表示する（TutorialRunner）。
+ * enabled が false のときは、slot をそのまま出す
+ */
+interface Props {
+	enabled?: boolean;
+}
+const { enabled = true } = Astro.props;
+---
+
+{
+	enabled ? (
+		<div class="run-preview-container">
+			<div class="run-preview">
+				<div class="run-preview-main">
+					<slot />
+				</div>
+				<div class="run-preview-map not-content" />
+			</div>
+		</div>
+	) : (
+		<slot />
+	)
+}
+
+<script>
+	import { createMadoriFrame } from '../madori';
+
+	for (const pane of document.querySelectorAll<HTMLElement>('.run-preview-map')) {
+		pane.replaceChildren(createMadoriFrame({ view: true }, { fill: true }));
+	}
+</script>
+
+<style>
+	.run-preview-container {
+		container-type: inline-size;
+	}
+	.run-preview {
+		display: grid;
+		gap: 1rem;
+	}
+	.run-preview-main {
+		min-width: 0;
+	}
+	.run-preview-main > :global(:first-child) {
+		margin-top: 0;
+	}
+	.run-preview-map {
+		height: 20rem;
+	}
+	/* 幅が足りるときは左右に並べる。コードが長くても、Madori はスクロールについてくる */
+	@container (min-width: 36rem) {
+		.run-preview {
+			grid-template-columns: 1fr 1fr;
+			align-items: start;
+		}
+		.run-preview-map {
+			position: sticky;
+			top: calc(var(--sl-nav-height) + 1rem);
+			height: min(28rem, 100dvh - var(--sl-nav-height) - 2rem);
+		}
+	}
+</style>

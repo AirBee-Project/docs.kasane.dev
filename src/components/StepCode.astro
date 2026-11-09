@@ -5,8 +5,10 @@ interface Props {
 	code: string;
 	title?: string;
 	lang?: string;
+	/** 長い行を折り返す（RunPreview の狭い列で使う） */
+	wrap?: boolean;
 }
-const { code, title, lang = 'ts' } = Astro.props;
+const { code, title, lang = 'ts', wrap = false } = Astro.props;
 
 /**
  * 表示用にコードを整える。
@@ -25,4 +27,4 @@ function display(source: string): string {
 }
 ---
 
-<Code code={display(code)} lang={lang} title={title} />
+<Code code={display(code)} lang={lang} title={title} wrap={wrap} />

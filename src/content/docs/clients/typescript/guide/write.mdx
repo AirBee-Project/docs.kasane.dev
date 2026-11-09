@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/write-modes.ts?raw';
 import c1 from '../../../../../tutorial/steps/guide/bulk-write.ts?raw';
 import c2 from '../../../../../tutorial/steps/guide/zoom.ts?raw';
@@ -18,9 +19,13 @@ import c2 from '../../../../../tutorial/steps/guide/zoom.ts?raw';
 
 ID の引数には、[どの種類](/concepts/kasane-spatial-id/)の空間ID（`SingleId`・`RangeId`・`FlexId`）も、その配列も渡せます。
 
-<StepCode code={c0} title="write-modes.ts" />
+<RunPreview>
+
+<StepCode code={c0} title="write-modes.ts" wrap />
 
 <TutorialRunner step="guide/write-modes" />
+
+</RunPreview>
 
 実行結果の例：
 
@@ -58,9 +63,13 @@ count: 10
 | `"ignore"` | その ID を無視する |
 | `"normalize"` | 最大ズームレベルの親に丸める（元より広い範囲に書き込まれる） |
 
-<StepCode code={c2} title="zoom.ts" />
+<RunPreview>
+
+<StepCode code={c2} title="zoom.ts" wrap />
 
 <TutorialRunner step="guide/zoom" />
+
+</RunPreview>
 
 実行結果の例：
 

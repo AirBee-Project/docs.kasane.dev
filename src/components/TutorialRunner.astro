@@ -19,11 +19,13 @@ const { step } = Astro.props;
 	for (const root of document.querySelectorAll<HTMLElement>('.tutorial-runner')) {
 		const button = root.querySelector<HTMLButtonElement>('.tutorial-run')!;
 		const output = root.querySelector<HTMLPreElement>('.tutorial-output')!;
+		// RunPreview の中なら、右の Madori に結果を出す
+		const pane = root.closest('.run-preview')?.querySelector<HTMLElement>('.run-preview-map');
 
 		button.addEventListener('click', async () => {
 			output.hidden = false;
 			output.replaceChildren();
-			root.querySelector('.madori-frame')?.remove();
+			if (!pane) root.querySelector('.madori-frame')?.remove();
 			const write = (line: Line) => {
 				const span = document.createElement('span');
 				span.className = `line-${line.kind}`;
@@ -42,9 +44,10 @@ const { step } = Astro.props;
 				button.disabled = false;
 				button.textContent = 'もう一度実行する';
 			}
-			// 結果に空間ID や JSON があれば、入力済みの Madori を下に出す
+			// 結果に空間ID や JSON があれば、入力済みの Madori を出す
 			const data = findMadoriData(output.textContent ?? '');
-			if (data) root.append(createMadoriFrame(data));
+			if (pane) pane.replaceChildren(createMadoriFrame(data ?? { view: true }, { fill: true }));
+			else if (data) root.append(createMadoriFrame(data));
 		});
 	}
 </script>

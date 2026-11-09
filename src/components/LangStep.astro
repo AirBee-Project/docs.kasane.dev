@@ -2,9 +2,11 @@
 import { Code } from '@astrojs/starlight/components';
 import LangTab from './LangTab.astro';
 import LangTabs from './LangTabs.astro';
+import RunPreview from './RunPreview.astro';
 import StepCode from './StepCode.astro';
 import TutorialRunner from './TutorialRunner.astro';
 import { languages, type LanguageId } from '../tutorial/languages';
+import { findMadoriData } from '../madori';
 
 interface Props {
 	/** ステップ名。例："map/1-buildings" */
@@ -41,25 +43,29 @@ const tabs = (Object.keys(languages) as LanguageId[])
 	.filter((id) => sources[id].code[step] !== undefined)
 	.map((id) => ({ id, ...languages[id], ...sources[id] }));
 const fileName = step.split('/').pop();
+// 実行結果の例に空間ID があれば、右に Madori を並べる
+const preview = (output?: string) => output !== undefined && findMadoriData(output) !== undefined;
 ---
 
 <LangTabs>
 	{
 		tabs.map((t) => (
 			<LangTab lang={t.id}>
-				<StepCode code={t.code[step]!} title={`${fileName}${t.ext}`} lang={t.codeLang} />
-				{/* コードの下に、区切り線を挟んで実行ボタンと実行結果の例を並べる（見た目は custom.css） */}
-				{((run && t.runnable) || t.output[step]) && (
-					<div class="lang-step-result">
-						{run && t.runnable && <TutorialRunner step={step} />}
-						{t.output[step] && (
-							<>
-								<p>実行結果の例：</p>
-								<Code code={t.output[step].trimEnd()} lang="text" />
-							</>
-						)}
-					</div>
-				)}
+				<RunPreview enabled={preview(t.output[step])}>
+					<StepCode code={t.code[step]!} title={`${fileName}${t.ext}`} lang={t.codeLang} wrap={preview(t.output[step])} />
+					{/* コードの下に、区切り線を挟んで実行ボタンと実行結果の例を並べる（見た目は custom.css） */}
+					{((run && t.runnable) || t.output[step]) && (
+						<div class="lang-step-result">
+							{run && t.runnable && <TutorialRunner step={step} />}
+							{t.output[step] && (
+								<>
+									<p>実行結果の例：</p>
+									<Code code={t.output[step].trimEnd()} lang="text" wrap={preview(t.output[step])} />
+								</>
+							)}
+						</div>
+					)}
+				</RunPreview>
 			</LangTab>
 		))
 	}

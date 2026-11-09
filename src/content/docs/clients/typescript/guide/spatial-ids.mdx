@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/ids.ts?raw';
 
 Kasane の空間ID の種類は[Kasane で用いる時空間ID](/concepts/kasane-spatial-id/)にあります。クライアントでは、種類ごとにクラスがあります。
@@ -18,9 +19,13 @@ Kasane の空間ID の種類は[Kasane で用いる時空間ID](/concepts/kasane
 
 書き込み・検索・クエリには、どの種類の空間ID も、その配列も渡せます。
 
-<StepCode code={c0} title="ids.ts" />
+<RunPreview>
+
+<StepCode code={c0} title="ids.ts" wrap />
 
 <TutorialRunner step="guide/ids" />
+
+</RunPreview>
 
 実行結果の例：
 

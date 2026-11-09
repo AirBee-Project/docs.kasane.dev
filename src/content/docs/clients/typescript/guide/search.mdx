@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../../components/TutorialRunner.astro';
+import RunPreview from '../../../../../components/RunPreview.astro';
 import c0 from '../../../../../tutorial/steps/guide/formats.ts?raw';
 import c1 from '../../../../../tutorial/steps/guide/stream.ts?raw';
 
@@ -28,9 +29,13 @@ import c1 from '../../../../../tutorial/steps/guide/stream.ts?raw';
 
 `ResultStream` は 1 回しか読めず、2 回目は空になります。
 
-<StepCode code={c1} title="stream.ts" />
+<RunPreview>
+
+<StepCode code={c1} title="stream.ts" wrap />
 
 <TutorialRunner step="guide/stream" />
+
+</RunPreview>
 
 実行結果の例：
 
@@ -47,9 +52,13 @@ toDictionaryMap: 1 => [ '20/0/931389/412900', '20/0/931390/412900', '20/0/931391
 
 ## 結果の ID の形式
 
-<StepCode code={c0} title="formats.ts" />
+<RunPreview>
+
+<StepCode code={c0} title="formats.ts" wrap />
 
 <TutorialRunner step="guide/formats" />
+
+</RunPreview>
 
 実行結果の例：
 

@@ -6,6 +6,7 @@ sidebar:
 
 import StepCode from '../../../components/StepCode.astro';
 import TutorialRunner from '../../../components/TutorialRunner.astro';
+import RunPreview from '../../../components/RunPreview.astro';
 import c0 from '../../../tutorial/steps/concepts/query.ts?raw';
 
 クエリは、テーブルを入力にした計算をサーバー側で実行し、空間ID と値の組を出力します。出力は保存されずにそのまま返り、入力のテーブルの中身は変わりません。参照する全テーブルに read 権限が必要です。
@@ -14,9 +15,13 @@ import c0 from '../../../tutorial/steps/concepts/query.ts?raw';
 
 テーブル `risk` から、値が 50 以上のボクセルだけを選びます。
 
-<StepCode code={c0} title="query.ts" />
+<RunPreview>
+
+<StepCode code={c0} title="query.ts" wrap />
 
 <TutorialRunner step="concepts/query" />
+
+</RunPreview>
 
 ## 演算
 

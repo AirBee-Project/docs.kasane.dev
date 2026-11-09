@@ -6,7 +6,7 @@ import { Code } from '@astrojs/starlight/components';
 import InstallTabs from '../../../../components/InstallTabs.astro';
 import StepCode from '../../../../components/StepCode.astro';
 import TutorialRunner from '../../../../components/TutorialRunner.astro';
-import MadoriFrame from '../../../../components/MadoriFrame.astro';
+import RunPreview from '../../../../components/RunPreview.astro';
 import code from '../../../../tutorial/steps/quickstart.ts?raw';
 import output from '../../../../tutorial/steps/quickstart.out.txt?raw';
 
@@ -31,13 +31,17 @@ const db = client.database("データベース名");
 
 テーブル `hello` を作り、東京駅付近の空間IDに `42` を書き込んで検索します。
 
-<StepCode code={code} title="quickstart.ts" />
+<RunPreview>
+
+<StepCode code={code} title="quickstart.ts" wrap />
 
 <TutorialRunner step="quickstart" />
 
 実行結果の例：
 
-<Code code={output.trimEnd()} lang="text" />
+<Code code={output.trimEnd()} lang="text" wrap />
+
+</RunPreview>
 
 :::note[「実行する」の実行環境]
 ブラウザの中で動く Kasane（`KasaneClient.inMemory()`）で動きます。サーバーには接続しないので、書き込んだデータは外に送られません。データはページの中だけにあり、ページを移動したり再読み込みしたりすると消えます。同名のテーブルは作り直されます。
@@ -45,11 +49,7 @@ const db = client.database("データベース名");
 
 ### 地図で見る
 
-「実行する」を押すと、出力の下に、結果の空間ID を入力済みの [Madori](/tools/madori/) が表示されます。次の地図は `20/0/931389/412900` を入力済みのものです。
-
-<MadoriFrame ids={['20/0/931389/412900']} view />
-
-東京駅の丸の内側に、1 辺約 30 m のボクセルが表示されます。
+「実行する」を押すと、右の [Madori](/tools/madori/) に結果の空間ID が表示されます。東京駅の丸の内側に、1 辺約 30 m のボクセルが出ます。
 
 ## 次に読むもの
 

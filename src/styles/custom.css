@@ -1,5 +1,5 @@
 :root {
-	--content-max-width: 54rem;
+	--content-max-width: 64rem;
 	--container-max-width: 1800px;
 }
 
@@ -211,4 +211,12 @@ mobile-starlight-toc a[aria-current] {
 /* 手順（Steps）の見出し。テーマは手順内の段落を薄い色にするので、各手順の最初の段落だけ本文と同じ色に戻す */
 .sl-markdown-content .sl-steps > li > p:first-child {
 	color: var(--sl-color-white);
+}
+
+/* 右の目次を狭くして、本文を広く取る（テーマは目次 240px・間隔 2.5rem） */
+@media (min-width: 1280px) {
+	main.container-main[data-slot='docs'] {
+		grid-template-columns: minmax(0, 1fr) 11rem;
+		gap: 1.5rem;
+	}
 }

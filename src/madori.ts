@@ -15,8 +15,11 @@ export type MadoriData = {
   view?: boolean;
 };
 
-/** ID などを入力済みの Madori と、画面をリセットするボタンを作る */
-export function createMadoriFrame({ ids = [], json, border, view }: MadoriData): HTMLElement {
+/**
+ * ID などを入力済みの Madori と、画面をリセットするボタンを作る。
+ * fill にすると、縦横比を固定せず、親の高さいっぱいに広げる
+ */
+export function createMadoriFrame({ ids = [], json, border, view }: MadoriData, { fill = false } = {}): HTMLElement {
   const params = new URLSearchParams();
   for (const group of ids) params.append("ids", group);
   if (border) params.append("border", "");
@@ -29,8 +32,7 @@ export function createMadoriFrame({ ids = [], json, border, view }: MadoriData):
   iframe.src = src;
   iframe.title = "Madori で空間ID を表示";
   iframe.loading = "lazy";
-  iframe.style.cssText =
-    "display:block;width:100%;aspect-ratio:16/10;border:1px solid var(--sl-color-gray-5);border-radius:4px;";
+  iframe.style.cssText = `display:block;width:100%;${fill ? "flex:1;min-height:0;" : "aspect-ratio:16/10;"}border:1px solid var(--sl-color-gray-5);border-radius:4px;`;
 
   if (json) {
     window.addEventListener("message", (e) => {
@@ -57,7 +59,7 @@ export function createMadoriFrame({ ids = [], json, border, view }: MadoriData):
 
   const root = document.createElement("div");
   root.className = "madori-frame not-content";
-  root.style.marginTop = "1rem";
+  root.style.cssText = fill ? "display:flex;flex-direction:column;height:100%;" : "margin-top:1rem;";
   root.append(bar, iframe);
   return root;
 }
