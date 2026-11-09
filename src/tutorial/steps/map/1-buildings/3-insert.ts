@@ -1,5 +1,5 @@
 // @hide-start
-import { RangeId, SingleId } from "@airbee-project/kasane-client";
+import { RangeId } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
 
 export default async function ({ db }: Tutorial) {
@@ -11,13 +11,10 @@ export default async function ({ db }: Tutorial) {
   await buildings.insert(100, shoppingMall);
   await buildings.insert(70, warehouse);
 
-  // ショッピングモールの中・倉庫の中・建物の外の 1 ボクセルずつを検索する
-  const insideMall = SingleId.create(20, 0, 931385, 412900);
-  const insideWarehouse = SingleId.create(20, 0, 931392, 412903);
-  const outside = SingleId.create(20, 0, 931389, 412900);
-  for (const id of [insideMall, insideWarehouse, outside]) {
-    const [result] = await buildings.search(id).toArray();
-    console.log(`${id} =>`, result ? `${result.value}` : "値なし");
+  // 建物ごとに検索して、建物と値を出力する
+  for (const building of [shoppingMall, warehouse]) {
+    const [result] = await buildings.search(building).toArray();
+    console.log(`${building} => ${result?.value}`);
   }
 // @hide-start
 }

@@ -7,7 +7,7 @@ export default async function ({ client }: Tutorial) {
     .source("tutorial", "buildings")
     .falloffX(20, 8, { pattern: "linear", policy: "max" })
     .falloffY(20, 8, { pattern: "linear", policy: "max" });
-  const h = Math.floor(Date.UTC(2025, 0, 1, 0) / 1000 / 3600);
+  const h = Math.floor(new Date("2025-01-01T00:00:00+09:00").getTime() / 1000 / 3600);
   const danger = buildingRisk.merge(query.source("tutorial", "rain"), { policy: "max", defaultValue: 0 });
 // @hide-end
   // 町全体を、0 時台から 1 時台まで検索する
@@ -17,7 +17,7 @@ export default async function ({ client }: Tutorial) {
   // 結果を、Madori が読み込める JSON に変換する
   const values = [...new Set(results.map((r) => Number(r.value)))];
   const json = {
-    meta: { version: "1.0", description: "町の危険度マップ" },
+    meta: { version: "1.0", description: "町のリスクマップ" },
     data: [
       {
         name: "risk",

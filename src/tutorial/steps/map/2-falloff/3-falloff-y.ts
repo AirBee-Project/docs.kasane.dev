@@ -1,8 +1,8 @@
 // @hide-start
-import { SingleId, query } from "@airbee-project/kasane-client";
+import { RangeId, SingleId, query } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
 
-export default async function ({ client }: Tutorial) {
+export default async function ({ client, show }: Tutorial) {
   const buildings = query.source("tutorial", "buildings");
   const spreadX = buildings.falloffX(20, 8, { pattern: "linear", policy: "max" });
 // @hide-end
@@ -16,5 +16,7 @@ export default async function ({ client }: Tutorial) {
     console.log(`ショッピングモールから ${dx} ボクセル =>`, result ? `${result.value}` : "値なし");
   }
 // @hide-start
+  // 建物のまわりの結果を、右の Madori にだけ渡す
+  show(await client.query(buildingRisk, RangeId.create(20, [0, 5], [931376, 931401], [412891, 412912])).toArray());
 }
 // @hide-end

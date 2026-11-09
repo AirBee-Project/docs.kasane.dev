@@ -1,8 +1,8 @@
 // @hide-start
-import { SingleId, query } from "@airbee-project/kasane-client";
+import { RangeId, SingleId, query } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
 
-export default async function ({ client }: Tutorial) {
+export default async function ({ client, show }: Tutorial) {
 // @hide-end
   // 建物のテーブルをもとに、クエリを作る（まだ計算はしない）
   const buildings = query.source("tutorial", "buildings");
@@ -14,5 +14,7 @@ export default async function ({ client }: Tutorial) {
     console.log(`ショッピングモールから ${dx} ボクセル =>`, result ? `${result.value}` : "値なし");
   }
 // @hide-start
+  // 建物のまわりの結果を、右の Madori にだけ渡す
+  show(await client.query(buildings, RangeId.create(20, [0, 5], [931376, 931401], [412891, 412912])).toArray());
 }
 // @hide-end

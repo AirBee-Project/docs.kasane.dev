@@ -12,11 +12,13 @@ interface Props {
 	step: string;
 	/** false にすると「実行する」ボタンを出さない（コードを見せるだけの手順用） */
 	run?: boolean;
-	/** 結果を表示する Madori への指定（視点・不透明度など）。チュートリアルでは枠線を出さない */
-	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity'>;
+	/** 結果を表示する Madori への指定（視点・不透明度など） */
+	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity' | 'speed' | 'scale'>;
 }
 const { step, run = true, madori } = Astro.props;
-const madoriOptions = { border: false, ...madori };
+// チュートリアルは東西南北が大事なので、北を奥にして正面斜め上から見る。
+// 色は、完成したリスクマップ（10〜100）と同じ範囲にそろえる。データは 1 時間ごとなので、再生は 1hr/s から
+const madoriOptions = { scale: [10, 100] as [number, number], speed: 3600, ...madori, camera: { bearing: 0, pitch: 55, ...madori?.camera } };
 
 type Files = Record<string, string>;
 /** glob の結果を、ステップ名をキーにした表にする */
@@ -45,8 +47,8 @@ const tabs = (Object.keys(languages) as LanguageId[])
 	.filter((id) => sources[id].code[step] !== undefined)
 	.map((id) => ({ id, ...languages[id], ...sources[id] }));
 const fileName = step.split('/').pop();
-// 実行結果の例に空間ID があれば、右に Madori を並べる
-const preview = (output?: string) => output !== undefined && findMadoriData(output) !== undefined;
+// madori の指定があるか、実行結果の例に空間ID があれば、右に Madori を並べる
+const preview = (output?: string) => madori !== undefined || (output !== undefined && findMadoriData(output) !== undefined);
 ---
 
 {/* 言語が 1 つだけのときは、タブを出さない */}

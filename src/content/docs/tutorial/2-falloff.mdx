@@ -1,28 +1,28 @@
 ---
-title: Step 2：建物のまわりに危険度を広げる
+title: Step 2：建物のまわりにリスクを広げる
 sidebar:
-  label: 2. 危険度を広げる
+  label: 2. リスクを広げる
   order: 2
 ---
 
 import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 
-ドローンは風や測位の誤差で予定の位置からずれるので、建物のまわりにバッファが必要です。建物から離れるほど危険度が下がるように、クエリで建物の危険度を周囲に広げます（[クエリの考え方](/concepts/query/)）。
+ドローンは風や測位の誤差で予定の位置からずれるので、建物のまわりにバッファが必要です。建物から離れるほどリスクが下がるように、クエリで建物のリスクを周囲に広げます（[クエリの考え方](/concepts/query/)）。
 
 <Steps>
 
 1. **建物のテーブルからクエリを作る**
 
-   クエリは、もとにするテーブルを指定して作り、そこに計算を足していきます。まずは何も計算せずに実行してみます。結果は Step 1 で書き込んだ値そのままで、ショッピングモールの東の端から東へ離れた場所には値がありません。
+   クエリは、もとにするテーブルを指定して作り、そこに計算を足していきます。まずは何も計算せずに実行してみます。
 
-   <LangStep step="map/2-falloff/1-source" />
+   <LangStep step="map/2-falloff/1-source" madori={{ camera: { zoom: 15 }, opacity: 0.6 }} />
 
 2. **東西に広げる**
 
    falloff を東西（X）方向にかけ、半径 8 ボクセルで 0 になるよう線形に減らしながら広げます。重なった部分は大きい方（policy は max）を取ります。
 
-   <LangStep step="map/2-falloff/2-falloff-x" />
+   <LangStep step="map/2-falloff/2-falloff-x" madori={{ camera: { zoom: 14.5 }, opacity: 0.6 }} />
 
    1 ボクセル離れるごとに 12.5 ずつ下がります（小数は切り捨て）。
 
@@ -30,7 +30,7 @@ import LangStep from '../../../components/LangStep.astro';
 
    続けて南北（Y）方向にも falloff をかけます。
 
-   <LangStep step="map/2-falloff/3-falloff-y" />
+   <LangStep step="map/2-falloff/3-falloff-y" madori={{ camera: { zoom: 14.25 }, opacity: 0.6 }} />
 
    5 ボクセル以上離れると、ショッピングモールより近い倉庫の影響の方が大きくなり、6 ボクセル先では 43 に上がります。
 

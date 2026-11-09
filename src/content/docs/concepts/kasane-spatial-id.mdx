@@ -9,6 +9,8 @@ import MadoriFrame from '../../../components/MadoriFrame.astro';
 
 export const box = '20/0:7/931389:931394/412900:412901';
 export const singleIds = [...RangeId.parse(box).toSingleIds()].join(',');
+// 高さごとの RangeId。高さ f の段は時刻 f 秒に現れ、そのあとはずっと残る（終わりは 2038 年）
+export const layers = Array.from({ length: 8 }, (_, f) => `20/${f}/931389:931394/412900:412901_1/${f}:2147483647`).join(',');
 
 Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[SingleId](/concepts/kasane-spatial-id/#singleid)）と、それを拡張した 2 種類の時空間ID（[RangeId](/concepts/kasane-spatial-id/#rangeid)、[FlexId](/concepts/kasane-spatial-id/#flexid)）を扱います。書き込み・検索・クエリにはどの種類も使え、検索結果の種類も選べます。
 
@@ -30,7 +32,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 20/7/931394/412901
 ```
 
-<MadoriFrame ids={[singleIds]} border view camera={{ bearing: 45, pitch: 55 }} />
+<MadoriFrame ids={[singleIds]} border view camera={{ longitude: 139.7695, latitude: 35.68384, bearing: 45, pitch: 55 }} />
 
 <p class="figure-caption">SingleId 96 個で表示</p>
 
@@ -38,7 +40,7 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 
 各軸のインデックスを閉区間 `最小:最大` で書いた時空間ID です。上の 96 ボクセルは `20/0:7/931389:931394/412900:412901` の 1 つで書けます。
 
-<MadoriFrame ids={[box]} border view camera={{ bearing: 45, pitch: 55 }} />
+<MadoriFrame ids={[box]} border view camera={{ longitude: 139.7695, latitude: 35.68384, bearing: 45, pitch: 55 }} />
 
 <p class="figure-caption">RangeId 1 個で表示</p>
 
@@ -51,3 +53,16 @@ Kasane は、[ガイドライン](/concepts/spatial-id/)の時空間ID（[Single
 ## 時間
 
 時空間ID の時間間隔に使えるのは 1・60・3600・86400 秒です。時間を付けない時空間ID で書き込んだ値は全時間の値になり、どの時刻で検索しても返ります。
+
+次の例は、上の直方体を高さごとの RangeId 8 個に分け、時間間隔 1 秒で、下の段から 1 秒ずつ現れるようにしたものです。
+
+```text
+20/0/931389:931394/412900:412901_1/0:2147483647
+20/1/931389:931394/412900:412901_1/1:2147483647
+…（途中省略）…
+20/7/931389:931394/412900:412901_1/7:2147483647
+```
+
+<MadoriFrame ids={[layers]} border view camera={{ longitude: 139.7695, latitude: 35.68384, bearing: 45, pitch: 55 }} />
+
+<p class="figure-caption">再生ボタンを押すと、高さごとの RangeId 8 個が、1 秒ずつ下から現れる</p>

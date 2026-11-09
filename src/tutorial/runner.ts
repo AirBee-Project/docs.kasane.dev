@@ -3,10 +3,13 @@ import { KasaneClient, isKasaneError, type DatabaseHandle } from "@airbee-projec
 export interface Tutorial {
   client: KasaneClient;
   db: DatabaseHandle;
+  /** 結果を画面には出さず、右の Madori にだけ渡す（コードの隠し部分で使う） */
+  show: (results: Iterable<{ id: unknown; value: unknown }>) => void;
 }
 
 export type Step = (tutorial: Tutorial) => Promise<void>;
-export type Line = { kind: "log" | "error"; text: string };
+/** map は画面に出さず、Madori にだけ渡す行 */
+export type Line = { kind: "log" | "error" | "map"; text: string };
 export type StepLoaders = Record<string, () => Promise<{ default: Step }>>;
 
 /** チュートリアルで使うデータベースの名前。 */
@@ -49,7 +52,7 @@ function bind<T extends object>(target: T, overrides: Partial<Record<keyof T, un
 }
 
 /** 「もう一度実行する」で同じテーブルを作り直せるよう、createTable の前に同名のテーブルを消す。 */
-function tutorial(client: KasaneClient): Tutorial {
+function tutorial(client: KasaneClient, show: Tutorial["show"]): Tutorial {
   const realDb = client.database(DB);
   const db = bind(realDb, {
     createTable: async (name: string, ...rest: unknown[]) => {
@@ -57,7 +60,7 @@ function tutorial(client: KasaneClient): Tutorial {
       return (realDb.createTable as (...a: unknown[]) => Promise<unknown>)(name, ...rest);
     },
   });
-  return { client, db };
+  return { client, db, show };
 }
 
 /**
@@ -90,17 +93,21 @@ async function runOne(name: string, loaders: StepLoaders, write: (line: Line) =>
     if (!silent) write({ kind: "log", text: values.map(format).join(" ") });
     original(...values);
   };
+  const show: Tutorial["show"] = (results) => {
+    if (silent) return;
+    for (const r of results) write({ kind: "map", text: `${r.id} => ${r.value}` });
+  };
   try {
     const client = await getClient(name);
     silent = true;
     for (const other of prerequisites(name, loaders)) {
-      await (await loaders[stepPath(other)]!()).default(tutorial(client));
+      await (await loaders[stepPath(other)]!()).default(tutorial(client, show));
       done.add(other);
     }
     silent = false;
     const loader = loaders[stepPath(name)];
     if (!loader) throw new Error(`ステップ ${name} が見つかりません。`);
-    await (await loader()).default(tutorial(client));
+    await (await loader()).default(tutorial(client, show));
     done.add(name);
   } catch (e) {
     silent = false;

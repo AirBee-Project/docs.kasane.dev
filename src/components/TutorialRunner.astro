@@ -6,7 +6,7 @@ import type { MadoriData } from '../madori';
 interface Props {
 	step: string;
 	/** 結果を表示する Madori への指定（視点・枠線・不透明度）。結果から作った指定に上書きする */
-	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity'>;
+	madori?: Pick<MadoriData, 'camera' | 'border' | 'opacity' | 'speed' | 'scale'>;
 }
 const { step, madori = {} } = Astro.props;
 ---
@@ -44,6 +44,7 @@ const { step, madori = {} } = Astro.props;
 			let text = '';
 			const write = (line: Line) => {
 				text += `${line.text}\n`;
+				if (line.kind === 'map') return;
 				const span = document.createElement('span');
 				span.className = `line-${line.kind}`;
 				span.textContent = `${line.text.startsWith('{"meta"') ? 'success' : line.text}\n`;

@@ -6,10 +6,14 @@ export type MadoriData = {
   ids?: string[];
   /** Madori の JSON。URL に入らないので postMessage で渡す */
   json?: string;
-  /** ボクセルの枠線。true で表示、false で非表示。指定しないときは view なら表示 */
+  /** ボクセルの枠線を表示する。指定しないときは表示しない */
   border?: boolean;
   /** JSON の不透明度（0〜1） */
   opacity?: number;
+  /** 再生の速さの初期値（1 秒に進む秒数）。1hr/s なら 3600 */
+  speed?: number;
+  /** JSON の色の範囲 [最小, 最大]。地図どうしで同じ値を同じ色にしたいときに使う */
+  scale?: [number, number];
   /** 図を見せるだけの埋め込み。Madori のボタン類を隠す */
   view?: boolean;
   /**
@@ -23,14 +27,16 @@ export type MadoriData = {
  * ID などを入力済みの Madori を作る。
  * fill にすると、縦横比を固定せず、親の高さいっぱいに広げる
  */
-export function createMadoriFrame({ ids = [], json, border, opacity, view, camera }: MadoriData, { fill = false } = {}): HTMLElement {
+export function createMadoriFrame({ ids = [], json, border = false, opacity, speed, scale, view, camera }: MadoriData, { fill = false } = {}): HTMLElement {
   const params = new URLSearchParams();
   for (const group of ids) params.append("ids", group);
   if (border) params.append("border", "");
   if (view) params.append("view", "");
+  if (speed !== undefined) params.append("speed", String(speed));
   for (const [key, value] of Object.entries(camera ?? {})) params.append(key, String(value));
   // docs では、カーソルを乗せたボクセルの ID と値を最初から表示する
   params.append("hover", "");
+  if (json && scale) json = withScale(json, scale);
   const iframe = document.createElement("iframe");
   iframe.src = `${MADORI_URL}?${params}`;
   iframe.title = "Madori で空間ID を表示";
@@ -38,7 +44,8 @@ export function createMadoriFrame({ ids = [], json, border, opacity, view, camer
   iframe.style.cssText = `display:block;width:100%;${fill ? "flex:1;min-height:0;" : "aspect-ratio:16/10;border-radius:4px;"}border:0;`;
 
   // JSON・枠線を消す指定・不透明度は URL で渡せないので、読み込み後に postMessage で渡す
-  if (json || border === false || opacity !== undefined) {
+  // （view の Madori は枠線を表示して始まるので、枠線を消すときも送る）
+  if (json || !border || opacity !== undefined) {
     window.addEventListener("message", (e) => {
       if (e.source === iframe.contentWindow && e.data?.type === "madori:ready") {
         // show は表示中のものを置き換えるので、ID も一緒に渡す
@@ -52,6 +59,17 @@ export function createMadoriFrame({ ids = [], json, border, opacity, view, camer
   root.style.cssText = fill ? "display:flex;flex-direction:column;height:100%;" : "margin-top:1rem;";
   root.append(iframe);
   return root;
+}
+
+/**
+ * Madori は value の最小を青、最大を赤にする（どの ID からも指されない値も含む）。
+ * 範囲の両端を value に足して、色の範囲をそろえる
+ */
+function withScale(json: string, [min, max]: [number, number]): string {
+  const data = JSON.parse(json);
+  const values: unknown[] = data.data[0].value;
+  for (const v of [min, max]) if (!values.includes(v)) values.push(v);
+  return JSON.stringify(data);
 }
 
 const ID = String.raw`\d{1,2}\/-?\d+(?::-?\d+)?\/\d+(?::\d+)?\/\d+(?::\d+)?(?:_\d+\/\d+(?::\d+)?)?`;

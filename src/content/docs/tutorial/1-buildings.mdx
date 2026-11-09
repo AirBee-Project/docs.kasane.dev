@@ -9,7 +9,7 @@ import { Steps } from '@astrojs/starlight/components';
 import LangStep from '../../../components/LangStep.astro';
 import MadoriFrame from '../../../components/MadoriFrame.astro';
 
-建物のテーブルを作り、ショッピングモールと倉庫の空間IDに危険度を書き込みます。
+建物のテーブルを作り、ショッピングモールと倉庫の空間IDにリスクを書き込みます。
 
 <Steps>
 
@@ -21,27 +21,21 @@ import MadoriFrame from '../../../components/MadoriFrame.astro';
 
 2. **建物を RangeId で表す**
 
-   建物は直方体なので、たくさんのボクセルを 1 つずつ書く代わりに、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
+   建物は直方体なので、[RangeId](/concepts/kasane-spatial-id/#rangeid) 1 つで表します。
 
    | 建物 | 東西（x） | 南北（y） | 高さ（f） |
    | --- | --- | --- | --- |
-   | ショッピングモール | 931384〜931386 | 412899〜412901 | 0〜5（約 190 m） |
-   | 倉庫 | 931392〜931393 | 412903〜412904 | 0〜5（約 190 m） |
+   | ショッピングモール | 931384〜931386 | 412899〜412901 | 0〜5 |
+   | 倉庫 | 931392〜931393 | 412903〜412904 | 0〜5 |
 
    <LangStep step="map/1-buildings/2-range" madori={{ camera: { zoom: 15.25 } }} />
 
-3. **危険度を書き込む**
+3. **リスクを書き込む**
 
-   建物は物体なので、どちらも危険度を高くします。人の多いショッピングモールは `100`、倉庫は `70` です。
+   人の多いショッピングモールは `100`、倉庫は `70` のリスクを書き込みます。
 
-   書き込めたかは、ショッピングモールの中・倉庫の中・建物の外の 1 ボクセルずつを検索して確かめます。
+   書き込んだら、建物ごとに検索して、建物と値を出力します。（100 が赤、70 が黄緑）。
 
-   <LangStep step="map/1-buildings/3-insert" madori={{ camera: { zoom: 16 } }} />
-
-4. **地図で見る**
-
-   手順 2 の「実行する」を押すと、右の Madori に 2 つの空間ID が表示されます。実行しなくても、次の地図でショッピングモール（緑）と倉庫（ピンク）を確かめられます。
-
-   <MadoriFrame ids={['20/0:5/931384:931386/412899:412901', '20/0:5/931392:931393/412903:412904']} view border={false} camera={{ bearing: 45, pitch: 55, zoom: 15.25 }} />
+   <LangStep step="map/1-buildings/3-insert" madori={{ camera: { zoom: 15.25 }, opacity: 0.6 }} />
 
 </Steps>

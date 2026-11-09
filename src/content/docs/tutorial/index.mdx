@@ -1,5 +1,5 @@
 ---
-title: 町の危険度マップを作る
+title: リスクマップを作る
 sidebar:
   label: 概要
   order: 0
@@ -10,25 +10,18 @@ import LangTabs from '../../../components/LangTabs.astro';
 import MadoriFrame from '../../../components/MadoriFrame.astro';
 import mapJson from '../../../tutorial/steps/map/4-merge/2-json.out.txt?raw';
 
-ドローンが町を飛ぶときの危険度マップを作ります。
+ドローンが町を飛ぶときのリスクマップを作ります。
 
-<MadoriFrame json={mapJson} view border={false} opacity={0.6} camera={{ bearing: 45, pitch: 55, zoom: 14.5 }} />
+<MadoriFrame json={mapJson} view opacity={0.6} speed={3600} camera={{ bearing: 45, pitch: 55, zoom: 14.5 }} />
 
-<p class="figure-caption">完成した危険度マップ（0 時台。赤いほど危険度が高く、青いほど低い）</p>
+<p class="figure-caption">完成したリスクマップ（赤いほどリスクが高く、青いほど低い）</p>
 
-## 作るもの
+## 重ね合わせるデータ
 
-危険度マップは、次の 2 つのデータを重ね合わせて作ります。
+リスクマップは、次の 2 つのデータを重ね合わせて作ります。
 
-- **建物**：建物そのものと、そのまわりの衝突の危険。建物は動かないので静的なデータ
-- **雨**：強いほど危険。時間とともに変わる動的なデータ
-
-| Step | やること | 使う機能 |
-| --- | --- | --- |
-| 1 | 建物を書き込む | テーブル、RangeId、書き込み |
-| 2 | 建物のまわりに危険度を広げる | クエリ（falloff） |
-| 3 | 雨を書き込む | 時間を扱うテーブル、時空間ID |
-| 4 | 危険度を重ね合わせて地図で見る | クエリ（merge）、JSON への変換、Madori |
+- **建物**：建物そのものと、そのまわりの衝突リスク。静的なデータ
+- **雨**：強いほど高リスク。時間とともに変わる動的なデータ
 
 ## 自分の環境で動かす
 

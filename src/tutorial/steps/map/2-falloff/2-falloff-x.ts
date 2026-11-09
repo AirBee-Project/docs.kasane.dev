@@ -1,8 +1,8 @@
 // @hide-start
-import { SingleId, query } from "@airbee-project/kasane-client";
+import { RangeId, SingleId, query } from "@airbee-project/kasane-client";
 import type { Tutorial } from "../../../runner";
 
-export default async function ({ client }: Tutorial) {
+export default async function ({ client, show }: Tutorial) {
   const buildings = query.source("tutorial", "buildings");
 // @hide-end
   // 手順 1 のクエリに、東西（X）方向の falloff を足す（8 ボクセルかけて減らしながら広げる）
@@ -15,5 +15,7 @@ export default async function ({ client }: Tutorial) {
     console.log(`ショッピングモールから ${dx} ボクセル =>`, result ? `${result.value}` : "値なし");
   }
 // @hide-start
+  // 建物のまわりの結果を、右の Madori にだけ渡す
+  show(await client.query(spreadX, RangeId.create(20, [0, 5], [931376, 931401], [412891, 412912])).toArray());
 }
 // @hide-end
